@@ -1,0 +1,54 @@
+
+.header{
+    background-color: #002436;
+    display: flex;
+    justify-content: space-between;
+    align-items:end;
+    height: 172px;
+    width: 100%;
+    flex:1;
+}
+
+.logo{
+    margin:3px;
+}
+
+.header-options{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    background-color: #324A5F;
+    flex:0.6;
+    height:45px;
+    border-radius: 5px;
+    margin-bottom: 5px;
+}
+
+.header-options span{
+    color: white;
+    margin:5px;
+    height:100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1;
+    flex:2;
+    border-left: 1.5px solid white;
+}
+.header-options span:first-child{
+    border-left: none;
+}
+
+.user{
+    height: 100%;
+    display: flex;
+    flex-direction:column;
+    justify-content: center;
+    align-items: center;
+    margin-right:10px;
+}
+.user span{
+    margin-top:10px;
+    color:white;
+}

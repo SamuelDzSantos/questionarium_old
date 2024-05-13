@@ -1,0 +1,20 @@
+
+<div *ngIf="logged; else elseBlock" class="header">
+    <img class="logo" src="assets/logo.png"/>
+    <div class="header-options">
+        <span>Questões</span>
+        <span>Avaliações</span>
+        <span>Turmas</span>
+        <span>Sobre</span>
+    </div>
+    <div class="user">
+        <img src="assets/default_user_logo.png"/>
+        <span>Olá,Razer</span>
+    </div>
+</div>
+
+<ng-template #elseBlock>
+    <div class="header" style="justify-content: center;">
+        <img class="logo" src="assets/logo.png"/>
+    </div>
+</ng-template>
