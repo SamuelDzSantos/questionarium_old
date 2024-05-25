@@ -25,8 +25,8 @@ export class LoginComponent {
     let nome = this.loginForm.value.login;
     if(nome != undefined && nome != null){
       let user_login : user_login = {logged:true,name:nome}
-      localStorage.setItem("login",JSON.stringify(user_login))
-      this.router.navigate([""]);  
+     // localStorage.setItem("login",JSON.stringify(user_login))
+    //  this.router.navigate([""]);  
     }
     }
 

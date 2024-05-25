@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-QuestionariumApplication<questionarium>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "org.ufpr.questionarium.QuestionariumApplication",
+            "projectName": "questionarium",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env",
+        },
+    ]
+}
