@@ -1,6 +1,11 @@
 
-<div *ngIf="logged; else elseBlock" class="header">
-    <img class="logo" src="assets/logo.png"/>
+<div *ngIf="!(user$ | async) as user" >
+    <div class="header" style="justify-content: center;">
+        <img class="logo" src="logo.png"/>
+    </div>
+</div>
+    <div *ngIf="user$ | async as user" class="header">
+    <img class="logo" src="logo.png"/>
     <div class="header-options">
         <span>Questões</span>
         <span>Avaliações</span>
@@ -8,13 +13,11 @@
         <span>Sobre</span>
     </div>
     <div class="user">
-        <img src="assets/default_user_logo.png"/>
-        <span>Olá,Razer</span>
+        <img src="default_user_logo.png"/>
+        <span>Olá,{{user.username}}</span>
+        <div class="dropdown-menu">
+            <li  class="content"><a href="/edicaoPerfil">Conta</a></li>
+            <li (click)="logout()" class="content"><a>Sair</a></li>
+        </div>
     </div>
 </div>
-
-<ng-template #elseBlock>
-    <div class="header" style="justify-content: center;">
-        <img class="logo" src="assets/logo.png"/>
-    </div>
-</ng-template>

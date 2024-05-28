@@ -1,33 +1,36 @@
-import { Component } from '@angular/core';
-import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
-import { user_login } from '../../types/user_login';
+import { HttpClient } from '@angular/common/http';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { UserService } from '../../services/user.service';
+import { HeaderComponent } from '../header/header.component';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule,HeaderComponent],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
-export class LoginComponent {
-
-  constructor(
-    private formBuilder : FormBuilder,private router : Router){
-  }
-
-  loginForm = this.formBuilder.group({
-    login: '',
-    senha:  ''
+export class LoginComponent implements OnInit {
+  loginForm = new FormBuilder().group({
+    login: ["", [Validators.required, Validators.email]],
+    senha: ["", [Validators.required]]
   })
 
-  onSubmit(){
-    let nome = this.loginForm.value.login;
-    if(nome != undefined && nome != null){
-      let user_login : user_login = {logged:true,name:nome}
-     // localStorage.setItem("login",JSON.stringify(user_login))
-    //  this.router.navigate([""]);  
+  constructor(private userService: UserService,private route:ActivatedRoute) { }
+
+  ngOnInit(){
+    console.log(this.route.snapshot.data);
+  }
+
+  onSubmit() {
+    let formValues = this.loginForm.value;
+    if (formValues.login != undefined && formValues.senha != undefined) {
+      this.userService.login(formValues.login,formValues.senha);
     }
-    }
+  }
+
+
 
 }

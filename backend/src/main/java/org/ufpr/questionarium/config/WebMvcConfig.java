@@ -2,8 +2,11 @@ package org.ufpr.questionarium.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.lang.NonNull;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.method.HandlerTypePredicate;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
+import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
@@ -11,9 +14,17 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WebMvcConfig implements WebMvcConfigurer {
 
     @Override
-    public void addViewControllers(@NonNull ViewControllerRegistry registry) {
-        registry.addViewController("(?!/api).*").setViewName("forward:/");
-        registry.addViewController("/api/**").setViewName("forward:/api");
+    public void addCorsMappings(@NonNull CorsRegistry registry) {
+        registry
+                .addMapping("/**")
+                .allowedOrigins("*")
+                .allowedMethods("GET", "POST", "DELETE", "OPTIONS", "HEAD", "PUT")
+                .allowedHeaders("*");
+    }
+
+    @Override
+    public void configurePathMatch(@NonNull PathMatchConfigurer configurer) {
+        configurer.addPathPrefix("api", HandlerTypePredicate.forAnnotation(RestController.class));
     }
 
 }

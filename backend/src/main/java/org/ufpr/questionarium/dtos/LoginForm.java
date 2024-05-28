@@ -7,7 +7,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Setter
 @Getter
-public class Login {
+public class LoginForm {
     private String email;
     private String password;
 }

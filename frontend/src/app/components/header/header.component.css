@@ -46,9 +46,45 @@
     flex-direction:column;
     justify-content: center;
     align-items: center;
-    margin-right:10px;
+    margin-right:10px; 
+    transition: all .5s ease;
 }
 .user span{
     margin-top:10px;
     color:white;
+}
+
+.dropdown-menu{
+    display: none;
+    width: 120px;
+    padding-top:10px;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    list-style-type: none;
+    background-color: #002436;
+}
+
+.dropdown-menu .content{
+    color:white;
+    width: 100%;
+    height:40px;
+    text-align: center;
+}
+.dropdown-menu .content a{
+    text-decoration: none;
+    color:white;
+}
+.dropdown-menu .content:hover{
+    cursor: pointer;
+    opacity: 0.7;
+}
+
+.user:hover .dropdown-menu{
+    height:90px;
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    gap:20px;
+    position: absolute;
+    top:170px;
 }

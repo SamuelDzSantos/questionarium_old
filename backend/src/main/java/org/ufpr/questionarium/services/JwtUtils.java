@@ -1,53 +1,32 @@
 package org.ufpr.questionarium.services;
 
-import java.util.Date;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.oauth2.jwt.JwtClaimsSet;
+import org.springframework.security.oauth2.jwt.JwtEncoder;
+import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
-
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
 
 @Service
 public class JwtUtils {
+    private final JwtEncoder jwtEncoder;
 
-    private static final int expireInMs = 60 * 1000;
-
-    private final Algorithm algorithm;
-
-    JwtUtils(@Value("${api.security.token.secret}") String secret) {
-        this.algorithm = Algorithm.HMAC256(secret);
+    public JwtUtils(JwtEncoder jwtEncoder) {
+        this.jwtEncoder = jwtEncoder;
     }
 
-    public String generateToken(String subject) {
-        try {
-            String token = JWT.create()
-                    .withIssuer("questionarium")
-                    .withSubject(subject)
-                    .withIssuedAt(new Date(System.currentTimeMillis()))
-                    .withExpiresAt(new Date(System.currentTimeMillis() + expireInMs))
-                    .sign(algorithm);
-            return token;
-        } catch (Exception _) {
-            throw new RuntimeException("Erro ao criar token JWT!");
-        }
-    }
-
-    public Boolean validateToken(String token) {
-        if (getUsername(token) != null && isExpired(token))
-            return true;
-        return false;
-    }
-
-    public String getUsername(String token) {
-        return JWT.require(algorithm).withIssuer("questionarium").build().verify(token).getSubject();
-    }
-
-    public Boolean isExpired(String token) {
-        return JWT.require(algorithm).withIssuer("questionarium")
-                .build().verify(token)
-                .getExpiresAt()
-                .after(new Date(System.currentTimeMillis()));
+    public String generateToken(Authentication authentication) {
+        Instant now = Instant.now();
+        String scope = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority)
+                .collect(Collectors.joining(" "));
+        JwtClaimsSet claims = JwtClaimsSet.builder().issuer("self").issuedAt(now)
+                .expiresAt(now.plus(1, ChronoUnit.HOURS))
+                .subject(authentication.getName()).claim("scope", scope).build();
+        return jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
     }
 
 }

@@ -1,0 +1,32 @@
+{
+  "groups": [
+    {
+      "name": "rsa",
+      "type": "org.ufpr.questionarium.config.RsaKeyProperties",
+      "sourceType": "org.ufpr.questionarium.config.RsaKeyProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "jwt.private.key",
+      "type": "java.lang.String",
+      "description": "A description for 'jwt.private.key'"
+    },
+    {
+      "name": "jwt.public.key",
+      "type": "java.lang.String",
+      "description": "A description for 'jwt.public.key'"
+    },
+    {
+      "name": "rsa.private-key",
+      "type": "java.security.interfaces.RSAPrivateKey",
+      "sourceType": "org.ufpr.questionarium.config.RsaKeyProperties"
+    },
+    {
+      "name": "rsa.public-key",
+      "type": "java.security.interfaces.RSAPublicKey",
+      "sourceType": "org.ufpr.questionarium.config.RsaKeyProperties"
+    }
+  ],
+  "hints": []
+}
