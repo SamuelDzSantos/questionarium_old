@@ -41,9 +41,9 @@ export class UserService {
 
   public async login(login: string, senha: string) {
     let form : LoginForm = {"email": login,"password" : senha};
+    localStorage.removeItem("token");
     this.http.post<LogResult>(`${this.url}login`,form,{observe:"body"}).subscribe({
       next:(user)=>{
-        localStorage.removeItem("token");
         localStorage.setItem("token",user.token);
         this.setCurrentUser({username:user.username,email:user.email} as LoggedUser)
         this.router.navigateByUrl("/home")
