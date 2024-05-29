@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.method.HandlerTypePredicate;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -34,6 +35,15 @@ public class WebMvcConfig implements WebMvcConfigurer {
         templateResolver.setTemplateMode("HTML5");
         templateResolver.setCharacterEncoding("UTF-8");
         return templateResolver;
+    }
+
+    @Override
+    public void addCorsMappings(@NonNull CorsRegistry registry) {
+        registry
+                .addMapping("/**")
+                .allowedOrigins("*")
+                .allowedMethods("GET", "POST", "DELETE", "OPTIONS", "HEAD", "PUT")
+                .allowedHeaders("*");
     }
 
 }
