@@ -22,4 +22,9 @@ public class QuestionariumApplication {
 		return "";
 	}
 
+	@GetMapping("/hi")
+	public String apiHi() {
+		return "hi";
+	}
+
 }

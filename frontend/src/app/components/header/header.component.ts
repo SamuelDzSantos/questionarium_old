@@ -4,7 +4,7 @@ import { UserService } from '../../services/user.service';
 import { Observable } from 'rxjs';
 import { LoggedUser } from '../../types/dto/LoggedUser';
 import { HttpClient } from '@angular/common/http';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 
 @Component({
@@ -18,15 +18,23 @@ export class HeaderComponent implements OnInit{
   
   user$!: Observable<LoggedUser | null>;
 
-  constructor(public userService:UserService, private route : ActivatedRoute){}
+  constructor(public userService:UserService, private router : Router){}
   
   ngOnInit(): void {
     this.user$ = this.userService.getCurrentUser();
     this.user$.subscribe((user)=>{
-     console.log(user);
+     // console.log(user);
     })
   }
   
+  conta(){
+    this.router.navigateByUrl("/edicaoPerfil")
+  }
+
+  logo(){
+    this.router.navigateByUrl("/home");
+  }
+
   logout(){
     this.userService.logout();
   }

@@ -13,6 +13,10 @@
     margin:3px;
 }
 
+.logo:hover{
+    cursor: pointer;
+}
+
 .header-options{
     display: flex;
     flex-direction: row;

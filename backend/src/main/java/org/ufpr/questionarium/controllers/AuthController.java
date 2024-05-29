@@ -17,7 +17,6 @@ import org.ufpr.questionarium.dtos.RegisterForm;
 import org.ufpr.questionarium.dtos.UpdatedUserForm;
 import org.ufpr.questionarium.services.JwtUtils;
 import org.ufpr.questionarium.services.UserService;
-import org.ufpr.questionarium.models.User;
 
 @RestController
 @RequestMapping("/")

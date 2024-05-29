@@ -1,11 +1,11 @@
 
 <div *ngIf="!(user$ | async) as user" >
     <div class="header" style="justify-content: center;">
-        <img class="logo" src="logo.png"/>
+        <img class="logo" src="logo.png" (click)="logo()"/>
     </div>
 </div>
     <div *ngIf="user$ | async as user" class="header">
-    <img class="logo" src="logo.png"/>
+    <img class="logo" src="logo.png" (click)="logo()" />
     <div class="header-options">
         <span>Questões</span>
         <span>Avaliações</span>
@@ -16,7 +16,7 @@
         <img src="default_user_logo.png"/>
         <span>Olá,{{user.username}}</span>
         <div class="dropdown-menu">
-            <li  class="content"><a href="/edicaoPerfil">Conta</a></li>
+            <li  class="content"><a (click)="conta()" >Conta</a></li>
             <li (click)="logout()" class="content"><a>Sair</a></li>
         </div>
     </div>

@@ -21,7 +21,7 @@ export class LoginComponent implements OnInit {
   constructor(private userService: UserService,private route:ActivatedRoute) { }
 
   ngOnInit(){
-    console.log(this.route.snapshot.data);
+    //console.log(this.route.snapshot.data);
   }
 
   onSubmit() {

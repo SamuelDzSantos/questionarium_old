@@ -7,6 +7,7 @@ import org.springframework.web.method.HandlerTypePredicate;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
@@ -25,6 +26,13 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void configurePathMatch(@NonNull PathMatchConfigurer configurer) {
         configurer.addPathPrefix("api", HandlerTypePredicate.forAnnotation(RestController.class));
+    }
+
+    @Override
+    public void addResourceHandlers(@NonNull ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/**")
+                .addResourceLocations("classpath:/static/browser/assets/",
+                        "classpath:/static/browser/");
     }
 
 }

@@ -17,6 +17,7 @@ import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.intercept.AuthorizationFilter;
 
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
@@ -25,14 +26,18 @@ import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 
+import org.ufpr.questionarium.filters.AngularRoutingFilter;
+
 @EnableWebSecurity
 @Configuration
 public class SecurityConfig {
 
     private final RsaKeyProperties rsaKeys;
+    private final AngularRoutingFilter angularRoutingFilter;
 
-    public SecurityConfig(RsaKeyProperties rsaKeys) {
+    public SecurityConfig(RsaKeyProperties rsaKeys, AngularRoutingFilter angularRoutingFilter) {
         this.rsaKeys = rsaKeys;
+        this.angularRoutingFilter = angularRoutingFilter;
     }
 
     @Bean
@@ -40,10 +45,12 @@ public class SecurityConfig {
         return http
                 .csrf((csrf) -> csrf.disable())
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/api/login", "/api/register").permitAll()
+                        .requestMatchers("/api/login", "/api/register", "/*", "/api/hi").permitAll()
+                        .requestMatchers("/api/*").authenticated()
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(angularRoutingFilter, AuthorizationFilter.class)
                 .build();
     }
 
