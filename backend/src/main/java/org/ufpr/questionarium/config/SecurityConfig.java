@@ -50,7 +50,7 @@ public class SecurityConfig {
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(angularRoutingFilter, AuthorizationFilter.class)
+                // .addFilterBefore(angularRoutingFilter, AuthorizationFilter.class)
                 .build();
     }
 

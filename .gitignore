@@ -1,3 +1,2 @@
-backend/Dockerfile
 backend/target
 backend/.vscode
