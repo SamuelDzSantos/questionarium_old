@@ -42,7 +42,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry
                 .addMapping("/**")
                 .allowedOrigins("*")
-                .allowedMethods("GET", "POST", "DELETE", "OPTIONS", "HEAD", "PUT")
+                .allowedMethods("*")
                 .allowedHeaders("*");
     }
 

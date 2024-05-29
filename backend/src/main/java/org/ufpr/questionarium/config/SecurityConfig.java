@@ -2,6 +2,7 @@ package org.ufpr.questionarium.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -44,12 +45,12 @@ public class SecurityConfig {
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .authorizeHttpRequests(authorize -> authorize
-                        .anyRequest().permitAll()
-                // .requestMatchers("/").permitAll()
-                // .requestMatchers("/api/login", "/api/register", "/api/hello").permitAll()
-                // .requestMatchers("/resources/*").permitAll()
-                // .anyRequest().authenticated())
-                )
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        .requestMatchers("/").permitAll()
+                        .requestMatchers("/api/login", "/api/register", "/api/hello").permitAll()
+                        .requestMatchers("/resources/*").permitAll()
+                        .anyRequest().authenticated())
+                .cors(Customizer.withDefaults())
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
                 .csrf((csrf) -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
