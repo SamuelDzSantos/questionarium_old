@@ -20,7 +20,7 @@ public class AngularRoutingFilter extends OncePerRequestFilter {
             @NonNull FilterChain filterChain)
             throws ServletException, IOException {
         val mode = request.getHeader("Sec-Fetch-Mode");
-        if (mode.equals("navigate")) {
+        if (mode != null && mode.equals("navigate")) {
             val rd = request.getRequestDispatcher("/");
             rd.forward(request, response);
         } else {
