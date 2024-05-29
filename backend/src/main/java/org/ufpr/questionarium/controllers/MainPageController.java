@@ -1,10 +1,10 @@
-package org.ufpr.questionarium;
+package org.ufpr.questionarium.controllers;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
-public class PageController {
+public class MainPageController {
 
     @GetMapping("/")
     public String index() {

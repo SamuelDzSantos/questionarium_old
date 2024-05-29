@@ -17,6 +17,8 @@ import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.intercept.AuthorizationFilter;
+import org.ufpr.questionarium.filters.NonApiRequestToRootPathForwarderFilterRegistrationbean;
 
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
@@ -30,20 +32,26 @@ import com.nimbusds.jose.proc.SecurityContext;
 public class SecurityConfig {
 
     private final RsaKeyProperties rsaKeys;
+    private final NonApiRequestToRootPathForwarderFilterRegistrationbean nonApiFilter;
 
-    public SecurityConfig(RsaKeyProperties rsaKeys) {
+    public SecurityConfig(RsaKeyProperties rsaKeys,
+            NonApiRequestToRootPathForwarderFilterRegistrationbean nonApiFilter) {
         this.rsaKeys = rsaKeys;
+        this.nonApiFilter = nonApiFilter;
     }
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/api/login", "/api/register").permitAll()
-                        .anyRequest().permitAll())
+                        .requestMatchers("/").permitAll()
+                        .requestMatchers("/api/login", "/api/register", "/api/hello").permitAll()
+                        .requestMatchers("/resources/*").permitAll()
+                        .anyRequest().authenticated())
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
                 .csrf((csrf) -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(nonApiFilter, AuthorizationFilter.class)
                 .build();
     }
 

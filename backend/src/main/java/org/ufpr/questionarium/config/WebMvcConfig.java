@@ -3,9 +3,11 @@ package org.ufpr.questionarium.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.lang.NonNull;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.method.HandlerTypePredicate;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 
@@ -14,9 +16,8 @@ import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 public class WebMvcConfig implements WebMvcConfigurer {
 
     @Override
-    public void addViewControllers(@NonNull ViewControllerRegistry registry) {
-        registry.addViewController("/home").setViewName("forward:/");
-        registry.addViewController("/about").setViewName("forward:/");
+    public void configurePathMatch(@NonNull PathMatchConfigurer configurer) {
+        configurer.addPathPrefix("/api", HandlerTypePredicate.forAnnotation(RestController.class));
     }
 
     @Override
