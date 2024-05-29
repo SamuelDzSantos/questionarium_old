@@ -8,7 +8,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.ufpr.questionarium.dtos.LogResult;
 import org.ufpr.questionarium.dtos.LoggedUser;
@@ -19,7 +18,6 @@ import org.ufpr.questionarium.services.JwtUtils;
 import org.ufpr.questionarium.services.UserService;
 
 @RestController
-@RequestMapping("/")
 @Configuration
 public class AuthController {
 
