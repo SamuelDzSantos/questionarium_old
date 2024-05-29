@@ -53,6 +53,11 @@ public class AuthController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/hello")
+    public ResponseEntity<String> hello() {
+        return ResponseEntity.ok().body("Hello");
+    }
+
     @GetMapping("/user")
     public ResponseEntity<LoggedUser> getUser(Authentication authentication) {
         return ResponseEntity.ok().body(this.userService.getUser(authentication));
