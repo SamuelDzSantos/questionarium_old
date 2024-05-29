@@ -44,10 +44,12 @@ public class SecurityConfig {
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/").permitAll()
-                        .requestMatchers("/api/login", "/api/register", "/api/hello").permitAll()
-                        .requestMatchers("/resources/*").permitAll()
-                        .anyRequest().authenticated())
+                        .anyRequest().permitAll()
+                // .requestMatchers("/").permitAll()
+                // .requestMatchers("/api/login", "/api/register", "/api/hello").permitAll()
+                // .requestMatchers("/resources/*").permitAll()
+                // .anyRequest().authenticated())
+                )
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
                 .csrf((csrf) -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
