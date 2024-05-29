@@ -7,7 +7,7 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "build_spring":"ng build --output-path ../backend/src/main/resources/static/"
+    "build_spring":"ng build --output-path ../backend/src/main/resources/static/ --configuration spring-configuration"
   },
   "private": true,
   "dependencies": {
