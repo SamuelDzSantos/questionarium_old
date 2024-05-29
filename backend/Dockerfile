@@ -1,4 +1,4 @@
-FROM maven:latest AS build
+FROM maven:3.9.7-sapmachine-21 AS build
 COPY . .
 RUN mvn clean package -DskipTests
 
