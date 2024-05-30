@@ -1,19 +1,19 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Injectable, signal } from '@angular/core';
-import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router';
-import { BehaviorSubject, Observable, Observer, PartialObserver, ReplaySubject, Subject, catchError, delayWhen, firstValueFrom, map, of, skip } from 'rxjs';
-import { LoginForm } from '../types/dto/LoginForm';
+import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
+import { ReplaySubject, catchError, map, of } from 'rxjs';
+import { LogResult } from '../types/dto/LogResult';
 import { LoggedUser } from '../types/dto/LoggedUser';
+import { LoginForm } from '../types/dto/LoginForm';
 import { RegisterForm } from '../types/dto/RegisterForm';
 import { UpdatedUserForm } from '../types/dto/UpdatedUserForm';
-import { LogResult } from '../types/dto/LogResult';
 
 @Injectable({
   providedIn: "root"
 })
 export class UserService {
 
-  private url = "http://localhost:8080/api/"
+  private url = "https://questionarium.onrender.com/api/"
 
   user$ = new ReplaySubject<LoggedUser | null>
 
@@ -26,7 +26,7 @@ export class UserService {
   }
 
   public initialize(){
-    return this.http.get<LoggedUser>("http://localhost:8080/api/user").pipe(
+    return this.http.get<LoggedUser>("https://questionarium.onrender.com/ api/user").pipe(
       map((user)=>{
         this.setCurrentUser(user)
       }),
