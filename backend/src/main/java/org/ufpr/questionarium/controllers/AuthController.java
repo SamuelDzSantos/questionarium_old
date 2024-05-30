@@ -5,9 +5,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.ufpr.questionarium.dtos.LogResult;
 import org.ufpr.questionarium.dtos.LoggedUser;
@@ -59,6 +61,12 @@ public class AuthController {
     @PostMapping("/update/user")
     public ResponseEntity<Void> updateUser(Authentication authentication, @RequestBody UpdatedUserForm userForm) {
         this.userService.updateUser(authentication, userForm);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/delete/user")
+    public ResponseEntity<Void> deleteUser(Authentication authentication, @RequestParam String email) {
+        this.userService.deleteUser(authentication, email);
         return ResponseEntity.ok().build();
     }
 

@@ -7,13 +7,14 @@ import { LoggedUser } from '../types/dto/LoggedUser';
 import { LoginForm } from '../types/dto/LoginForm';
 import { RegisterForm } from '../types/dto/RegisterForm';
 import { UpdatedUserForm } from '../types/dto/UpdatedUserForm';
+import { env } from '../enviroment';
 
 @Injectable({
   providedIn: "root"
 })
 export class UserService {
 
-  private url = "https://questionarium.onrender.com/api/"
+  private url = env.baseUrl
 
   user$ = new ReplaySubject<LoggedUser | null>
 
@@ -26,7 +27,7 @@ export class UserService {
   }
 
   public initialize(){
-    return this.http.get<LoggedUser>("https://questionarium.onrender.com/ api/user").pipe(
+    return this.http.get<LoggedUser>(`${this.url}user`).pipe(
       map((user)=>{
         this.setCurrentUser(user)
       }),
@@ -74,11 +75,19 @@ export class UserService {
     })
   }
 
+  public deleteUser(email:string){
+    this.http.delete(`${this.url}delete/user?email=${email}`).subscribe(()=>{
+      localStorage.removeItem("token");
+      this.setCurrentUser(null);
+      this.router.navigateByUrl("/login")
+    })
+  }
+
 private handleLoggingError(err:HttpErrorResponse){
       if(err.status == 0){
         alert("Erro de conexão!");
       }else{
-        alert("Usuário ou senha incorretos!");
+        alert("Email ou senha incorretos!");
       }
  }
 

@@ -4,12 +4,13 @@ import { CanActivateFn, Router } from '@angular/router';
 import { catchError, map, of } from 'rxjs';
 import { UserService } from '../services/user.service';
 import { LoggedUser } from '../types/dto/LoggedUser';
+import { env } from '../enviroment';
 
 export const defaultCanActivateGuard: CanActivateFn = (route, state) => {
     let router = inject(Router)
     let userService = inject(UserService)
     let http = inject(HttpClient)
-    return http.get<LoggedUser>("https://questionarium.onrender.com/api/user")
+    return http.get<LoggedUser>(`${env.baseUrl}user`)
         .pipe(
         catchError((err)=>{return of(null)}),
         map((user)=>{

@@ -63,3 +63,18 @@
     font-size: large;
     text-decoration: none;
 }
+
+.excluir{
+    background-color: red;
+    height:40px;
+    width:120px;
+    border-width: 0px;
+    border-radius: 20px;
+    position: absolute;
+    bottom:100px;
+    right:100px;
+}
+
+.excluir:hover{
+    color:white;
+}

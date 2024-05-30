@@ -27,6 +27,7 @@ public class LoadDatabase implements CommandLineRunner {
                     });
                 });
         this.userService.register("user1", "myemail@gmail.com", "1234");
+        this.userService.register("example", "example@email.com", "senha123");
     };
 
 }

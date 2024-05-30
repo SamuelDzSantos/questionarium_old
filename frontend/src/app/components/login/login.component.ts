@@ -25,12 +25,28 @@ export class LoginComponent implements OnInit {
   }
 
   onSubmit() {
-    let formValues = this.loginForm.value;
-    if (formValues.login != undefined && formValues.senha != undefined) {
-      this.userService.login(formValues.login,formValues.senha);
-    }
+      let formValues = this.validateLoginForm();
+      if(formValues)
+          this.userService.login(formValues.login,formValues.senha);
   }
 
-
+  private validateLoginForm(){
+    let formValues = this.loginForm.value;
+    let emailControl = this.loginForm.controls.login;
+    
+    if(formValues.login == undefined || formValues.login == null || formValues.login == ""){
+      console.log(formValues.login)
+        alert("Email é obrigatório!");
+        return null; 
+      }
+    if(!emailControl.valid){
+      alert("Formato de e-mail inválido")
+      return null;  
+    }else if(formValues.senha == undefined || formValues.senha == null || formValues.senha == ""){
+        alert("Senha é obrigatória!");
+        return null; 
+      }
+      return {login:formValues.login, senha:formValues.senha};
+  }
 
 }

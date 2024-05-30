@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { UserService } from '../../services/user.service';
+import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
+import { UserService } from '../../services/user.service';
 import { LoggedUser } from '../../types/dto/LoggedUser';
 
 @Component({
@@ -14,10 +15,15 @@ import { LoggedUser } from '../../types/dto/LoggedUser';
 export class EdicaoPerfilComponent implements OnInit {
 
   user$!: Observable<LoggedUser | null> 
+  originalEmail! : string;
 
   constructor(private userService:UserService){}
   
   ngOnInit(): void {
+       this.userService.getCurrentUser().subscribe((user)=>{
+          this.cadastroForm.patchValue({nome:user?.username,email:user?.email,senha:"",confirmaSenha:""})
+          this.originalEmail = user?.email ? user?.email : ""
+        })
     }
 
   cadastroForm = new FormBuilder().group({
@@ -33,4 +39,9 @@ export class EdicaoPerfilComponent implements OnInit {
     if(values.nome != undefined && values.email != undefined && values.senha != undefined && values.confirmaSenha != undefined)
          this.userService.updateUser(values.nome,values.email,values.senha,values.confirmaSenha);
   }
+
+  excluir(){
+    this.userService.deleteUser(this.originalEmail)
+  }
+
 }

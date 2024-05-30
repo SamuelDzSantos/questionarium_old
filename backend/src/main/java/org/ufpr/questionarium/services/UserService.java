@@ -56,4 +56,11 @@ public class UserService {
         this.userRepository.save(user);
     }
 
+    public void deleteUser(Authentication authentication, String email) {
+        User user = this.userRepository.findByEmail(authentication.getName())
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado!"));
+        if (email != null && authentication.getName().equals(email)) {
+            this.userRepository.delete(user);
+        }
+    }
 }
