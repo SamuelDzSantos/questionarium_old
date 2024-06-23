@@ -1,14 +1,12 @@
-import { APP_INITIALIZER, Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import { HeaderComponent } from '../header/header.component';
+import { Component } from '@angular/core';
+import { RouterModule, RouterOutlet } from '@angular/router';
 import { FooterComponent } from '../footer/footer.component';
-import { UserService } from '../../services/user.service';
-import { startupServiceFactory } from '../../services/startupService';
+import { HeaderComponent } from '../header/header.component';
 
 @Component({
   selector: 'app-main',
   standalone: true,
-  imports: [RouterOutlet,HeaderComponent,FooterComponent],
+  imports: [RouterOutlet,HeaderComponent,FooterComponent,RouterModule],
   templateUrl: './main.component.html',
   styleUrl: './main.component.css'
 })

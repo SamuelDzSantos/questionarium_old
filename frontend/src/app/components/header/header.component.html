@@ -1,23 +1,51 @@
-
-<div *ngIf="!(user$ | async) as user" >
-    <div class="header" style="justify-content: center;">
-        <img class="logo" src="/resources/logo.png" (click)="logo()"/>
-    </div>
-</div>
-    <div *ngIf="user$ | async as user" class="header">
-    <img class="logo" src="/resources/logo.png" (click)="logo()" />
-    <div class="header-options">
-        <span>Questões</span>
-        <span>Avaliações</span>
-        <span>Turmas</span>
-        <span>Sobre</span>
-    </div>
-    <div class="user">
-        <img src="/resources/default_user_logo.png"/>
-        <span>Olá,{{user.name}}</span>
-        <div class="dropdown-menu">
-            <li  class="content"><a (click)="conta()">Conta</a></li>
-            <li (click)="logout()" class="content"><a>Sair</a></li>
+<div class="header" [ngStyle]="{'align-items': url == '/'  ? 'center' : 'end' , 'justify-content' : url == '/login' || url == '/cadastro' ? 'center' : 'space-between'}">
+@if(url == "/"){
+    @if(user$ | async; as user){
+        <img class="logo" src="/resources/logo.png" (click)="logo()" />
+        <div class="header-options-home">
+            <div routerLink="novidades"><span>Novidades</span></div>
+            <div routerLink="blog"><span>Blog</span></div>
+            <div routerLink="manual"><span>Manual</span></div>
+            <div routerLink="novidades"sobre><span>Sobre</span></div>
         </div>
-    </div>
+        <div class="home-page-options">
+            <span>Home</span>
+        </div>
+    }
+    @else{
+        <img class="logo" src="/resources/logo.png" (click)="logo()" />
+        <div class="header-options-home">
+            <div routerLink="novidades"><span>Novidades</span></div>
+            <div routerLink="blog"><span>Blog</span></div>
+            <div routerLink="manual"><span>Manual</span></div>
+            <div routerLink="novidades"sobre><span>Sobre</span></div>
+        </div>
+        <div class="home-page-options">
+            <span routerLink="login">Login</span>
+            <span routerLink="cadastro">Cadastrar</span>
+        </div>
+    }
+}
+@else{
+    @if(user$ | async; as user){
+        <img class="logo" src="/resources/logo.png" (click)="logo()" />
+        <div class="header-options">
+            <span>Questões</span>
+            <span>Avaliações</span>
+            <span>Turmas</span>
+            <span>Sobre</span>
+        </div>
+        <div class="user">
+            <img src="/resources/default_user_logo.png"/>
+            <span>Olá,{{user.name}}</span>
+            <div class="dropdown-menu">
+                <li  class="content"><a (click)="conta()">Conta</a></li>
+                <li (click)="logout()" class="content"><a>Sair</a></li>
+            </div>
+        </div>
+    }
+    @else{
+            <img class="logo" src="/resources/logo.png" (click)="logo()"/>
+    }
+}
 </div>

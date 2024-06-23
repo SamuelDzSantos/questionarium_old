@@ -3,27 +3,29 @@ import { Component, OnInit } from '@angular/core';
 import { UserService } from '../../services/user.service';
 import { Observable } from 'rxjs';
 import { UserData } from '../../types/dto/UserData';
-import { HttpClient } from '@angular/common/http';
-import { ActivatedRoute, Router } from '@angular/router';
+import { NavigationEnd, Router, RouterModule } from '@angular/router';
 
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule,NgOptimizedImage],
+  imports: [CommonModule,NgOptimizedImage,RouterModule],
   templateUrl: './header.component.html',
   styleUrl: './header.component.css'
 })
 export class HeaderComponent implements OnInit{
   
   user$!: Observable<UserData | null>;
+  url!:string;
 
   constructor(public userService:UserService, private router : Router){}
   
   ngOnInit(): void {
     this.user$ = this.userService.getCurrentUser();
-    this.user$.subscribe((user)=>{
-     // console.log(user);
+    this.router.events.subscribe((val)=>{
+      if(val instanceof NavigationEnd){
+        this.url = val.url;
+      }
     })
   }
   

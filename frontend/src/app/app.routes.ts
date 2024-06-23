@@ -8,9 +8,10 @@ import { MainComponent } from './components/main/main.component';
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
 
 export const routes: Routes = [
-    {path:"",component:MainComponent,
+    {
+        path:"",
         children:[
-            {path:"",redirectTo:"/home",pathMatch:"full"},
+            {path:"",component:MainComponent},
             {path:"login",component:LoginComponent},
             {path:"home",component:HomeComponent},
             {path:"cadastro",component:CadastroComponent},

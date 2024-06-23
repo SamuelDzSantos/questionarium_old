@@ -2,15 +2,14 @@
 .header{
     background-color: #002436;
     display: flex;
-    justify-content: space-between;
-    align-items:end;
-    height: 172px;
+    height: 13%;
     width: 100%;
     flex:1;
 }
 
 .logo{
     margin:3px;
+    height:100%;
 }
 
 .logo:hover{
@@ -43,6 +42,40 @@
 .header-options span:first-child{
     border-left: none;
 }
+
+.header-options span:hover{
+    cursor: pointer;
+}
+
+.header-options-home{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    flex:0.6;
+    height:45px;
+}
+
+.header-options-home div{
+    color: white;
+    margin:5px;
+    height:100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1;
+    flex:2;
+}
+
+.header-options-home div span{
+    transition: all 0.5s ease-out;
+}
+
+.header-options-home div span:hover{
+    cursor: pointer;
+    background-color: #B377FF;
+}
+
 
 .user{
     height: 100%;
@@ -91,4 +124,30 @@
     gap:20px;
     position: absolute;
     top:170px;
+}
+
+
+.home-page-options{
+    flex:0.15;
+    color:white;
+    display: flex;
+    flex-direction: row;
+    height:100%;
+}
+
+.home-page-options:hover{
+    display: flex;
+}
+
+.home-page-options span{
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 1s ease-out;
+}
+
+.home-page-options span:hover{
+    background-color: #B377FF;
 }

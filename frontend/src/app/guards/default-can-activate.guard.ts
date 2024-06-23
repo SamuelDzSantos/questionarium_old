@@ -12,7 +12,7 @@ export const defaultCanActivateGuard: CanActivateFn = (route, state) => {
     .pipe(
         catchError(()=>{return of(null)}),
         map((user)=>{
-            if(route.url.toString() == "login" || route.url.toString() == "cadastro")
+            if(route.url.toString() == "login" || route.url.toString() == "cadastro" || route.url.toString() == "")
                 return user == null ? true : router.createUrlTree(["home"])
             else
                 return user == null ? router.createUrlTree(["login"]) : true;
