@@ -2,7 +2,7 @@ import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { UserService } from '../../services/user.service';
 import { Observable } from 'rxjs';
-import { LoggedUser } from '../../types/dto/LoggedUser';
+import { UserData } from '../../types/dto/UserData';
 import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -16,7 +16,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class HeaderComponent implements OnInit{
   
-  user$!: Observable<LoggedUser | null>;
+  user$!: Observable<UserData | null>;
 
   constructor(public userService:UserService, private router : Router){}
   

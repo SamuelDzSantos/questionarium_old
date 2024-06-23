@@ -28,6 +28,9 @@ import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 
+// Arquivo de configuração do spring security e definição de Beans associados. Todos os caminhos redirecionados para o angular('/') são permitidos.
+// Recursos nos caminhos /resources e urls de login e cadastro são permitidas , todos os outros caminhos requerem autenticação.
+
 @EnableWebSecurity
 @Configuration
 public class SecurityConfig {
@@ -49,7 +52,7 @@ public class SecurityConfig {
                         .requestMatchers("/").permitAll()
                         .requestMatchers("/api/login", "/api/register", "/api/hello", "/api").permitAll()
                         .requestMatchers("/resources/*").permitAll()
-                        .anyRequest().permitAll())
+                        .anyRequest().authenticated())
                 .cors(Customizer.withDefaults())
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
                 .csrf((csrf) -> csrf.disable())
@@ -57,6 +60,9 @@ public class SecurityConfig {
                 .addFilterBefore(nonApiFilter, AuthorizationFilter.class)
                 .build();
     }
+
+    // AuthenticationManager responsavel por gerenciar o login sem o uso de JWT
+    // token.
 
     @Bean
     AuthenticationManager getAuthenticationManager(UserDetailsService userDetailsService,
@@ -67,10 +73,15 @@ public class SecurityConfig {
         return new ProviderManager(provider);
     }
 
+    // Encoder utilizado pelo DaoAuthenticationProvider no login sem o JWT token.
+
     @Bean
     PasswordEncoder getPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
+    // Encoder e Decoder utilizados pelo oauth2 para validar os JWT tokens das
+    // requisições e gerar JWT tokens em JWTUtils.
 
     @Bean
     JwtDecoder jwtDecoder() {

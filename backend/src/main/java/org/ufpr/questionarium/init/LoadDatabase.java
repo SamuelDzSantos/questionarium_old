@@ -1,33 +1,22 @@
 package org.ufpr.questionarium.init;
 
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.security.web.FilterChainProxy;
 import org.springframework.stereotype.Component;
 import org.ufpr.questionarium.services.UserService;
 
 @Component
 public class LoadDatabase implements CommandLineRunner {
 
-    private final FilterChainProxy filterChainProxy;
     private final UserService userService;
 
-    public LoadDatabase(FilterChainProxy filterChainProxy, UserService userService) {
-        this.filterChainProxy = filterChainProxy;
+    public LoadDatabase(UserService userService) {
         this.userService = userService;
     }
 
     @Override
     public void run(String... args) throws Exception {
-        filterChainProxy.getFilterChains()
-                .stream()
-                .forEach(filterChain -> {
-                    System.out.println("Chain1");
-                    filterChain.getFilters().stream().forEach(filter -> {
-                        System.out.println(filter);
-                    });
-                });
-        this.userService.register("user1", "myemail@gmail.com", "1234");
-        this.userService.register("example", "example@email.com", "senha123");
+        this.userService.addUser("user1", "myemail@gmail.com", "1234");
+        this.userService.addUser("example", "example@email.com", "senha123");
     };
 
 }

@@ -54,8 +54,17 @@
             },
             "spring-configuration":{
               "deployUrl": "/resources/"
-            }
-          },
+            },
+            "spring-configuration-prod":{
+              "deployUrl": "/resources/",
+              "fileReplacements": [
+                {
+                  "replace": "src/enviroments/enviroment.ts",
+                  "with": "src/enviroments/enviroment.prod.ts"
+                }
+              ]
+          }
+        },
           "defaultConfiguration": "production"
         },
         "serve": {

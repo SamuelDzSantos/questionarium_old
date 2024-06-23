@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { UserService } from '../../services/user.service';
-import { LoggedUser } from '../../types/dto/LoggedUser';
+import { UserData } from '../../types/dto/UserData';
 
 @Component({
   selector: 'app-edicao-perfil',
@@ -14,34 +13,35 @@ import { LoggedUser } from '../../types/dto/LoggedUser';
 })
 export class EdicaoPerfilComponent implements OnInit {
 
-  user$!: Observable<LoggedUser | null> 
-  originalEmail! : string;
+  user$!: Observable<UserData | null> 
 
   constructor(private userService:UserService){}
   
   ngOnInit(): void {
        this.userService.getCurrentUser().subscribe((user)=>{
-          this.cadastroForm.patchValue({nome:user?.username,email:user?.email,senha:"",confirmaSenha:""})
-          this.originalEmail = user?.email ? user?.email : ""
+        if(user != null){
+          this.cadastroForm.patchValue({nome:user?.name,email:user?.email,senha:"",novaSenha:""})
+        }
         })
     }
 
   cadastroForm = new FormBuilder().group({
     nome: ["",[Validators.required]],
     email: ["",[Validators.required,Validators.email]],
-    senha: ["",[Validators.required]],
-    confirmaSenha:["",Validators.required]
+    senha: [""],
+    novaSenha:[""]
   })
 
 
   onSubmit(){
+
     let values = this.cadastroForm.value;
-    if(values.nome != undefined && values.email != undefined && values.senha != undefined && values.confirmaSenha != undefined)
-         this.userService.updateUser(values.nome,values.email,values.senha,values.confirmaSenha);
+    if(values.nome != undefined && values.email != undefined && values.senha != undefined && values.novaSenha != undefined)
+        this.userService.updateUser(values.nome,values.email,values.senha,values.novaSenha);
   }
 
   excluir(){
-    this.userService.deleteUser(this.originalEmail)
+    this.userService.deleteUser();
   }
 
 }

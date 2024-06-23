@@ -1,8 +1,8 @@
 
 
-export interface UpdatedUserForm{
-    name:string
-    email : string
-    password : string
-    confirmPassword:string
+export interface UserPatch{
+    name:string 
+    email : string 
+    password : string | null
+    newPassword:string | null
 }

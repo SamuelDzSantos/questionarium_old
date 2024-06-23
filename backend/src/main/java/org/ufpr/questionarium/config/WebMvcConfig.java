@@ -12,19 +12,31 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 
+// Classe de configuração global de alguns dos comportamentos do Spring MVC
+
 @Configuration
 @EnableWebMvc
 public class WebMvcConfig implements WebMvcConfigurer {
+
+    // Define uma url base para todos os RestControllers da aplicação não sendo
+    // necessário mencionar o /api nos caminhos dos
+    // RestControllers(GetMapping e RequestMapping)
 
     @Override
     public void configurePathMatch(@NonNull PathMatchConfigurer configurer) {
         configurer.addPathPrefix("/api", HandlerTypePredicate.forAnnotation(RestController.class));
     }
 
+    // Define que os arquivos static estão armazenados em /static/browser e define
+    // /resources/ como o caminho(url) para acessar esses recursos
+
     @Override
     public void addResourceHandlers(@NonNull ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/resources/**").addResourceLocations("classpath:/static/browser/");
     }
+
+    // Configura o thymeleaf para procurar por arquivos html no caminho
+    // /static/browser. É utilizado para servir o html base do angular
 
     @Bean
     ClassLoaderTemplateResolver templateResolver() {
@@ -36,6 +48,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
         templateResolver.setCharacterEncoding("UTF-8");
         return templateResolver;
     }
+
+    // Configuração de Cors Global
 
     @Override
     public void addCorsMappings(@NonNull CorsRegistry registry) {

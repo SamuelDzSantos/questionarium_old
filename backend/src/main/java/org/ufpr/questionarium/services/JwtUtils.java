@@ -10,6 +10,7 @@ import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
+import org.ufpr.questionarium.models.SecurityUser;
 
 @Service
 public class JwtUtils {
@@ -27,6 +28,18 @@ public class JwtUtils {
                 .expiresAt(now.plus(1, ChronoUnit.HOURS))
                 .subject(authentication.getName()).claim("scope", scope).build();
         return jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
+    }
+
+    public String generateTokenFromSecurityUser(SecurityUser user) {
+
+        Instant now = Instant.now();
+        String scope = user.getAuthorities().stream().map(GrantedAuthority::getAuthority)
+                .collect(Collectors.joining(" "));
+        JwtClaimsSet claims = JwtClaimsSet.builder().issuer("self").issuedAt(now)
+                .expiresAt(now.plus(1, ChronoUnit.HOURS))
+                .subject(user.getUser().getEmail()).claim("scope", scope).build();
+        return jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
+
     }
 
 }

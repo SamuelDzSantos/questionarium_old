@@ -11,6 +11,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/*  Classe utilizada para armazenar o par de chaves pública e privada presentes no diretório certs. Os arquivos são mapeados para essa classe
+através dos caminhos configurados no application.properties com o prefixo 'rsa' */
+
 @Configuration
 @ConfigurationProperties(prefix = "rsa")
 @Getter
