@@ -1,0 +1,75 @@
+<div class="main_body">
+    <h1 class="title">Conta</h1>
+    <form [formGroup]="cadastroForm" (ngSubmit)="onSubmit()" class="form_area">
+        <div class="input">
+            <label for="nome"> Nome</label>
+            <input id="nome" type="text" formControlName="nome" required>
+        </div>
+        <div class="input">
+            <label for="sobrenome"> Sobrenome</label>
+            <input id="sobrenome" type="text" formControlName="sobrenome" required>
+        </div>
+        <div class="input">
+            <label for="email"> Email</label>
+            <input id="email" type="text" formControlName="email" required>
+        </div>
+        <div class="input">
+            <label for="telefone"> Telefone</label>
+            <input id="telefone" type="text" formControlName="telefone" required>
+        </div>
+        <div class="input">
+            <label for="cpf"> Cpf</label>
+            <input id="cpf" type="text" formControlName="cpf" required>
+        </div>
+        <div class="input">
+            <label for="rg"> Rg</label>
+            <input id="rg" type="text" formControlName="rg" required>
+        </div>
+        <div class="separator">
+            <span>Endereço</span>
+        </div>
+        <div class="input">
+            <label for="cep"> CEP</label>
+            <input id="cep" type="text" formControlName="cep" required>
+        </div><div class="input">
+            <label for="rua"> Rua</label>
+            <input id="rua" type="text" formControlName="rua" required>
+        </div><div class="input">
+            <label for="numero"> Número</label>
+            <input id="numero" type="text" formControlName="numero" required>
+        </div>
+        <div class="input">
+            <label for="estado"> Estado</label>
+            <input id="estado" type="text" formControlName="estado" required>
+        </div>
+        <div class="input">
+            <label for="bairro"> Bairro</label>
+            <input id="bairro" type="text" formControlName="bairro" required>
+        </div>
+        <div class="input">
+            <label for="complemento"> Complemento</label>
+            <input id="complemento" type="text" formControlName="complemento" required>
+        </div> 
+        <div class="separator">
+            <span>
+            Trabalho
+        </span>
+        </div>
+        <div class="input">
+            <label for="instituicao"> Instituição</label>
+            <input id="instituicao" type="text" formControlName="instituicao" required>
+        </div> 
+        <div class="input">
+            <label for="cargo"> Cargo</label>
+            <input id="cargo" type="text" formControlName="cargo" required>
+        </div> 
+        <div class="input">
+            <label for="tipoConta"> Tipo de Conta</label>
+            <select id="tipoConta" type="text" formControlName="tipoConta" required> 
+                <option>Selecione uma opção</option>
+            </select>
+        </div> 
+    </form>
+    <button type="submit" [disabled]="!cadastroForm.valid" >Salvar</button>
+    <button class="excluir" (click)="excluir()" >Excluir conta</button>
+</div>

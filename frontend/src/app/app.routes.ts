@@ -2,10 +2,14 @@ import { Routes } from '@angular/router';
 import { LoginComponent } from './components/login/login.component';
 import { HomeComponent } from './components/home/home.component';
 import { CadastroComponent } from './components/cadastro/cadastro.component';
-import { EdicaoPerfilComponent } from './components/edicao-perfil/edicao-perfil.component';
+import { EdicaoComponent } from './components/edicao/edicao.component';
 import { defaultCanActivateGuard } from './guards/default-can-activate.guard';
 import { MainComponent } from './components/main/main.component';
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
+import { AvaliacaoComponent } from './components/avaliacao/avaliacao.component';
+import { SobreComponent } from './components/sobre/sobre.component';
+import { DevsComponent } from './components/devs/devs.component';
+import { TurmaComponent } from './components/turma/turma.component';
 
 export const routes: Routes = [
     {
@@ -15,7 +19,19 @@ export const routes: Routes = [
             {path:"login",component:LoginComponent},
             {path:"home",component:HomeComponent},
             {path:"cadastro",component:CadastroComponent},
-            {path:"edicaoPerfil",component:EdicaoPerfilComponent},
+            {
+                path:"edicao",
+                children:[
+                    {path:"conta",component:EdicaoComponent},
+                    {path:"",redirectTo:"perfil",pathMatch:"prefix"},
+                    {path:"perfil",component:EdicaoComponent},
+                    {path:"senha",component:EdicaoComponent}
+                ]
+            },
+            {path:"avaliacao",component:AvaliacaoComponent},
+            {path:"sobre",component:SobreComponent},
+            {path:"devs",component:DevsComponent},
+            {path:"turma",component:TurmaComponent},
             {path:"**",component:PageNotFoundComponent},
         ],
         canActivateChild:[defaultCanActivateGuard]

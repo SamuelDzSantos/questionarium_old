@@ -30,7 +30,7 @@ export class HeaderComponent implements OnInit{
   }
   
   conta(){
-    this.router.navigateByUrl("/edicaoPerfil")
+    this.router.navigateByUrl("/edicao")
   }
 
   logo(){

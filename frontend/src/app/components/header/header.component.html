@@ -6,10 +6,10 @@
             <div routerLink="novidades"><span>Novidades</span></div>
             <div routerLink="blog"><span>Blog</span></div>
             <div routerLink="manual"><span>Manual</span></div>
-            <div routerLink="sobre"sobre><span>Sobre</span></div>
+            <div routerLink="sobre"><span>Sobre</span></div>
         </div>
         <div class="home-page-options">
-            <span>Home</span>
+            <span routerLink="home">Home</span>
         </div>
     }
     @else{
@@ -18,7 +18,7 @@
             <div routerLink="novidades"><span>Novidades</span></div>
             <div routerLink="blog"><span>Blog</span></div>
             <div routerLink="manual"><span>Manual</span></div>
-            <div routerLink="sobre"sobre><span>Sobre</span></div>
+            <div routerLink="sobre"><span>Sobre</span></div>
         </div>
         <div class="home-page-options">
             <span routerLink="login">Login</span>
@@ -30,10 +30,10 @@
     @if(user$ | async; as user){
         <img class="logo" src="/resources/logo.png" (click)="logo()" />
         <div class="header-options">
-            <span>Questões</span>
-            <span>Avaliações</span>
-            <span>Turmas</span>
-            <span>Sobre</span>
+            <span routerLink="questao">Questões</span>
+            <span routerLink="avaliacao">Avaliações</span>
+            <span routerLink="turma">Turmas</span>
+            <span routerLink="sobre">Sobre</span>
         </div>
         <div class="user">
             <img src="/resources/default_user_logo.png"/>
