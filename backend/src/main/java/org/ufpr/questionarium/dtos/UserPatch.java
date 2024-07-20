@@ -17,4 +17,7 @@ public class UserPatch {
 
     @NotBlank
     private final String newPassword;
+
+    @NotBlank
+    private final String confirmPassword;
 }

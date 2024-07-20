@@ -92,13 +92,9 @@ public class UserService {
 
         checkIsAllowed(authentication, existingUser);
 
-        if (userPatch.getPassword() != null && userPatch.getNewPassword() != null) {
-
-            if (!encoder.matches(userPatch.getPassword(), existingUser.getPassword()))
-                throw new RuntimeException();
-
-            String encodedPassword = encoder.encode(userPatch.getNewPassword());
-            existingUser.setPassword(encodedPassword);
+        if (userPatch.getPassword() != null && userPatch.getNewPassword() != null
+                && userPatch.getConfirmPassword() != null) {
+            existingUser = this.updateUserPassword(userPatch, existingUser);
         }
 
         User incompleteUser = userMapper.userPatchToUser(userPatch);
@@ -126,6 +122,19 @@ public class UserService {
     private void checkIsAllowed(Authentication authentication, User user) {
         if (!authentication.getName().equals(user.getEmail()))
             throw new RuntimeException("");
+    }
+
+    private User updateUserPassword(UserPatch userPatch, User existingUser) {
+
+        if (!encoder.matches(userPatch.getPassword(), existingUser.getPassword()))
+            throw new RuntimeException();
+        if (!userPatch.getConfirmPassword().equals(userPatch.getNewPassword())) {
+            throw new RuntimeException();
+        }
+        String encodedPassword = encoder.encode(userPatch.getNewPassword());
+        existingUser.setPassword(encodedPassword);
+        return existingUser;
+
     }
 
 }
