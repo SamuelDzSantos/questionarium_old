@@ -15,20 +15,20 @@ import { UserPatch } from '../../../types/dto/UserPatch';
 export class SenhaComponent {
 
   senhaForm = this.formBuilder.group({
-    senhaAtual : [''],
-    novaSenha : [''],
-    confirmaSenha : ['']
+    senhaAtual: [''],
+    novaSenha: [''],
+    confirmaSenha: ['']
   })
 
-  constructor(private formBuilder : FormBuilder, private validator : ObjectValidatorService){
+  constructor(private formBuilder: FormBuilder, private validator: ObjectValidatorService) {
   }
 
-  submit(){
+  submit() {
     let values = this.senhaForm.value;
-    if(!this.validator.hasEmptyOrBlankAttributes(values)){
-      let patch : UserPatch = {password:values.senhaAtual,newPassword:values.novaSenha,confirmPassword:values.confirmaSenha}
-        console.log(this.senhaForm.value)
+    if (this.validator.hasNonNullableProperties(values, 'senhaAtual', 'novaSenha', 'confirmaSenha')) {
+      let patch: UserPatch = { password: values.senhaAtual, newPassword: values.novaSenha, confirmPassword: values.confirmaSenha }
+      console.log(this.senhaForm.value)
     }
-    }
+  }
 
 }
