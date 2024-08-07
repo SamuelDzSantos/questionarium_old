@@ -97,6 +97,7 @@ export class UserService {
           subject.unsubscribe();
           this.localStorageService.setUserToken(result.token);
           this.setCurrentUser(result.user);
+          console.log("Chegou aqui")
           this.router.navigate(["/home"])
         },
         error: (err: HttpErrorResponse) => { this.handleUpdateError(err); subject.unsubscribe() }

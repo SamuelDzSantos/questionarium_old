@@ -40,7 +40,7 @@ export const routes: Routes = [
             { path: "sobre", component: SobreComponent },
             { path: "devs", component: DevsComponent },
             { path: "turma", component: TurmaComponent },
-            { path: "add-turma", component: AddTurmaComponent },
+            { path: "addturma", component: AddTurmaComponent },
             { path: "**", component: PageNotFoundComponent }
         ],
         canActivateChild: [defaultCanActivateGuard]

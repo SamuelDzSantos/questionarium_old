@@ -20,7 +20,7 @@ export class SenhaComponent {
     confirmaSenha: ['']
   })
 
-  constructor(private formBuilder: FormBuilder, private validator: ObjectValidatorService) {
+  constructor(private formBuilder: FormBuilder, private validator: ObjectValidatorService, private userService: UserService) {
   }
 
   submit() {
@@ -28,6 +28,8 @@ export class SenhaComponent {
     if (this.validator.hasNonNullableProperties(values, 'senhaAtual', 'novaSenha', 'confirmaSenha')) {
       let patch: UserPatch = { password: values.senhaAtual, newPassword: values.novaSenha, confirmPassword: values.confirmaSenha }
       console.log(this.senhaForm.value)
+      if (patch.name && patch.email && patch.password && patch.newPassword)
+        this.userService.updateUser(patch.name, patch.email, patch.password, patch.newPassword);
     }
   }
 

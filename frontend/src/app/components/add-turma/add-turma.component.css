@@ -82,4 +82,17 @@
 
 .novo_aluno {
     background-color: #6BE061;
+    width: 120px;
+    height: 40px;
+    border-radius: 5px;
+    border: none;
+}
+
+.new_aluno {
+    display: none;
+    display: block;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
