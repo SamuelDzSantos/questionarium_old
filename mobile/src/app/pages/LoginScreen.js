@@ -1,17 +1,33 @@
-import { View, StyleSheet, Button, TextInput, KeyboardAvoidingView, TouchableOpacity, ScrollView } from 'react-native'
-import React from 'react'
+import { View, StyleSheet, TextInput, TouchableOpacity, ScrollView } from 'react-native'
+import React, { useState } from 'react'
 import { LinearGradient } from 'expo-linear-gradient';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { useAuth } from '../context/AuthContext';
 
-export default function HomeScreen({ navigation }) {
+export default function LoginScreen({ navigation }) {
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const { onLogin } = useAuth();
+
+    const login = async () => {
+        const result = await onLogin(email, password);
+        if (result && result.error) {
+            alert(result.msg);
+        }
+    }
+
     return (
-        <View style={styles.home}>
+        <View style={styles.login}>
             <LinearGradient colors={['#002436', '#24B4FC']} style={styles.gradient}>
                 <ScrollView>
                     <View style={styles.form}>
-                        <TextInput style={styles.input} placeholder='Email'></TextInput>
-                        <TextInput style={styles.input} placeholder='Senha'></TextInput>
-                        <TouchableOpacity onPress={() => navigation.navigate('Resultado')}>
+                        <TextInput style={styles.input} placeholder='Email'
+                            onChangeText={(text) => setEmail(text)} value={email} />
+
+                        <TextInput style={styles.input} placeholder='Senha' secureTextEntry={true}
+                            onChangeText={(password) => setPassword(password)} value={password} />
+
+                        <TouchableOpacity onPress={login}>
                             <LinearGradient colors={['#C6D4FF', '#00689C']} style={styles.button}>
                                 <Icon name="chevron-right" size={20} color="#000" />
                             </LinearGradient>
@@ -24,7 +40,7 @@ export default function HomeScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-    home: {
+    login: {
         flex: 1,
     },
     gradient: {

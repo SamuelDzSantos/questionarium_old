@@ -12,7 +12,10 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "config": {
+        "usesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -21,7 +24,10 @@
       }
     },
     "web": {
-      "favicon": "./src/assets/favicon.png"
-    }
+      "favicon": "./src/assets/logo-min-questionarium.png"
+    },
+    "plugins": [
+      "expo-secure-store"
+    ]
   }
 }

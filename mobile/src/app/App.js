@@ -1,11 +1,24 @@
 import { StyleSheet, Image, View, Text } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { HomeScreen, ResultadoScreen } from './pages';
+import { LoginScreen, ResultadoScreen } from './pages';
+import { AuthProvider, useAuth } from './context/AuthContext';
+import { Button } from 'react-native-vector-icons/FontAwesome';
 
 
 export default function App() {
 
+  return (
+    <AuthProvider>
+      <Layout></Layout>
+    </AuthProvider>
+  );
+
+}
+
+export const Layout = () => {
+
+  const { authState, onLogout } = useAuth();
   const Stack = createNativeStackNavigator();
 
   function LogoTitle() {
@@ -16,6 +29,7 @@ export default function App() {
       />
     );
   }
+
   function LogoTitleMin({ title }) {
     return (
       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
@@ -29,37 +43,35 @@ export default function App() {
       </View>
     );
   }
+
   return (
     <NavigationContainer>
-      {/* ScreenOptions: default config for all reactNavigation headers */}
-      <Stack.Navigator initialRouteName="Home" screenOptions={{
-        headerStyle: {
-          backgroundColor: '#002436',
-          // backgroundColor: '#FFF',
-        },
-        headerTitleAlign: 'center',
-        headerTitleStyle: {
-          color: '#FFF'
-        },
-        headerTintColor: '#FFF',
-        headerShadowVisible: false
-      }}>
-        <Stack.Screen name="Home" component={HomeScreen}
-          options={{ headerTitle: (props) => <LogoTitle {...props} /> }}
-        />
-        <Stack.Screen name="Resultado" component={ResultadoScreen}
-          options={{ headerTitle: () => <LogoTitleMin title='Resultado' /> }}
-        />
+      <Stack.Navigator screenOptions={styles.header}>
+        {authState.authenticated ? 
+          <Stack.Screen name="Resultado" component={ResultadoScreen}
+            options={{ headerTitle: () => <LogoTitleMin title='Resultado' />, 
+              headerRight: () => <Button onPress={onLogout} title='Sign Out'></Button> }}
+          /> : 
+          <Stack.Screen name="Login" component={LoginScreen}
+            options={{ headerTitle: (props) => <LogoTitle {...props} /> }}
+          />
+
+        }
       </Stack.Navigator>
     </NavigationContainer>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+  header: {
+    headerStyle: {
+      backgroundColor: '#002436',
+    },
+    headerTitleAlign: 'center',
+    headerTitleStyle: {
+      color: '#FFF'
+    },
+    headerTintColor: '#FFF',
+    headerShadowVisible: false
+  }
+})

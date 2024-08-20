@@ -1,7 +1,7 @@
-import HomeScreen from "./HomeScreen";
+import LoginScreen from "./LoginScreen";
 import ResultadoScreen from "./ResultadoScreen";
 
 export {
-    HomeScreen,
+    LoginScreen,
     ResultadoScreen
 }
