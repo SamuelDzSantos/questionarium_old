@@ -11,7 +11,6 @@ export default function App() {
       <Layout></Layout>
     </AuthProvider>
   );
-
 }
 
 const Layout = () => {
@@ -52,7 +51,7 @@ const UnauthenticatedNavigator = () => {
   const UnauthenticatedStack = createNativeStackNavigator();
 
   return(
-  <UnauthenticatedStack.Navigator screenOptions={styles.header} initialRouteName='login'>
+  <UnauthenticatedStack.Navigator screenOptions={styles.header} initialRouteName='Login'>
     <UnauthenticatedStack.Screen name="Login" component={LoginScreen}
       options={{
         headerTitle: () => <LogoTitle />,

@@ -27,7 +27,15 @@
       "favicon": "./src/assets/logo-min-questionarium.png"
     },
     "plugins": [
-      "expo-secure-store"
+      "expo-secure-store",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow Questionarium to access your camera",
+          "microphonePermission": "Allow Questionarium to access your microphone",
+          "recordAudioAndroid": false
+        }
+      ]
     ]
   }
 }
