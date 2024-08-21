@@ -20,8 +20,8 @@ export const AuthProvider = ({children}) => {
 
     useEffect(() => {
         const loadToken = async () => {
-            const token = await SecureStore.getItemAsync(TOKEN_KEY);
-            
+            //const token = await SecureStore.getItemAsync(TOKEN_KEY);
+            const token = "token"
             if(token) {
                 axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
@@ -57,8 +57,8 @@ export const AuthProvider = ({children}) => {
     }
 
     const logout = async () => {
-        await SecureStore.deleteItemAsync(TOKEN_KEY);
-
+        //await SecureStore.deleteItemAsync(TOKEN_KEY);
+        
         axios.defaults.headers.common['Authorization'] = '';
 
         setAuthState({
