@@ -1,11 +1,11 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { BehaviorSubject, ReplaySubject, catchError, map, of } from 'rxjs';
-import { LoginResult } from '../types/dto/LoginResult';
+import { BehaviorSubject, catchError, map, of } from 'rxjs';
+import { AuthResponse } from '../types/dto/AuthResponse';
 import { UserData } from '../types/dto/UserData';
-import { LoginForm } from '../types/dto/LoginForm';
-import { RegisterForm } from '../types/dto/RegisterForm';
+import { AuthRequest } from '../types/dto/AuthRequest';
+import { RegistrationRequest } from '../types/dto/RegistrationRequest';
 import { UserPatch } from '../types/dto/UserPatch';
 import { env } from '../enviroments/enviroment';
 import { LocalStorageService } from './localStorageService';
@@ -32,7 +32,7 @@ export class UserService {
   }
 
   public initialize() {
-    return this.http.get<UserData>(`${this.url}/users/current`).pipe(
+    return this.http.get<UserData>(`${this.url}/auth/current`).pipe(
       map((user) => {
         this.setCurrentUser(user)
       }),
@@ -46,14 +46,14 @@ export class UserService {
 
   public async login(login: string, senha: string) {
 
-    let form: LoginForm = { "email": login, "password": senha };
+    let form: AuthRequest = { "login": login, "password": senha };
 
     this.localStorageService.clearUserToken();
 
-    this.http.post<LoginResult>(`${this.url}/login`, form, { observe: "body" }).subscribe({
+    this.http.post<AuthResponse>(`${this.url}/auth/login`, form, { observe: "body" }).subscribe({
       next: (result) => {
-        this.localStorageService.setUserToken(result.token);
-        this.setCurrentUser({ id: result.user.id, name: result.user.name, email: result.user.email } as UserData)
+        this.localStorageService.setUserToken(result.accessToken);
+        this.setCurrentUser({ id: result.userData.id, name: result.userData.name, email: result.userData.email } as UserData)
         this.router.navigateByUrl("/home")
       },
       error: (err: HttpErrorResponse) => { this.handleLoggingError(err) }
@@ -73,9 +73,9 @@ export class UserService {
 
   public cadastrar(email: string, nome: string, senha: string) {
 
-    let form: RegisterForm = { email: email, name: nome, password: senha }
+    let form: RegistrationRequest = { email: email, name: nome, password: senha, role: "USER" }
 
-    this.http.post<UserData>(`${this.url}/register`, form, { observe: "body" }).subscribe({
+    this.http.post<UserData>(`${this.url}/auth/register`, form, { observe: "body" }).subscribe({
       next: () => { this.router.navigate([""]) },
       error: (err: HttpErrorResponse) => { this.handleCadastroError(err) }
     })
@@ -92,11 +92,11 @@ export class UserService {
     }
 
     let subject = this.getCurrentUser().subscribe((user) => {
-      this.http.patch<LoginResult>(`${this.url}/users/${user?.id}`, form).subscribe({
+      this.http.patch<AuthResponse>(`${this.url}/users/${user?.id}`, form).subscribe({
         next: (result) => {
           subject.unsubscribe();
-          this.localStorageService.setUserToken(result.token);
-          this.setCurrentUser(result.user);
+          this.localStorageService.setUserToken(result.accessToken);
+          this.setCurrentUser(result.userData);
           console.log("Chegou aqui")
           this.router.navigate(["/home"])
         },

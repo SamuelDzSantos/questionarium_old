@@ -1,0 +1,17 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: user-service
+  data:
+    jdbc:
+      dialect: postgresql
+  datasource:
+    url: jdbc:postgresql://localhost:5432/questionarium
+    password: postgres
+    username: postgres
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
