@@ -9,6 +9,7 @@ import org.springframework.web.client.RestTemplate;
 
 import dev.questionarium.entities.AuthRequest;
 import dev.questionarium.entities.AuthResponse;
+import dev.questionarium.entities.PasswordPatch;
 import dev.questionarium.entities.RegistrationRequest;
 import dev.questionarium.entities.UserData;
 import dev.questionarium.types.AccessType;
@@ -63,6 +64,23 @@ public class AuthService {
                                 jwt.getSubject());
                 return userData;
 
+        }
+
+        public String getPasswordToken(String email) {
+                String token = template.getForObject("http://user-service/users/forgot-password?email={email}",
+                                String.class, email);
+                return token;
+        }
+
+        public Boolean updatePassword(PasswordPatch patch) {
+                PasswordPatch encodedPasswordPatch = new PasswordPatch(this.passwordEncoder.encode(patch.password()),
+                                patch.token(), patch.code());
+                System.out.println(patch.password());
+                System.out.println("HI");
+                Boolean result = template.patchForObject("http://user-service/users/update-password",
+                                encodedPasswordPatch,
+                                Boolean.class);
+                return result;
         }
 
 }

@@ -2,6 +2,7 @@ package dev.questionarium.service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
@@ -19,22 +20,48 @@ public class ForgotPasswordService {
     private final UserRepository userRepository;
     private final PasswordTokenRepository passwordTokenRepository;
 
+    public void checkPasswordToken(String token) {
+
+        this.passwordTokenRepository.findByToken(token)
+                .orElseThrow(() -> new RuntimeException("Token não encontrado!"));
+
+    }
+
     public String forgotPassword(String email) {
+
         User user = this.getUser(email);
+
         String token = generateToken();
+        String code = generateCode();
         Date now = new Date();
-        Date expirationDate = new Date(now.getTime() + 86480 * 1000);
+        // 15 min -> 900000 milis
+        Date expirationDate = new Date(now.getTime() + 900000);
+
         this.passwordTokenRepository
-                .save(PasswordToken.builder().expirationDate(expirationDate).id(user.getId()).token(token).build());
+                .save(PasswordToken.builder()
+                        .id(null)
+                        .expirationDate(expirationDate)
+                        .user(user)
+                        .code(code)
+                        .token(token)
+                        .build());
         return token;
     }
 
-    public boolean resetPassword(String token, String password) {
+    public void resetPassword(String token, String password, String code) {
 
         PasswordToken passwordToken = this.passwordTokenRepository.findByToken(token)
                 .orElseThrow(() -> new RuntimeException("Token não encontrado!"));
 
-        Long userId = passwordToken.getId();
+        if (!passwordToken.getCode().equals(code))
+            throw new RuntimeException("Código informado não é igual ao código do token!");
+
+        Date now = new Date();
+
+        if (passwordToken.getExpirationDate().before(now))
+            throw new RuntimeException("Token expirado. Gere um novo token!");
+
+        Long userId = passwordToken.getUser().getId();
         User user = this.getUser(userId);
 
         user.setPassword(password);
@@ -43,9 +70,10 @@ public class ForgotPasswordService {
 
         List<PasswordToken> tokens = this.passwordTokenRepository.findByUser(user);
 
-        this.passwordTokenRepository.deleteAll(tokens);
+        tokens.stream().forEach((entity) -> {
+            this.passwordTokenRepository.deleteById(entity.getId());
+        });
 
-        return true;
     }
 
     private String generateToken() {
@@ -53,6 +81,12 @@ public class ForgotPasswordService {
 
         return token.append(UUID.randomUUID().toString())
                 .append(UUID.randomUUID().toString()).toString();
+    }
+
+    private String generateCode() {
+        Random rnd = new Random();
+        int number = rnd.nextInt(999999);
+        return String.format("%06d", number);
     }
 
     private User getUser(String email) {

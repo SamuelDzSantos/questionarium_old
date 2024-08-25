@@ -8,7 +8,6 @@ spring:
     discovery:
       enabled: true
     gateway:
-      mvc:
         routes:
         - id: user-service
           uri: lb://user-service

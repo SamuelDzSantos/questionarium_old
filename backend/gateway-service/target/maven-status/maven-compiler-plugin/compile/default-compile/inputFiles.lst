@@ -1,6 +1,6 @@
 C:\Users\samue\Programming\questionarium\backend\gateway-service\src\main\java\dev\questionarium\config\GeneralConfig.java
+C:\Users\samue\Programming\questionarium\backend\gateway-service\src\main\java\dev\questionarium\config\RouteRegistrations.java
 C:\Users\samue\Programming\questionarium\backend\gateway-service\src\main\java\dev\questionarium\config\SecurityConfig.java
-C:\Users\samue\Programming\questionarium\backend\gateway-service\src\main\java\dev\questionarium\controller\AuthController.java
 C:\Users\samue\Programming\questionarium\backend\gateway-service\src\main\java\dev\questionarium\entities\AuthRequest.java
 C:\Users\samue\Programming\questionarium\backend\gateway-service\src\main\java\dev\questionarium\entities\AuthResponse.java
 C:\Users\samue\Programming\questionarium\backend\gateway-service\src\main\java\dev\questionarium\GatewayApplication.java

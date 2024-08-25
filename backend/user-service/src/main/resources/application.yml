@@ -13,5 +13,6 @@ spring:
     username: postgres
 
   jpa:
+    show-sql: true
     hibernate:
       ddl-auto: create-drop
