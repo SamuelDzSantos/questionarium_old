@@ -1,5 +1,7 @@
 package dev.questionarium.model;
 
+import java.util.List;
+
 import dev.questionarium.types.Role;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -29,6 +31,6 @@ public class User {
     @Column(unique = true, nullable = false)
     private String email;
     @Column(nullable = false)
-    private Role role;
+    private List<Role> roles;
 
 }

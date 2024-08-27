@@ -1,0 +1,3 @@
+dev\questionarium\route\Routes.class
+dev\questionarium\GatewayApplication.class
+dev\questionarium\config\SecurityConfig.class

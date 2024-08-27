@@ -2,6 +2,13 @@ server:
   port: 8082
 
 spring:
+  
+  rabbitmq:
+    host: localhost
+    password: test
+    username: test
+    port: 5672
+
   application:
     name: user-service
   data:
@@ -16,3 +23,8 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: create-drop
+
+jwt:
+  secret: 653F65CCFD82585F3983825EDA89D123
+  expiration: 86400
+

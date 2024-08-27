@@ -1,0 +1,19 @@
+server:
+  port: 8080
+
+
+spring:
+  main:
+    web-application-type: reactive
+  application:
+    name: gateway-service
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+
+
+jwt:
+  secret: 653F65CCFD82585F3983825EDA89D123
+  expiration: 86400

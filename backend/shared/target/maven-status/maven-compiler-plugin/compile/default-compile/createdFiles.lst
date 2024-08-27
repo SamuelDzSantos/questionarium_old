@@ -1,1 +1,12 @@
+dev\questionarium\entities\PasswordPatch.class
+dev\questionarium\Main.class
+dev\questionarium\entities\AuthResponse.class
+dev\questionarium\entities\Email$EmailBuilder.class
+dev\questionarium\entities\Email.class
 dev\questionarium\interfaces\PasswordEncodable.class
+dev\questionarium\entities\RegistrationRequest.class
+dev\questionarium\types\AccessType.class
+dev\questionarium\entities\AuthRequest.class
+dev\questionarium\entities\UserData$UserDataBuilder.class
+dev\questionarium\entities\UserData.class
+dev\questionarium\types\Role.class

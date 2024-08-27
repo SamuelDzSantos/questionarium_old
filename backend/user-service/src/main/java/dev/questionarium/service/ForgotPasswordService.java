@@ -5,10 +5,13 @@ import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import dev.questionarium.entities.Email;
 import dev.questionarium.model.PasswordToken;
 import dev.questionarium.model.User;
+import dev.questionarium.producer.EmailProducer;
 import dev.questionarium.repository.PasswordTokenRepository;
 import dev.questionarium.repository.UserRepository;
 import lombok.AllArgsConstructor;
@@ -19,6 +22,8 @@ public class ForgotPasswordService {
 
     private final UserRepository userRepository;
     private final PasswordTokenRepository passwordTokenRepository;
+    private final PasswordEncoder encoder;
+    private final EmailProducer producer;
 
     public void checkPasswordToken(String token) {
 
@@ -34,7 +39,15 @@ public class ForgotPasswordService {
         String token = generateToken();
         String code = generateCode();
         Date now = new Date();
-        // 15 min -> 900000 milis
+
+        Email emailMessage = Email.builder().message("O seu código é : " + code + "!")
+                .emailTo("samueldzsantos@gmail.com").subject("Código de verificação").build();
+
+        try {
+            producer.sendEmail(emailMessage);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        } // 15 min -> 900000 milis
         Date expirationDate = new Date(now.getTime() + 900000);
 
         this.passwordTokenRepository
@@ -64,7 +77,7 @@ public class ForgotPasswordService {
         Long userId = passwordToken.getUser().getId();
         User user = this.getUser(userId);
 
-        user.setPassword(password);
+        user.setPassword(encoder.encode(password));
 
         this.userRepository.save(user);
 

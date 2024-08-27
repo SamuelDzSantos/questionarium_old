@@ -1,9 +1,12 @@
-C:\Users\samue\Programming\questionarium\backend\user-service\src\main\java\dev\questionarium\controller\AccountController.java
+C:\Users\samue\Programming\questionarium\backend\user-service\src\main\java\dev\questionarium\config\RabbitConfiguration.java
+C:\Users\samue\Programming\questionarium\backend\user-service\src\main\java\dev\questionarium\config\SecurityConfig.java
 C:\Users\samue\Programming\questionarium\backend\user-service\src\main\java\dev\questionarium\controller\UserController.java
 C:\Users\samue\Programming\questionarium\backend\user-service\src\main\java\dev\questionarium\model\PasswordToken.java
 C:\Users\samue\Programming\questionarium\backend\user-service\src\main\java\dev\questionarium\model\User.java
+C:\Users\samue\Programming\questionarium\backend\user-service\src\main\java\dev\questionarium\producer\EmailProducer.java
 C:\Users\samue\Programming\questionarium\backend\user-service\src\main\java\dev\questionarium\repository\PasswordTokenRepository.java
 C:\Users\samue\Programming\questionarium\backend\user-service\src\main\java\dev\questionarium\repository\UserRepository.java
 C:\Users\samue\Programming\questionarium\backend\user-service\src\main\java\dev\questionarium\service\ForgotPasswordService.java
+C:\Users\samue\Programming\questionarium\backend\user-service\src\main\java\dev\questionarium\service\JwtUtils.java
 C:\Users\samue\Programming\questionarium\backend\user-service\src\main\java\dev\questionarium\service\UserService.java
 C:\Users\samue\Programming\questionarium\backend\user-service\src\main\java\dev\questionarium\UserApplication.java
