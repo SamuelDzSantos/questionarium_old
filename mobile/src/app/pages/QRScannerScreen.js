@@ -3,6 +3,8 @@ import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
 import React, { useState } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import AntDesign from 'react-native-vector-icons/AntDesign'
 
 export default function QRScannerScreen({ navigation }) {
   const [cameraViewing, setCameraViewing] = useState(false);
@@ -10,22 +12,31 @@ export default function QRScannerScreen({ navigation }) {
   return (
     <View style={styles.qrScanner}>
       <LinearGradient colors={['#002436', '#24B4FC']} style={styles.gradient}>
-        {cameraViewing ? <CameraScanner navigation={navigation} /> :
+        {cameraViewing ?
+          <>
+            <CameraScanner navigation={navigation} />
+            <TouchableOpacity style={{ margin: 20, }} onPress={() => setCameraViewing(false)}>
+              <Icon name='close' size={40} color={'white'} />
+            </TouchableOpacity>
+          </> :
           <>
             <TouchableOpacity style={styles.button} onPress={() => setCameraViewing(true)}>
-              <Icon name='qrcode' size={100} />
+              <AntDesign name="qrcode" size={100} />
             </TouchableOpacity>
             <Text style={styles.text}>Escaneie o QR Code</Text>
           </>
         }
-        {/* <Button title='Resultado' onPress={() => { setCameraViewing(false); navigation.navigate('Resultado') }}></Button> */}
-        <Text style={[styles.text, { position: 'absolute', bottom: 1 }]}>questionarium.com.br</Text>
+
+        <Text onPress={() => Linking.openURL('https://questionarium.com.br')}
+          style={[styles.text, { position: 'absolute', bottom: 1 }]}>
+          questionarium.com.br
+        </Text>
       </LinearGradient>
     </View>
   )
 }
 
-function CameraScanner({navigation}) {
+function CameraScanner({ navigation }) {
   const [permission, requestPermission] = useCameraPermissions();
   const [facing, setFacing] = useState('back');
   const [scanned, setScanned] = useState(false);
@@ -54,7 +65,7 @@ function CameraScanner({navigation}) {
     console.log({ scanResult });
     const { type, data } = scanResult;
     setScanned(true);
-    // alert(data);
+    //alert(data);
     setTimeout(() => {
       setScanned(false);
     }, 1000);
@@ -63,12 +74,13 @@ function CameraScanner({navigation}) {
 
   return (
     <CameraView facing={facing} style={{ width: '80%', height: '80%' }}
-      barcodeScannerSettings={{ barcodeTypes: ["qr"] }} 
+      barcodeScannerSettings={{ barcodeTypes: ["qr"] }}
       onBarcodeScanned={scanned ? null : handleBarCodeScanned}
-      >
+    >
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button2} onPress={toggleCameraFacing}>
-          <Text style={styles.text2}>Flip Camera</Text>
+        <TouchableOpacity style={styles.buttonCamera} onPress={toggleCameraFacing}>
+          <MaterialIcons name="flip-camera-android" size={40} color="#FFF" />
+          <Text style={styles.textCamera}>Flip</Text>
         </TouchableOpacity>
       </View>
     </CameraView>
@@ -111,13 +123,13 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     margin: 64,
   },
-  button2: {
+  buttonCamera: {
     flex: 1,
     alignSelf: 'flex-end',
     alignItems: 'center',
   },
-  text2: {
-    fontSize: 24,
+  textCamera: {
+    fontSize: 18,
     fontWeight: 'bold',
     color: 'white',
   },
