@@ -12,6 +12,7 @@ import { DevsComponent } from './components/devs/devs.component';
 import { TurmaComponent } from './components/turma/turma.component';
 import { AvaliacaoCriarComponent } from './components/avaliacao/avaliacao-criar/avaliacao-criar.component';
 import { AddTurmaComponent } from './components/add-turma/add-turma.component';
+import { RecuperarSenhaComponent } from './components/recuperar-senha/recuperar-senha.component';
 
 export const routes: Routes = [
     {
@@ -41,6 +42,7 @@ export const routes: Routes = [
             { path: "devs", component: DevsComponent },
             { path: "turma", component: TurmaComponent },
             { path: "addturma", component: AddTurmaComponent },
+            { path: "recuperar-senha", component: RecuperarSenhaComponent },
             { path: "**", component: PageNotFoundComponent }
         ],
         canActivateChild: [defaultCanActivateGuard]

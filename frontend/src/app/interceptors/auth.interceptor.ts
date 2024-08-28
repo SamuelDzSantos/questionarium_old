@@ -1,5 +1,7 @@
 import { HttpInterceptorFn } from '@angular/common/http';
 
+// Interceptor que pega o token do local storage e adiciona o Header de Authorização antes de enviar as requisições
+
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const token = localStorage.getItem("token");
   if (token != null || token != undefined) {

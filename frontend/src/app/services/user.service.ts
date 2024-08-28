@@ -23,6 +23,12 @@ export class UserService {
 
   }
 
+  urls = {
+    "addUser": `${env.baseUrl}/users`,
+    "signIn": `${env.baseUrl}/users/signIn`,
+    "passwordReset": `${env.baseUrl}/users/password-reset`
+  }
+
   getCurrentUser() {
     return this.user$;
   }
@@ -32,7 +38,7 @@ export class UserService {
   }
 
   public initialize() {
-    return this.http.get<UserData>(`${this.url}/auth/current`).pipe(
+    return this.http.get<UserData>(`${this.url} /auth/current`).pipe(
       map((user) => {
         this.setCurrentUser(user)
       }),
@@ -50,7 +56,7 @@ export class UserService {
 
     this.localStorageService.clearUserToken();
 
-    this.http.post<AuthResponse>(`${this.url}/auth/login`, form, { observe: "body" }).subscribe({
+    this.http.post<AuthResponse>(this.urls.signIn, form, { observe: "body" }).subscribe({
       next: (result) => {
         this.localStorageService.setUserToken(result.accessToken);
         this.setCurrentUser({ id: result.userData.id, name: result.userData.name, email: result.userData.email } as UserData)
@@ -75,7 +81,7 @@ export class UserService {
 
     let form: RegistrationRequest = { email: email, name: nome, password: senha, role: "USER" }
 
-    this.http.post<UserData>(`${this.url}/auth/register`, form, { observe: "body" }).subscribe({
+    this.http.post<UserData>(this.urls.addUser, form, { observe: "body" }).subscribe({
       next: () => { this.router.navigate([""]) },
       error: (err: HttpErrorResponse) => { this.handleCadastroError(err) }
     })
@@ -119,7 +125,15 @@ export class UserService {
         error: (err: HttpErrorResponse) => { this.handleDeleteError(err); subject.unsubscribe() }
       })
     })
+  }
 
+  public recuperarSenha(email: string) {
+    let subject = this.http.post<string>(this.urls.passwordReset, {
+      params: {
+        "email": email
+      }
+    })
+    return subject;
   }
 
   private handleLoggingError(err: HttpErrorResponse) {
