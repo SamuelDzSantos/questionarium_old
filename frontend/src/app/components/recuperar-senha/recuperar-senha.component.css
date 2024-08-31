@@ -1,44 +1,54 @@
-.email_modal {
-    position: absolute;
-    background-color: #002436;
+.mainBody {
     display: flex;
+    box-sizing: border-box;
     flex-direction: column;
     align-items: center;
-    top: 50%;
-    right: 50%;
-    transform: translate(50%, -50%);
-    height: 30%;
-    width: 30%;
+    padding-top: 5%;
+    width: 100%;
+    height: 80%;
+}
+
+.mainBody h1 {
+    margin-bottom: 5%;
+}
+
+.mainBody .form_area {
+    display: flex;
+    flex-direction: column;
     gap: 10%;
-    border-radius: 4%;
+    width: 25%;
+    height: 40%;
 }
 
-.email_modal h2 {
-    margin-top: 8%;
-    color: white;
-    font-size: 1.4em;
+.mainBody .senha_input {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 20%;
 }
 
-.email_modal input {
-    width: 70%;
-    height: 12%;
+.senha_input label {
+    margin-bottom: 1%;
+    padding-left: 5%;
+}
+
+.senha_input input {
     background-color: #D9D9D9;
     border: none;
-    font-size: 1em;
+    height: 100%;
+    font-size: 1.2em;
+    padding-left: 10px;
 }
 
-.email_modal button {
-    background-color: #6BE061;
+.form_area button {
     width: 20%;
-    height: 15%;
+    height: 10%;
+    border-radius: 10%;
+    background-color: #C6D4FF;
+    border: none;
+    align-self: center;
 }
 
-.email_modal a {
+.form_area button:hover {
     color: white;
-}
-
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
 }

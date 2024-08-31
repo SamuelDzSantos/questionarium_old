@@ -9,6 +9,8 @@ import dev.questionarium.entities.AuthRequest;
 import dev.questionarium.entities.AuthResponse;
 import dev.questionarium.entities.RegistrationRequest;
 import dev.questionarium.entities.UserData;
+import dev.questionarium.exception.BadRequestException;
+import dev.questionarium.exception.UserNotFoundException;
 import dev.questionarium.model.User;
 import dev.questionarium.repository.UserRepository;
 import dev.questionarium.types.AccessType;
@@ -61,19 +63,18 @@ public class UserService {
                                         user.getRoles().stream().map(role -> role.getAsString()).toList());
                         return new AuthResponse(accessToken, refreshToken, userData);
                 } else {
-                        throw new RuntimeException("Senha incorreta!");
+                        throw new BadRequestException("Senha incorreta!");
                 }
         }
 
         private User getUser(Long id) {
                 return this.userRepository.findById(id)
-                                .orElseThrow(() -> new RuntimeException("Usuário não encontrado!"));
+                                .orElseThrow(UserNotFoundException.getException(id));
         }
 
         private User getUser(String email) {
                 return userRepository.findByEmail(email)
-                                .orElseThrow(() -> new RuntimeException(
-                                                "Usuário de email: " + email + "não encontrado!"));
+                                .orElseThrow(UserNotFoundException.getException(email));
         }
 
 }

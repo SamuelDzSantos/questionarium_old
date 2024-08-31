@@ -1,6 +1,7 @@
 C:\Users\samue\Programming\questionarium\backend\user-service\src\main\java\dev\questionarium\config\RabbitConfiguration.java
 C:\Users\samue\Programming\questionarium\backend\user-service\src\main\java\dev\questionarium\config\SecurityConfig.java
 C:\Users\samue\Programming\questionarium\backend\user-service\src\main\java\dev\questionarium\controller\UserController.java
+C:\Users\samue\Programming\questionarium\backend\user-service\src\main\java\dev\questionarium\init\dataLoader.java
 C:\Users\samue\Programming\questionarium\backend\user-service\src\main\java\dev\questionarium\model\PasswordToken.java
 C:\Users\samue\Programming\questionarium\backend\user-service\src\main\java\dev\questionarium\model\User.java
 C:\Users\samue\Programming\questionarium\backend\user-service\src\main\java\dev\questionarium\producer\EmailProducer.java

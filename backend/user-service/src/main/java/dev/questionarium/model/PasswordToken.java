@@ -14,6 +14,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "password_tokens", schema = "user_schema")
@@ -21,6 +22,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Getter
+@Setter
 public class PasswordToken {
 
     @Id
@@ -29,7 +31,7 @@ public class PasswordToken {
     @ManyToOne
     @JoinColumn(nullable = false)
     private User user;
-    @Column(nullable = false, unique = true)
+    @Column(nullable = true, unique = true)
     private String token;
     @Column(nullable = false)
     private Date expirationDate;

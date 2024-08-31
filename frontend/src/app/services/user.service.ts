@@ -9,6 +9,8 @@ import { RegistrationRequest } from '../types/dto/RegistrationRequest';
 import { UserPatch } from '../types/dto/UserPatch';
 import { env } from '../enviroments/enviroment';
 import { LocalStorageService } from './localStorageService';
+import { ResetPasswordValidation } from '../types/dto/ResetPasswordValidation';
+import { PasswordPatch } from '../types/dto/PasswordPatch';
 
 @Injectable({
   providedIn: "root"
@@ -26,7 +28,8 @@ export class UserService {
   urls = {
     "addUser": `${env.baseUrl}/users`,
     "signIn": `${env.baseUrl}/users/signIn`,
-    "passwordReset": `${env.baseUrl}/users/password-reset`
+    "passwordReset": `${env.baseUrl}/users/password-reset`,
+    "passwordUpdate": `${env.baseUrl}/users/password`
   }
 
   getCurrentUser() {
@@ -128,12 +131,20 @@ export class UserService {
   }
 
   public recuperarSenha(email: string) {
-    let subject = this.http.post<string>(this.urls.passwordReset, {
+    this.http.get<void>(this.urls.passwordReset, {
       params: {
         "email": email
       }
+    }).subscribe(() => {
     })
-    return subject;
+  }
+
+  public atualizarSenha(patch: PasswordPatch) {
+    this.http.post(this.urls.passwordUpdate, patch, { responseType: "text" }).subscribe();
+  }
+
+  public checkCodigo(validation: ResetPasswordValidation) {
+    return this.http.post(this.urls.passwordReset, validation, { responseType: 'text' });
   }
 
   private handleLoggingError(err: HttpErrorResponse) {

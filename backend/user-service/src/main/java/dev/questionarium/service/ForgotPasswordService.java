@@ -9,6 +9,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import dev.questionarium.entities.Email;
+import dev.questionarium.entities.PasswordPatch;
+import dev.questionarium.entities.ResetPasswordValidation;
+import dev.questionarium.exception.BadRequestException;
+import dev.questionarium.exception.TokenNotFoundException;
+import dev.questionarium.exception.UserNotFoundException;
 import dev.questionarium.model.PasswordToken;
 import dev.questionarium.model.User;
 import dev.questionarium.producer.EmailProducer;
@@ -25,23 +30,32 @@ public class ForgotPasswordService {
     private final PasswordEncoder encoder;
     private final EmailProducer producer;
 
-    public void checkPasswordToken(String token) {
+    public String checkCodeValue(ResetPasswordValidation validation) {
 
-        this.passwordTokenRepository.findByToken(token)
-                .orElseThrow(() -> new RuntimeException("Token não encontrado!"));
+        User user = getUser(validation.email());
+        PasswordToken passwordToken = passwordTokenRepository.findByUserAndCode(user, validation.code())
+                .orElseThrow(BadRequestException.getException("Código incorreto!"));
 
+        checkTokenExpired(passwordToken);
+
+        String token = generateToken();
+
+        passwordToken.setToken(encoder.encode(token));
+
+        passwordTokenRepository.save(passwordToken);
+
+        return passwordToken.getToken();
     }
 
-    public String forgotPassword(String email) {
+    public void forgotPassword(String email) {
 
         User user = this.getUser(email);
 
-        String token = generateToken();
         String code = generateCode();
         Date now = new Date();
 
         Email emailMessage = Email.builder().message("O seu código é : " + code + "!")
-                .emailTo("samueldzsantos@gmail.com").subject("Código de verificação").build();
+                .emailTo(user.getEmail()).subject("Código de verificação").build();
 
         try {
             producer.sendEmail(emailMessage);
@@ -56,28 +70,24 @@ public class ForgotPasswordService {
                         .expirationDate(expirationDate)
                         .user(user)
                         .code(code)
-                        .token(token)
+                        .token(null)
                         .build());
-        return token;
     }
 
-    public void resetPassword(String token, String password, String code) {
+    public void resetPassword(PasswordPatch patch) {
 
-        PasswordToken passwordToken = this.passwordTokenRepository.findByToken(token)
-                .orElseThrow(() -> new RuntimeException("Token não encontrado!"));
+        PasswordToken passwordToken = getToken(encoder.encode(patch.token()));
 
-        if (!passwordToken.getCode().equals(code))
-            throw new RuntimeException("Código informado não é igual ao código do token!");
-
-        Date now = new Date();
-
-        if (passwordToken.getExpirationDate().before(now))
-            throw new RuntimeException("Token expirado. Gere um novo token!");
+        checkTokenExpired(passwordToken);
 
         Long userId = passwordToken.getUser().getId();
         User user = this.getUser(userId);
 
-        user.setPassword(encoder.encode(password));
+        if (!patch.password().equals(patch.confirmPassword())) {
+            throw new BadRequestException("Senhas não são iguais!");
+        }
+
+        user.setPassword(encoder.encode(patch.password()));
 
         this.userRepository.save(user);
 
@@ -102,14 +112,27 @@ public class ForgotPasswordService {
         return String.format("%06d", number);
     }
 
-    private User getUser(String email) {
-        return userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException(
-                        "Usuário de email: " + email + "não encontrado!"));
+    private PasswordToken getToken(String token) {
+        return this.passwordTokenRepository.findByToken(token)
+                .orElseThrow(TokenNotFoundException.getException(token));
     }
 
     private User getUser(Long id) {
         return this.userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado!"));
+                .orElseThrow(UserNotFoundException.getException(id));
+    }
+
+    private User getUser(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(UserNotFoundException.getException(email));
+    }
+
+    private void checkTokenExpired(PasswordToken token) {
+        Date now = new Date();
+
+        if (token.getExpirationDate().before(now))
+            throw new BadRequestException(
+                    String.format("Token '%s' expirado. Gere um novo token!", token.getToken()));
+
     }
 }

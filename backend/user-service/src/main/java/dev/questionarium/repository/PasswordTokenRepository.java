@@ -13,4 +13,6 @@ public interface PasswordTokenRepository extends JpaRepository<PasswordToken, Lo
 
     List<PasswordToken> findByUser(User user);
 
+    Optional<PasswordToken> findByUserAndCode(User user, String code);
+
 }

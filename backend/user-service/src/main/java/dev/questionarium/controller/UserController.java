@@ -1,5 +1,6 @@
 package dev.questionarium.controller;
 
+import org.apache.hc.core5.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -15,6 +16,7 @@ import dev.questionarium.entities.AuthRequest;
 import dev.questionarium.entities.AuthResponse;
 import dev.questionarium.entities.PasswordPatch;
 import dev.questionarium.entities.RegistrationRequest;
+import dev.questionarium.entities.ResetPasswordValidation;
 import dev.questionarium.entities.UserData;
 import dev.questionarium.service.ForgotPasswordService;
 import dev.questionarium.service.UserService;
@@ -50,18 +52,18 @@ public class UserController {
 
     @PatchMapping("/password")
     public ResponseEntity<Void> updatePassword(@RequestBody PasswordPatch patch) {
-        this.forgotPasswordService.resetPassword(patch.token(), patch.password(), patch.code());
-        return ResponseEntity.ok().build();
-    }
-
-    @GetMapping("/password-reset/{token}")
-    public ResponseEntity<Void> checkIfPasswordTokenIsValid(@PathVariable String token) {
-        this.forgotPasswordService.checkPasswordToken(token);
+        this.forgotPasswordService.resetPassword(patch);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/password-reset")
-    public ResponseEntity<String> getPasswordToken(@RequestParam String email) {
-        return ResponseEntity.ok(this.forgotPasswordService.forgotPassword(email));
+    public ResponseEntity<String> checkIfCodeIsValid(@RequestBody ResetPasswordValidation validation) {
+        return ResponseEntity.ok().body(this.forgotPasswordService.checkCodeValue(validation));
+    }
+
+    @GetMapping("/password-reset")
+    public ResponseEntity<Void> generatePasswordToken(@RequestParam String email) {
+        this.forgotPasswordService.forgotPassword(email);
+        return ResponseEntity.status(HttpStatus.SC_CREATED).build();
     }
 }

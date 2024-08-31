@@ -9,35 +9,35 @@ import { NavigationEnd, Router, RouterModule } from '@angular/router';
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule,NgOptimizedImage,RouterModule],
+  imports: [CommonModule, NgOptimizedImage, RouterModule],
   templateUrl: './header.component.html',
   styleUrl: './header.component.css'
 })
-export class HeaderComponent implements OnInit{
-  
-  user$!: Observable<UserData | null>;
-  url!:string;
+export class HeaderComponent implements OnInit {
 
-  constructor(public userService:UserService, private router : Router){}
-  
+  user$!: Observable<UserData | null>;
+  url!: string;
+
+  constructor(public userService: UserService, private router: Router) { }
+
   ngOnInit(): void {
     this.user$ = this.userService.getCurrentUser();
-    this.router.events.subscribe((val)=>{
-      if(val instanceof NavigationEnd){
+    this.router.events.subscribe((val) => {
+      if (val instanceof NavigationEnd) {
         this.url = val.url;
       }
     })
   }
-  
-  conta(){
+
+  conta() {
     this.router.navigateByUrl("/edicao")
   }
 
-  logo(){
+  logo() {
     this.router.navigateByUrl("/home");
   }
 
-  logout(){
+  logout() {
     this.userService.logout();
   }
 

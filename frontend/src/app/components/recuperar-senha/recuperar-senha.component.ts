@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { UserService } from '../../services/user.service';
+import { PasswordPatch } from '../../types/dto/PasswordPatch';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -12,35 +14,27 @@ import { UserService } from '../../services/user.service';
 })
 export class RecuperarSenhaComponent {
 
-  email_sent = false;
-  remainingTime = 30;
   token = ""
 
-  constructor(private userService: UserService) { }
 
-  public enviar(email: string) {
-    this.email_sent = true;
-    this.userService.recuperarSenha(email).subscribe((token) => {
-      this.token = token;
-      console.log(token);
-    })
-    this.startTime();
+  patchSenhaForm = new FormBuilder().group({
+    senha: ["", [Validators.required]],
+    comfirmaSenha: ["", [Validators.required]]
+  })
+
+  constructor(private userService: UserService, private router: Router) {
+    this.token = localStorage.getItem("senha-token")?.toString() || "";
   }
 
-  private startTime() {
-    let timer = setInterval(() => {
-      this.remainingTime -= 1;
-    }, 1000);
+  onSubmit() {
+    let values = this.patchSenhaForm.value;
 
-    setTimeout(() => {
-      clearInterval(timer);
-      this.remainingTime = 30;
-    }, 1000 * 30);
-  }
-  reenviarCodigo() {
-    if (this.remainingTime >= 30) {
-      this.startTime();
+    if (values.senha != undefined && values.comfirmaSenha != undefined) {
+      let patch: PasswordPatch = { "password": values.senha, "confirmPassword": values.comfirmaSenha, "token": this.token };
+      this.userService.atualizarSenha(patch)
+      this.router.navigateByUrl("/login")
     }
+
   }
 
 }

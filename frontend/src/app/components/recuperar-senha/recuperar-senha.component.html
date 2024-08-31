@@ -1,18 +1,14 @@
-@if (!email_sent) {
-    <div class="email_modal">
-        <h2>Insira um email para redefinição de senha</h2>
-        <input #email placeholder="example@gmail.com" type="text"/>
-        <button (click)="enviar(email.value)">Enviar</button>
+<div class="mainBody">
+<h1>Redefinição de Senha</h1>
+<form [formGroup]="patchSenhaForm" (ngSubmit)="onSubmit()" class="form_area">
+    <div class="senha_input">
+        <label for="senha"> Nova Senha*</label>
+        <input id="senha" type="password" formControlName="senha" required>
     </div>
-}@else {
-    <div class="email_modal">
-        <h2>Insira abaixo o código enviado para o seu email</h2>
-        <input type="number"/>
-        <button>Enviar</button>
-        @if(remainingTime >= 30){
-            <a>Reenviar código </a>
-        }@else {
-            <a (click)="reenviarCodigo()">Reenviar código {{remainingTime}} s</a>
-        }
-        </div>
-}   
+    <div class="senha_input">
+    <label for="confirmaSenha"> Confirmar Senha*</label>
+    <input id="confirmaSenha" type="password"  formControlName="confirmaSenha" required />
+</div>
+    <button type="submit">Salvar</button>
+</form>
+</div>

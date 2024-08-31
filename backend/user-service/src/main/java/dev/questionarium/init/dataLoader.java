@@ -25,6 +25,13 @@ public class dataLoader implements ApplicationRunner {
                 .role(Role.USER)
                 .build());
 
+        userService.save(RegistrationRequest.builder()
+                .email("myemail2@gmail.com")
+                .password("12345")
+                .name("user1")
+                .role(Role.USER)
+                .build());
+
     }
 
 }

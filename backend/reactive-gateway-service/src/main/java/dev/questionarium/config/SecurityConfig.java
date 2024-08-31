@@ -30,13 +30,14 @@ public class SecurityConfig {
     @Bean
     SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
         return http.authorizeExchange(authorize -> authorize
+
                 .pathMatchers("/users/signIn").permitAll()
                 .pathMatchers(HttpMethod.POST, "/users").permitAll()
                 .pathMatchers("/users/password-reset").permitAll()
                 .pathMatchers("/users/password").permitAll()
                 .anyExchange().authenticated())
                 .cors(cors -> cors.configurationSource(configurationSource()))
-                .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
+                .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults())) // filtro de tokne jwt
                 .csrf(csrf -> csrf.disable())
                 .build();
 

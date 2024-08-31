@@ -11,4 +11,5 @@ dev\questionarium\model\PasswordToken$PasswordTokenBuilder.class
 dev\questionarium\service\ForgotPasswordService.class
 dev\questionarium\service\UserService.class
 dev\questionarium\producer\EmailProducer.class
+dev\questionarium\init\dataLoader.class
 dev\questionarium\repository\UserRepository.class
