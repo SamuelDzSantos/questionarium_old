@@ -35,7 +35,7 @@ const AuthenticatedNavigator = () => {
     <AuthenticatedStack.Screen name="QRScanner" component={QRScannerScreen}
       options={{
         headerTitle: () => <LogoTitleMin title='Scanner' />,
-        headerRight: () => <LogoutButton />
+        headerRight: () => <LogoutButton />,
       }}
     />
     <AuthenticatedStack.Screen name="Resultado" component={ResultadoScreen}
