@@ -24,7 +24,7 @@ export default function QRScannerScreen({ navigation }) {
               <AntDesign name="qrcode" size={100} />
             </TouchableOpacity>
             <Text style={styles.text}>Escaneie o QR Code</Text>
-            <Button onPress={() => navigation.navigate('Resultado')} title='Resultado'></Button>
+            <Button onPress={() => navigation.navigate('Gabarito')} title='Gabarito'></Button>
           </>
         }
 
@@ -70,7 +70,7 @@ function CameraScanner({ navigation }) {
     setTimeout(() => {
       setScanned(false);
     }, 1000);
-    navigation.navigate('Resultado');
+    navigation.navigate('Gabarito');
   }
 
   return (

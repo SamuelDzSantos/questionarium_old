@@ -19,12 +19,17 @@ export default function ResultadoScreen({ navigation }) {
                         <Text style={{ flex: 1, fontSize: 24, fontWeight: 'bold' }}>Nota:</Text>
                         <Text style={{ fontSize: 24, backgroundColor: '#C6D4FF', paddingHorizontal: 13, borderRadius: 15, fontWeight: 'bold' }}>80%</Text>
                     </View>
-                    <Questions title={'Acertos'} number={6} total={10}/>
-                    <Questions title={'Erros'} number={2} total={10}/>
-                    <Questions title={'Em branco'} number={2} total={10}/>
-                    <TouchableOpacity style={{ backgroundColor: '#1BD939', borderRadius: 10, width: 90, alignSelf: 'center', marginTop: 100 }}>
-                        <Text style={{ paddingHorizontal: 15, paddingVertical: 5 }}>Registrar</Text>
-                    </TouchableOpacity>
+                    <View style={{marginTop: 20}}>
+                        <Questions title={'Acertos'} number={6} total={10}/>
+                        <Questions title={'Erros'} number={2} total={10}/>
+                        <Questions title={'Em branco'} number={2} total={10}/>
+                    </View>
+                    <View style={{flex: 1, justifyContent: 'flex-end'}}>
+                        <TouchableOpacity style={{ backgroundColor: '#1BD939', borderRadius: 10, width: 95, 
+                            alignSelf: 'center'}}>
+                            <Text style={{ paddingHorizontal: 15, paddingVertical: 5 }}>Registrar</Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
             </LinearGradient>
         </View>
@@ -32,14 +37,13 @@ export default function ResultadoScreen({ navigation }) {
 }
 
 function Questions({title, number, total}) {
-    //TODO ARRUMAR ALINHAMENTO DOS NUMEROS
     return (
         <View style={{
             flexDirection: 'row', backgroundColor: '#D9D9D9', padding: 10,
-            borderRadius: 15, alignItems: 'center', justifyContent: 'space-between', marginBottom: 10
+            borderRadius: 15, alignItems: 'center', justifyContent: 'space-between', marginBottom: 20
         }}>
             <Text>{title}</Text>
-            <View style={{ flex: 1, alignItems: 'center' }}>
+            <View style={{ flex: 1, alignItems: 'flex-end' }}>
                 <Text>{number}/{total}</Text>
             </View>
         </View>

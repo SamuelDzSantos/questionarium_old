@@ -1,7 +1,7 @@
 import { StyleSheet, Image, View, Text, Button } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { LoginScreen, QRScannerScreen, ResultadoScreen } from './pages';
+import { GabaritoScannerScreen, LoginScreen, QRScannerScreen, ResultadoScreen } from './pages';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
@@ -35,13 +35,17 @@ const AuthenticatedNavigator = () => {
     <AuthenticatedStack.Screen name="QRScanner" component={QRScannerScreen}
       options={{
         headerTitle: () => <LogoTitleMin title='Scanner' />,
-        headerRight: () => <LogoutButton />,
+        // headerRight: () => <LogoutButton />,
+      }}
+    />
+    <AuthenticatedStack.Screen name="Gabarito" component={GabaritoScannerScreen}
+      options={{
+        headerTitle: () => <LogoTitleMin title='Gabarito' />,
       }}
     />
     <AuthenticatedStack.Screen name="Resultado" component={ResultadoScreen}
       options={{
         headerTitle: () => <LogoTitleMin title='Resultado' />,
-        headerRight: () => <LogoutButton />
       }}
     />
   </AuthenticatedStack.Navigator>
@@ -88,7 +92,7 @@ function LogoTitleMin({ title }) {
 
 function LogoutButton(){
   const { onLogout } = useAuth();
-  return <MaterialIcons name="logout" size={40} color="#FFF" onPress={onLogout}/>;
+  return <MaterialIcons name="logout" size={30} color="#FFF" onPress={onLogout}/>;
 }
 
 const styles = StyleSheet.create({
@@ -101,6 +105,7 @@ const styles = StyleSheet.create({
       color: '#FFF'
     },
     headerTintColor: '#FFF',
-    headerShadowVisible: false
+    headerShadowVisible: false,
+    headerRight: () => <LogoutButton />
   }
 })
