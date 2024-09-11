@@ -1,10 +1,12 @@
-import { StyleSheet, Image, View, Text, Button } from 'react-native';
+import { StyleSheet, Image, View, Text } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { GabaritoScannerScreen, LoginScreen, QRScannerScreen, ResultadoScreen } from './pages';
-import { AuthProvider, useAuth } from './context/AuthContext';
+import { GabaritoScannerScreen, LoginScreen, QRScannerScreen, ResultadoScreen } from './src/app/pages';
+import { AuthProvider, useAuth } from './src/app/context/AuthContext';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
+const Logo = require('./src/assets/logo-questionarium.png');
+const LogoMin = require('./src/assets/logo-min-questionarium.png');
 
 export default function App() {
   return (
@@ -35,7 +37,7 @@ const AuthenticatedNavigator = () => {
     <AuthenticatedStack.Screen name="QRScanner" component={QRScannerScreen}
       options={{
         headerTitle: () => <LogoTitleMin title='Scanner' />,
-        // headerRight: () => <LogoutButton />,
+        headerRight: () => <LogoutButton />,
       }}
     />
     <AuthenticatedStack.Screen name="Gabarito" component={GabaritoScannerScreen}
@@ -71,7 +73,7 @@ function LogoTitle() {
   return (
     <Image
       style={{ marginTop: 75 }}
-      source={require('../assets/logo-questionarium.png')}
+      source={Logo}
     />
   );
 }
@@ -81,7 +83,7 @@ function LogoTitleMin({ title }) {
     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
       <Image
         style={{ width: 65, height: 50, marginRight: 10 }}
-        source={require('../assets/logo-min-questionarium.png')}
+        source={LogoMin}
       />
       <Text style={{ color: '#FFF', fontWeight: 'bold', fontSize: 18, textAlign: 'center' }}>
         {title}
