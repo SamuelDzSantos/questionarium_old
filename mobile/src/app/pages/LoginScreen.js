@@ -13,16 +13,16 @@ export default function LoginScreen({ navigation }) {
     const validateForm = () => {
         let errors = {};
 
-        if(!email) errors.email = "Email é obrigatório";
-        if(!password) errors.password = "Senha é obrigatória";
+        if (!email) errors.email = "Email é obrigatório";
+        if (!password) errors.password = "Senha é obrigatória";
 
         setErrors(errors);
 
         return Object.keys(errors).length === 0;
     };
-    
+
     const login = async () => {
-        if(!validateForm()) return;
+        if (!validateForm()) return;
 
         const result = await onLogin(email, password);
         if (result && result.error) {
@@ -51,12 +51,15 @@ export default function LoginScreen({ navigation }) {
                             </LinearGradient>
                         </TouchableOpacity>
                     </ScrollView>
-                    <Text onPress={() => Linking.openURL('https://questionarium.com.br')}
-                        style={[styles.text, {
-                            marginBottom: 20,
-                            flex: 1,
-                        }]} >
-                        questionarium.com.br
+                    <Text style={[styles.text, {
+                        marginBottom: 20,
+                        flex: 1,
+                    }]}>Crie sua conta em {' '}
+                        <Text onPress={() => Linking.openURL('https://questionarium.com.br')}
+                            style={{ textDecorationLine: 'underline' }}
+                        >
+                            questionarium.com.br
+                        </Text>
                     </Text>
                 </View>
             </LinearGradient>
@@ -78,7 +81,7 @@ const styles = StyleSheet.create({
     },
     text: {
         color: '#FFF',
-        fontSize: 18,
+        fontSize: 16,
     },
     errorText: {
         color: 'red',

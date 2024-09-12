@@ -49,8 +49,8 @@ export default function GabaritoScannerScreen({ navigation }) {
         </View>
 
         {image && <>
-          <Image source={{ uri: image }} style={styles.image} />
-          <View style={{flexDirection: 'row'}}>
+          <Image source={{ uri: image }} style={styles.image} resizeMode='contain'/>
+          <View style={{ flexDirection: 'row' }}>
             <TouchableOpacity style={styles.buttonCamera} onPress={() => setImage(null)}>
               <MaterialIcons name="clear" size={40} color="#FFF" />
               <Text style={styles.textCamera}>Cancel</Text>

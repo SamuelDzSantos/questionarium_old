@@ -43,11 +43,13 @@ const AuthenticatedNavigator = () => {
     <AuthenticatedStack.Screen name="Gabarito" component={GabaritoScannerScreen}
       options={{
         headerTitle: () => <LogoTitleMin title='Gabarito' />,
+        headerRight: () => <LogoutButton />,
       }}
     />
     <AuthenticatedStack.Screen name="Resultado" component={ResultadoScreen}
       options={{
         headerTitle: () => <LogoTitleMin title='Resultado' />,
+        headerRight: () => <LogoutButton />,
       }}
     />
   </AuthenticatedStack.Navigator>
@@ -108,6 +110,5 @@ const styles = StyleSheet.create({
     },
     headerTintColor: '#FFF',
     headerShadowVisible: false,
-    headerRight: () => <LogoutButton />
   }
 })
