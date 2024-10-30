@@ -1,18 +1,32 @@
 <div class="main_body">
-    <form class="form_area action=">
-    
-<div class="input">
-    <label for="senhaAtual"> Senha Atual</label>
-    <input id="senhaAtual" type="password" required>
-</div> 
-<div class="input">
-    <label for="senha"> Nova Senha</label>
-    <input id="senha" type="password" required>
-</div> 
-<div class="input">
-    <label for="confirmaSenha"> Confirma Senha</label>
-    <input id="confirmaSenha" type="password" required>
-</div> 
-</form>
-<button>Salvar</button>
+  <form [formGroup]="senhaForm" class="form_area" (ngSubmit)="submit()">
+    <div class="input">
+      <label for="senhaAtual"> Senha Atual</label>
+      <input
+        id="senhaAtual"
+        type="password"
+        formControlName="senhaAtual"
+        required
+      />
+    </div>
+    <div class="input">
+      <label for="novaSenha"> Nova Senha</label>
+      <input
+        id="novaSenha"
+        type="password"
+        formControlName="novaSenha"
+        required
+      />
+    </div>
+    <div class="input">
+      <label for="confirmaSenha"> Confirma Senha</label>
+      <input
+        id="confirmaSenha"
+        type="password"
+        formControlName="confirmaSenha"
+        required
+      />
+    </div>
+    <button [disabled]="!senhaForm.valid" type="submit">Salvar</button>
+  </form>
 </div>

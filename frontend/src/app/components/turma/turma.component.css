@@ -1,39 +1,39 @@
-h1{
+h1 {
     position: relative;
-    margin-left:50%;    
-    font-size:2em;
+    margin-left: 50%;
+    font-size: 2em;
     font-family: 'Inter';
 }
 
-.topArea{
-    width:100%;
+.topArea {
+    width: 100%;
     box-sizing: border-box;
     padding-left: 20%;
     position: relative;
     display: flex;
     justify-content: center;
-    gap:4%;
+    gap: 4%;
 }
 
-.topArea button{
+.topArea button {
     width: 8%;
     border: none;
     border-radius: 3vmin;
     display: flex;
-    justify-content:space-around;
+    justify-content: space-around;
     align-items: center;
     font-size: 1.2em;
 }
 
-.novaButton{
+.novaButton {
     background-color: #6BE061;
 }
 
-.montarButton{
+.montarButton {
     background-color: #D9D9D9;
 }
 
-.inputArea{
+.inputArea {
     border: 1px solid black;
     display: flex;
     padding: 0.2%;
@@ -41,30 +41,30 @@ h1{
     justify-content: flex-end;
 }
 
-.inputArea input{
+.inputArea input {
     border: none;
     font-size: 1.2em;
-    flex:1;
+    flex: 1;
 }
 
-.inputArea input:focus{
+.inputArea input:focus {
     outline: none;
 }
 
-.gridArea{
+.gridArea {
     width: 78%;
-    margin-left:11%;
-    margin-right:11%;
-    margin-bottom:10%;
+    margin-left: 11%;
+    margin-right: 11%;
+    margin-bottom: 10%;
     margin-top: 3%;
-    height:55%;
+    height: 55%;
     display: grid;
     grid-template-columns: 21.25% 21.25% 21.25% 21.25%;
-    gap:5%;
+    gap: 5%;
     grid-template-rows: 47.5% 47.5%;
 }
 
-.avaliacaoElement{
+.avaliacaoElement {
     background-color: #C6D4FF;
     border-radius: 15px;
     display: flex;
@@ -72,14 +72,14 @@ h1{
     align-items: center;
 }
 
-.avaliacaoElement span{
+.avaliacaoElement span {
     margin-top: 10%;
-    font-size:1em;
+    font-size: 1em;
 }
 
-.avaliacaoElement div{
+.avaliacaoElement div {
     margin-top: 10%;
-    width:80%;
-    height:20%;
-    background: linear-gradient(90deg, rgba(255,154,158,1) 0%, rgba(250,208,196,1) 100%);
+    width: 80%;
+    height: 20%;
+    background: linear-gradient(90deg, rgba(255, 154, 158, 1) 0%, rgba(250, 208, 196, 1) 100%);
 }

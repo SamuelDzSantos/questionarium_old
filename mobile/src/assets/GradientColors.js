@@ -1,0 +1,1 @@
+export const gradientColors = ['#002436', '#24B4FC']

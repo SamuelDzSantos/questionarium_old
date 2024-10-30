@@ -6,7 +6,7 @@ import { LoginResult } from '../types/dto/LoginResult';
 import { UserData } from '../types/dto/UserData';
 import { LoginForm } from '../types/dto/LoginForm';
 import { RegisterForm } from '../types/dto/RegisterForm';
-import { UserPatch } from '../types/dto/UpdatedUserForm';
+import { UserPatch } from '../types/dto/UserPatch';
 import { env } from '../enviroments/enviroment';
 import { LocalStorageService } from './localStorageService';
 
@@ -19,24 +19,24 @@ export class UserService {
 
   user$ = new BehaviorSubject<UserData | null>(null);
 
-  constructor(private http : HttpClient,private router:Router,private localStorageService : LocalStorageService) {
+  constructor(private http: HttpClient, private router: Router, private localStorageService: LocalStorageService) {
 
   }
 
-  getCurrentUser(){
+  getCurrentUser() {
     return this.user$;
   }
 
-  setCurrentUser(user:UserData | null){
+  setCurrentUser(user: UserData | null) {
     this.user$.next(user);
   }
 
-  public initialize(){
+  public initialize() {
     return this.http.get<UserData>(`${this.url}/users/current`).pipe(
-      map((user)=>{
+      map((user) => {
         this.setCurrentUser(user)
       }),
-      catchError(()=>{
+      catchError(() => {
         this.setCurrentUser(null);
         this.localStorageService.clearUserToken();
         return of()
@@ -45,104 +45,105 @@ export class UserService {
 
 
   public async login(login: string, senha: string) {
-    
-    let form : LoginForm = {"email": login,"password" : senha};
-    
+
+    let form: LoginForm = { "email": login, "password": senha };
+
     this.localStorageService.clearUserToken();
-    
-    this.http.post<LoginResult>(`${this.url}/login`,form,{observe:"body"}).subscribe({
-      next:(result)=>{
+
+    this.http.post<LoginResult>(`${this.url}/login`, form, { observe: "body" }).subscribe({
+      next: (result) => {
         this.localStorageService.setUserToken(result.token);
-        this.setCurrentUser({id:result.user.id,name:result.user.name,email:result.user.email} as UserData)
+        this.setCurrentUser({ id: result.user.id, name: result.user.name, email: result.user.email } as UserData)
         this.router.navigateByUrl("/home")
-        },
-      error:(err : HttpErrorResponse)=>{this.handleLoggingError(err)}
+      },
+      error: (err: HttpErrorResponse) => { this.handleLoggingError(err) }
     })
 
   }
 
-  public logout(){
-  
+  public logout() {
+
     this.localStorageService.clearUserToken();
-  
+
     this.setCurrentUser(null);
-  
+
     this.router.navigateByUrl("/login");
-  
+
   }
 
-  public cadastrar(email:string,nome:string,senha:string){
-    
-    let form : RegisterForm = {email:email,name:nome,password:senha}
-    
-    this.http.post<UserData>(`${this.url}/register`,form,{observe:"body"}).subscribe({
-      next:()=>{this.router.navigate([""])},
-      error:(err : HttpErrorResponse) =>{this.handleCadastroError(err)}
+  public cadastrar(email: string, nome: string, senha: string) {
+
+    let form: RegisterForm = { email: email, name: nome, password: senha }
+
+    this.http.post<UserData>(`${this.url}/register`, form, { observe: "body" }).subscribe({
+      next: () => { this.router.navigate([""]) },
+      error: (err: HttpErrorResponse) => { this.handleCadastroError(err) }
     })
-  
+
   }
 
-  public updateUser(nome:string,email:string,senha:string,novaSenha:string){
-    
-    let form : UserPatch = {
-      name:nome,
-      email:email,
-      password:senha == "" ? null : senha,
-      newPassword:novaSenha == "" ? null : novaSenha
+  public updateUser(nome: string, email: string, senha: string, novaSenha: string) {
+
+    let form: UserPatch = {
+      name: nome,
+      email: email,
+      password: senha == "" ? undefined : senha,
+      newPassword: novaSenha == "" ? undefined : novaSenha
     }
 
-    let subject = this.getCurrentUser().subscribe((user)=>{
-      this.http.patch<LoginResult>(`${this.url}/users/${user?.id}`,form).subscribe({
-        next:(result)=>{
+    let subject = this.getCurrentUser().subscribe((user) => {
+      this.http.patch<LoginResult>(`${this.url}/users/${user?.id}`, form).subscribe({
+        next: (result) => {
           subject.unsubscribe();
           this.localStorageService.setUserToken(result.token);
           this.setCurrentUser(result.user);
+          console.log("Chegou aqui")
           this.router.navigate(["/home"])
         },
-        error:(err:HttpErrorResponse)=>{this.handleUpdateError(err);subject.unsubscribe()}
-      })  
-    })
-
-  }
-
-  public deleteUser(){
-    
-    let subject = this.getCurrentUser().subscribe((user)=>{
-      this.http.delete(`${this.url}/users/${user?.id}`).subscribe({
-      next:()=>{
-        subject.unsubscribe()
-        this.localStorageService.clearUserToken();
-        this.setCurrentUser(null);
-        this.router.navigateByUrl("/login")
-      },
-      error:(err:HttpErrorResponse)=>{this.handleDeleteError(err);subject.unsubscribe()}
+        error: (err: HttpErrorResponse) => { this.handleUpdateError(err); subject.unsubscribe() }
       })
     })
 
   }
 
-private handleLoggingError(err:HttpErrorResponse){
-      if(err.status == 0){
-        alert("Erro de conexão!");
-      }else{
-        alert("Email ou senha incorretos!");
-      }
- }
+  public deleteUser() {
 
-private handleCadastroError(err:HttpErrorResponse){
-  if(err.status == 0){
-    alert("Erro de conexão!");
-  } 
-}
-private handleUpdateError(err:HttpErrorResponse){
-  if(err.status == 0){
-    alert("Erro de conexão!");
-  } 
-}
+    let subject = this.getCurrentUser().subscribe((user) => {
+      this.http.delete(`${this.url}/users/${user?.id}`).subscribe({
+        next: () => {
+          subject.unsubscribe()
+          this.localStorageService.clearUserToken();
+          this.setCurrentUser(null);
+          this.router.navigateByUrl("/login")
+        },
+        error: (err: HttpErrorResponse) => { this.handleDeleteError(err); subject.unsubscribe() }
+      })
+    })
 
-private handleDeleteError(err:HttpErrorResponse){
-  alert("Erro ao deletar!");
-}
+  }
+
+  private handleLoggingError(err: HttpErrorResponse) {
+    if (err.status == 0) {
+      alert("Erro de conexão!");
+    } else {
+      alert("Email ou senha incorretos!");
+    }
+  }
+
+  private handleCadastroError(err: HttpErrorResponse) {
+    if (err.status == 0) {
+      alert("Erro de conexão!");
+    }
+  }
+  private handleUpdateError(err: HttpErrorResponse) {
+    if (err.status == 0) {
+      alert("Erro de conexão!");
+    }
+  }
+
+  private handleDeleteError(err: HttpErrorResponse) {
+    alert("Erro ao deletar!");
+  }
 
 }
 

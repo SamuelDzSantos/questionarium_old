@@ -10,30 +10,39 @@ import { AvaliacaoComponent } from './components/avaliacao/avaliacao.component';
 import { SobreComponent } from './components/sobre/sobre.component';
 import { DevsComponent } from './components/devs/devs.component';
 import { TurmaComponent } from './components/turma/turma.component';
+import { AvaliacaoCriarComponent } from './components/avaliacao/avaliacao-criar/avaliacao-criar.component';
+import { AddTurmaComponent } from './components/add-turma/add-turma.component';
 
 export const routes: Routes = [
     {
-        path:"",
-        children:[
-            {path:"",component:MainComponent},
-            {path:"login",component:LoginComponent},
-            {path:"home",component:HomeComponent},
-            {path:"cadastro",component:CadastroComponent},
+        path: "",
+        children: [
+            { path: "", component: MainComponent },
+            { path: "login", component: LoginComponent },
+            { path: "home", component: HomeComponent },
+            { path: "cadastro", component: CadastroComponent },
             {
-                path:"edicao",
-                children:[
-                    {path:"conta",component:EdicaoComponent},
-                    {path:"",redirectTo:"perfil",pathMatch:"prefix"},
-                    {path:"perfil",component:EdicaoComponent},
-                    {path:"senha",component:EdicaoComponent}
+                path: "edicao",
+                children: [
+                    { path: "conta", component: EdicaoComponent },
+                    { path: "", redirectTo: "perfil", pathMatch: "prefix" },
+                    { path: "perfil", component: EdicaoComponent },
+                    { path: "senha", component: EdicaoComponent }
                 ]
             },
-            {path:"avaliacao",component:AvaliacaoComponent},
-            {path:"sobre",component:SobreComponent},
-            {path:"devs",component:DevsComponent},
-            {path:"turma",component:TurmaComponent},
-            {path:"**",component:PageNotFoundComponent},
+            {
+                path: "avaliacao",
+                children: [
+                    { path: "", component: AvaliacaoComponent },
+                    { path: "criar", component: AvaliacaoCriarComponent }
+                ]
+            },
+            { path: "sobre", component: SobreComponent },
+            { path: "devs", component: DevsComponent },
+            { path: "turma", component: TurmaComponent },
+            { path: "addturma", component: AddTurmaComponent },
+            { path: "**", component: PageNotFoundComponent }
         ],
-        canActivateChild:[defaultCanActivateGuard]
+        canActivateChild: [defaultCanActivateGuard]
     }
 ];
