@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import { LinearGradient } from 'expo-linear-gradient';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useAuth } from '../context/AuthContext';
+import { questionariumUrl } from '../../assets/QuestionariumUrl';
 
 export default function LoginScreen({ navigation }) {
     const [email, setEmail] = useState('');
@@ -55,7 +56,7 @@ export default function LoginScreen({ navigation }) {
                         marginBottom: 20,
                         flex: 1,
                     }]}>Crie sua conta em {' '}
-                        <Text onPress={() => Linking.openURL('https://questionarium.com.br')}
+                        <Text onPress={() => Linking.openURL(questionariumUrl)}
                             style={{ textDecorationLine: 'underline' }}
                         >
                             questionarium.com.br

@@ -1,0 +1,1 @@
+export const questionariumUrl = "questionarium.com.br"

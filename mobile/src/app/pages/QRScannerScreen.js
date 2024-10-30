@@ -5,6 +5,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import AntDesign from 'react-native-vector-icons/AntDesign'
+import { questionariumUrl } from '../../assets/QuestionariumUrl';
 
 export default function QRScannerScreen({ navigation }) {
   const [cameraViewing, setCameraViewing] = useState(false);
@@ -28,7 +29,7 @@ export default function QRScannerScreen({ navigation }) {
           </>
         }
 
-        <Text onPress={() => Linking.openURL('https://questionarium.com.br')}
+        <Text onPress={() => Linking.openURL(questionariumUrl)}
           style={[styles.text, { position: 'absolute', bottom: 1 }]}>
           questionarium.com.br
         </Text>

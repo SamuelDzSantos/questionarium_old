@@ -1,18 +1,19 @@
-import { Button, StyleSheet, Text, View, Image, TouchableOpacity, Linking } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, Image, TouchableOpacity, StyleSheet, Linking, Platform } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { LinearGradient } from 'expo-linear-gradient';
-import React, { useState } from 'react';
 import * as ImagePicker from 'expo-image-picker';
+import { questionariumUrl } from '../../assets/QuestionariumUrl';
+import { gradientColors } from '../../assets/GradientColors';
 
-export default function GabaritoScannerScreen({ navigation }) {
+const GabaritoScannerScreen = ({ navigation }) => {
   const [image, setImage] = useState(null);
 
   const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
+    const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       quality: 1,
-      allowsMultipleSelection: false,
     });
 
     if (!result.canceled) {
@@ -21,12 +22,9 @@ export default function GabaritoScannerScreen({ navigation }) {
   };
 
   const takePhoto = async () => {
-    let result = await ImagePicker.launchCameraAsync({
+    const result = await ImagePicker.launchCameraAsync({
       allowsEditing: true,
-      aspect: [16, 9],
       quality: 1,
-      allowsMultipleSelection: false,
-      cameraType: ImagePicker.CameraType.back
     });
 
     if (!result.canceled) {
@@ -35,46 +33,46 @@ export default function GabaritoScannerScreen({ navigation }) {
   };
 
   return (
-    <View style={styles.gabarito}>
-      <LinearGradient colors={['#002436', '#24B4FC']} style={styles.gradient}>
+    <View style={styles.container}>
+      <LinearGradient colors={gradientColors} style={styles.gradient}>
         <View style={{ flexDirection: 'row' }}>
-          <TouchableOpacity style={styles.buttonCamera} onPress={takePhoto}>
+          <TouchableOpacity style={styles.button} onPress={takePhoto}>
             <MaterialIcons name="camera" size={40} color="#FFF" />
-            <Text style={styles.textCamera}>Camera</Text>
+            <Text style={styles.buttonText}>Camera</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.buttonCamera} onPress={pickImage}>
+          <TouchableOpacity style={styles.button} onPress={pickImage}>
             <MaterialIcons name="image-search" size={40} color="#FFF" />
-            <Text style={styles.textCamera}>Gallery</Text>
+            <Text style={styles.buttonText}>Gallery</Text>
           </TouchableOpacity>
         </View>
 
-        {image && <>
-          <Image source={{ uri: image }} style={styles.image} resizeMode='contain'/>
-          <View style={{ flexDirection: 'row' }}>
-            <TouchableOpacity style={styles.buttonCamera} onPress={() => setImage(null)}>
-              <MaterialIcons name="clear" size={40} color="#FFF" />
-              <Text style={styles.textCamera}>Cancel</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.buttonCamera} onPress={() => navigation.navigate('Resultado')}>
-              <MaterialIcons name="check" size={40} color="#FFF" />
-              <Text style={styles.textCamera}>Confirm</Text>
-            </TouchableOpacity>
-          </View>
-        </>
-        }
-        <Text onPress={() => Linking.openURL('https://questionarium.com.br')}
-          style={[styles.text, { position: 'absolute', bottom: 1 }]}>
+        {image && (
+          <>
+            <Image source={{ uri: image }} style={styles.image} resizeMode='contain' />
+            <View style={{ flexDirection: 'row' }}>
+              <TouchableOpacity style={styles.button} onPress={() => setImage(null)}>
+                <MaterialIcons name="clear" size={40} color="#FFF" />
+                <Text style={styles.buttonText}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Resultado')}>
+                <MaterialIcons name="check" size={40} color="#FFF" />
+                <Text style={styles.buttonText}>Confirm</Text>
+              </TouchableOpacity>
+            </View>
+          </>
+        )}
+
+        <Text onPress={() => Linking.openURL(questionariumUrl)} style={styles.link}>
           questionarium.com.br
         </Text>
       </LinearGradient>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
-  gabarito: {
+  container: {
     flex: 1,
-    justifyContent: 'center',
   },
   gradient: {
     flex: 1,
@@ -83,22 +81,27 @@ const styles = StyleSheet.create({
   },
   image: {
     width: '80%',
-    height: '60%',
+    height: '40%',
     marginTop: 20,
-    borderRadius: 5
+    borderRadius: 5,
   },
-  buttonCamera: {
+  button: {
     margin: 20,
     alignItems: 'center',
   },
-  textCamera: {
+  buttonText: {
     fontSize: 18,
     fontWeight: 'bold',
     color: 'white',
   },
-  text: {
+  link: {
     color: '#FFF',
     fontSize: 18,
+    marginTop: 20,
     marginBottom: 20,
+    position: 'absolute',
+    bottom: 1
   },
 });
+
+export default GabaritoScannerScreen;
