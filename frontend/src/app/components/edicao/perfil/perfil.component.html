@@ -1,0 +1,23 @@
+<div class="login_page">
+  <h1 class="title">Edição de Perfil</h1>
+  <form [formGroup]="cadastroForm" (ngSubmit)="onSubmit()" class="form_area">
+    <div class="login_input">
+      <label for="login"> Login*</label>
+      <input id="login" type="text" formControlName="nome" required />
+    </div>
+    <div class="login_input">
+      <label for="email"> Email*</label>
+      <input id="email" type="text" formControlName="email" required />
+    </div>
+    <div class="senha_input">
+      <label for="senha"> Senha Atual*</label>
+      <input id="senha" type="password" formControlName="senha" />
+    </div>
+    <div class="senha_input">
+      <label for="confirmaSenha">Nova Senha*</label>
+      <input id="confirmaSenha" type="password" formControlName="novaSenha" />
+    </div>
+    <button type="submit" [disabled]="!cadastroForm.valid">Salvar</button>
+  </form>
+  <button class="excluir" (click)="excluir()">Excluir conta</button>
+</div>

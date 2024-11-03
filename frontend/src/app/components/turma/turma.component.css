@@ -1,0 +1,85 @@
+h1 {
+    position: relative;
+    margin-left: 50%;
+    font-size: 2em;
+    font-family: 'Inter';
+}
+
+.topArea {
+    width: 100%;
+    box-sizing: border-box;
+    padding-left: 20%;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    gap: 4%;
+}
+
+.topArea button {
+    width: 8%;
+    border: none;
+    border-radius: 3vmin;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    font-size: 1.2em;
+}
+
+.novaButton {
+    background-color: #6BE061;
+}
+
+.montarButton {
+    background-color: #D9D9D9;
+}
+
+.inputArea {
+    border: 1px solid black;
+    display: flex;
+    padding: 0.2%;
+    width: 45%;
+    justify-content: flex-end;
+}
+
+.inputArea input {
+    border: none;
+    font-size: 1.2em;
+    flex: 1;
+}
+
+.inputArea input:focus {
+    outline: none;
+}
+
+.gridArea {
+    width: 78%;
+    margin-left: 11%;
+    margin-right: 11%;
+    margin-bottom: 10%;
+    margin-top: 3%;
+    height: 55%;
+    display: grid;
+    grid-template-columns: 21.25% 21.25% 21.25% 21.25%;
+    gap: 5%;
+    grid-template-rows: 47.5% 47.5%;
+}
+
+.avaliacaoElement {
+    background-color: #C6D4FF;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.avaliacaoElement span {
+    margin-top: 10%;
+    font-size: 1em;
+}
+
+.avaliacaoElement div {
+    margin-top: 10%;
+    width: 80%;
+    height: 20%;
+    background: linear-gradient(90deg, rgba(255, 154, 158, 1) 0%, rgba(250, 208, 196, 1) 100%);
+}

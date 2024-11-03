@@ -1,0 +1,15 @@
+dev\questionarium\model\PasswordToken.class
+dev\questionarium\controller\UserController.class
+dev\questionarium\repository\PasswordTokenRepository.class
+dev\questionarium\config\SecurityConfig.class
+dev\questionarium\config\RabbitConfiguration.class
+dev\questionarium\service\JwtUtils.class
+dev\questionarium\model\User$UserBuilder.class
+dev\questionarium\model\User.class
+dev\questionarium\UserApplication.class
+dev\questionarium\model\PasswordToken$PasswordTokenBuilder.class
+dev\questionarium\service\ForgotPasswordService.class
+dev\questionarium\service\UserService.class
+dev\questionarium\producer\EmailProducer.class
+dev\questionarium\init\dataLoader.class
+dev\questionarium\repository\UserRepository.class

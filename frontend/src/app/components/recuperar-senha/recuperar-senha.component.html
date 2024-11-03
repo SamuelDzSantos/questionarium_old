@@ -1,0 +1,14 @@
+<div class="mainBody">
+<h1>Redefinição de Senha</h1>
+<form [formGroup]="patchSenhaForm" (ngSubmit)="onSubmit()" class="form_area">
+    <div class="senha_input">
+        <label for="senha"> Nova Senha*</label>
+        <input id="senha" type="password" formControlName="senha" required>
+    </div>
+    <div class="senha_input">
+    <label for="confirmaSenha"> Confirmar Senha*</label>
+    <input id="confirmaSenha" type="password"  formControlName="confirmaSenha" required />
+</div>
+    <button type="submit">Salvar</button>
+</form>
+</div>

@@ -1,0 +1,19 @@
+<div class="login_page">
+    <h1 class="title">Cadastro</h1>
+    <form [formGroup]="cadastroForm" (ngSubmit)="onSubmit()" class="form_area">
+        <div class="login_input">
+            <label for="login"> Login*</label>
+            <input id="login" type="text" formControlName="nome" required>
+        </div>
+        <div class="login_input">
+            <label for="email"> Email*</label>
+            <input id="email" type="text" formControlName="email" required>
+        </div>
+    <div class="senha_input">
+        <label for="senha"> Senha*</label>
+        <input id="senha" type="password"  formControlName="senha" required />
+    </div>
+        <button type="submit" [disabled]="!cadastroForm.valid" >Cadastrar</button>
+    </form>
+    <a class="voltar_link" href="/">Voltar</a>
+</div>

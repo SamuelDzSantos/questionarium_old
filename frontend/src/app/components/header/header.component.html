@@ -1,0 +1,51 @@
+<div class="header" [ngStyle]="{'align-items': url == '/'  ? 'center' : 'end' , 'justify-content' : url == '/login' || url == '/cadastro' ? 'center' : 'space-between'}">
+@if(url == "/"){
+    @if(user$ | async; as user){
+        <img class="logo" src="/resources/logo.png" (click)="logo()" />
+        <div class="header-options-home">
+            <div routerLink="novidades"><span>Novidades</span></div>
+            <div routerLink="blog"><span>Blog</span></div>
+            <div routerLink="manual"><span>Manual</span></div>
+            <div routerLink="sobre"><span>Sobre</span></div>
+        </div>
+        <div class="home-page-options">
+            <span routerLink="home">Home</span>
+        </div>
+    }
+    @else{
+        <img class="logo" src="/resources/logo.png" (click)="logo()" />
+        <div class="header-options-home">
+            <div routerLink="novidades"><span>Novidades</span></div>
+            <div routerLink="blog"><span>Blog</span></div>
+            <div routerLink="manual"><span>Manual</span></div>
+            <div routerLink="sobre"><span>Sobre</span></div>
+        </div>
+        <div class="home-page-options">
+            <span routerLink="login">Login</span>
+            <span routerLink="cadastro">Cadastrar</span>
+        </div>
+    }
+}
+@else{
+    @if(user$ | async; as user){
+        <img class="logo" src="/resources/logo.png" (click)="logo()" />
+        <div class="header-options">
+            <span routerLink="questao">Questões</span>
+            <span routerLink="avaliacao">Avaliações</span>
+            <span routerLink="turma">Turmas</span>
+            <span routerLink="sobre">Sobre</span>
+        </div>
+        <div class="user">
+            <img src="/resources/default_user_logo.png"/>
+            <span>Olá,{{user.name}}</span>
+            <div class="dropdown-menu">
+                <li  class="content"><a (click)="conta()">Conta</a></li>
+                <li (click)="logout()" class="content"><a>Sair</a></li>
+            </div>
+        </div>
+    }
+    @else{
+            <img class="logo" src="/resources/logo.png" (click)="logo()"/>
+    }
+}
+</div>

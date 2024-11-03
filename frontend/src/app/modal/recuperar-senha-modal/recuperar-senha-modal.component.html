@@ -1,0 +1,18 @@
+@if (!email_sent) {
+    <div class="email_modal">
+        <h2>Insira um email para redefinição de senha</h2>
+        <input #email placeholder="example@gmail.com" type="text"/>
+        <button (click)="enviar(email.value)">Enviar</button>
+    </div>
+}@else {
+    <div class="email_modal">
+        <h2>Insira abaixo o código enviado para o seu email</h2>
+        <input #codigo type="number"/>
+        <button (click)="enviarCodigo(codigo.value)">Enviar</button>
+        @if(remainingTime >= 30){
+            <a>Reenviar código </a>
+        }@else {
+            <a (click)="reenviarCodigo()">Reenviar código {{remainingTime}} s</a>
+        }
+        </div>
+}   
