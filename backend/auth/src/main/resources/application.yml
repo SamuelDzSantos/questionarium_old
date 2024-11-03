@@ -1,0 +1,30 @@
+
+
+spring:
+  application:
+    name: auth
+  datasource:
+    url: jdbc:postgresql://localhost:10000/auth
+    username: admin
+    password: Admin_123
+  jpa:
+    generate-ddl: true
+    hibernate:
+      ddl-auto: create-drop
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: default_user
+    password: 1234
+  data:
+    mongodb:
+      uri: mongodb://admin:Admin_123@localhost:10002
+      database: auth_db2
+
+
+key:
+  secret: 1029831093810283dwiajhdkwadhkauhd10283091kdjwakdjawkd
+  public: 0123810283oaiwkdjaklj19832wjikhdkajh198329aksjhdkahw9
+
+jwt:
+  expiration: 86400
