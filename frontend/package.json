@@ -8,7 +8,7 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "build_spring": "ng build --output-path ../backend/src/main/resources/static/ --configuration spring-configuration",
-    "build_spring_prod":"ng build --output-path ../backend/src/main/resources/static/ --configuration spring-configuration-prod"
+    "build_spring_prod": "ng build --output-path ../backend/src/main/resources/static/ --configuration spring-configuration-prod"
   },
   "private": true,
   "dependencies": {
@@ -20,6 +20,7 @@
     "@angular/platform-browser": "^18.0.0",
     "@angular/platform-browser-dynamic": "^18.0.0",
     "@angular/router": "^18.0.0",
+    "questionarium": "file:",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.14.3"

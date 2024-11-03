@@ -16,7 +16,7 @@ spring:
       dialect: postgresql
   datasource:
     url: jdbc:postgresql://localhost:5432/questionarium
-    password: postgres
+    password: admin
     username: postgres
 
   jpa:
