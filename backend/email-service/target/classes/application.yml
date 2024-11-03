@@ -5,8 +5,8 @@ server:
 spring:
   rabbitmq:
     host: localhost
-    password: test
-    username: test
+    password: admin
+    username: admin
     port: 5672
   mail:
     host: smtp.gmail.com

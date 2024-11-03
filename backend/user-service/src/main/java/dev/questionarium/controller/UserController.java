@@ -1,6 +1,5 @@
 package dev.questionarium.controller;
 
-import org.apache.hc.core5.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -64,6 +63,6 @@ public class UserController {
     @GetMapping("/password-reset")
     public ResponseEntity<Void> generatePasswordToken(@RequestParam String email) {
         this.forgotPasswordService.forgotPassword(email);
-        return ResponseEntity.status(HttpStatus.SC_CREATED).build();
+        return ResponseEntity.status(200).build();
     }
 }
