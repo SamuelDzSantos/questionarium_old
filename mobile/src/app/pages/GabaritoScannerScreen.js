@@ -54,7 +54,7 @@ const GabaritoScannerScreen = ({ navigation }) => {
                 <MaterialIcons name="clear" size={40} color="#FFF" />
                 <Text style={styles.buttonText}>Cancel</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Resultado')}>
+              <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Resultado', { imageUri: image })}>
                 <MaterialIcons name="check" size={40} color="#FFF" />
                 <Text style={styles.buttonText}>Confirm</Text>
               </TouchableOpacity>

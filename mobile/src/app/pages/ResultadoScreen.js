@@ -1,12 +1,54 @@
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import axios from 'axios';
+import * as FileSystem from 'expo-file-system';
+import mime from 'mime';
 
 const GRADIENT_COLORS = ['#002436', '#24B4FC'];
 const BUTTON_COLOR = '#1BD939';
 const NOTE_BACKGROUND_COLOR = '#C6D4FF';
 
-export default function ResultadoScreen() {
+export default function ResultadoScreen({route}) {
+
+    const { imageUri } = route.params;
+    const [resultData, setResultData] = useState(null);
+
+    useEffect(() => {
+        if (imageUri) {
+            uploadImage(imageUri);
+        }
+    }, [imageUri]);
+
+    const uploadImage = async (uri) => {
+        const apiUrl = 'http://192.168.1.115:5000';
+    
+        const base64String = await FileSystem.readAsStringAsync(uri, { encoding: FileSystem.EncodingType.Base64 });
+    
+        const fileExtension = uri.split('.').pop();
+        const mimeType = mime.getType(fileExtension) || 'image/jpeg';
+
+        const data = {
+            image: `data:${mimeType};base64,${base64String}`,
+        };
+    
+        try {
+            const response = await axios.post(`${apiUrl}/process`, data, {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                timeout: 3000,
+            });
+            setResultData(response.data);
+        } catch (error) {
+            if (error.code === 'ECONNABORTED') {
+                Alert.alert('Error', 'Request timed out. Please try again.');
+            } else {
+                Alert.alert('Error', 'Failed to upload image. Please try again.');
+            }
+        }
+    };
+
     return (
         <View style={styles.container}>
             <LinearGradient colors={GRADIENT_COLORS} style={styles.gradient}>
@@ -19,6 +61,13 @@ export default function ResultadoScreen() {
                     <Text style={styles.turma}>Turma Turno Ano</Text>
                     <Text style={styles.turma}>Desenvolvimento de Trabalho de Conclusão de Curso II</Text>
                     <Text style={styles.turma}>Link Prova</Text>
+                    <Text style={styles.title}>Avaliação</Text>
+                    {/* Render your result data here */}
+                    {resultData && (
+                        <View>
+                            <Text>Nota: {resultData || 'N/A'}</Text>
+                        </View>
+                    )}
                     <View style={styles.noteContainer}>
                         <Text style={styles.noteLabel}>Nota:</Text>
                         <Text style={styles.noteValue}>80%</Text>
