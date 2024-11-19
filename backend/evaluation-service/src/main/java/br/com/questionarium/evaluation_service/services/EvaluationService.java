@@ -19,14 +19,20 @@ public class EvaluationService {
         return evaluationRepository.save(evaluation);
     }
 
-    // PEGA TODAS AS AVALIACOES
-    public List<Evaluation> getAllEvaluations() {
-        return evaluationRepository.findAll();
+    // PEGA UMA AVALIACAO POR ID
+    public Evaluation getEvaluationById(Long id) {
+        return evaluationRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Avaliação não encontrada com o ID: " + id));
     }
 
     // PEGA TODAS AVALIACOES DE 1 USER
-    public List<Evaluation> getEvaluationsByUserId(Long userId) {
+    public List<Evaluation> getAllEvaluationsByUserId(Long userId) {
         return evaluationRepository.findAllEvaluationsByUserId(userId);
+    }
+    
+    // PEGA TODAS AS AVALIACOES
+    public List<Evaluation> getAllEvaluations() {
+        return evaluationRepository.findAll();
     }
 
     // DELETA AVALIACAO
@@ -54,6 +60,15 @@ public class EvaluationService {
             return evaluationRepository.save(evaluation);
         }
         throw new RuntimeException("Avaliação não encontrada");
+    }
+
+    // ALTERA ORDEM QUESTOES NA LISTA
+    public Evaluation reorderQuestions(Long id, List<Long> newQuestionsOrder) {
+        Evaluation evaluation = evaluationRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Evaluation not found with id: " + id));
+
+        evaluation.setQuestions(newQuestionsOrder);
+        return evaluationRepository.save(evaluation);
     }
 
     // ALTERA O CABECALHO DE UMA AVALIACAO
