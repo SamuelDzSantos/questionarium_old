@@ -1,4 +1,5 @@
 br\com\questionarium\evaluation_service\repositories\EvaluationHeaderRepository.class
-br\com\questionarium\evaluation_service\EvaluationServiceApplication.class
+br\com\questionarium\evaluation_service\services\EvaluationHeaderService.class
 br\com\questionarium\evaluation_service\models\EvaluationHeader$EvaluationHeaderBuilder.class
 br\com\questionarium\evaluation_service\models\EvaluationHeader.class
+br\com\questionarium\evaluation_service\EvaluationServiceApplication.class

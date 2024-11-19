@@ -27,14 +27,22 @@ public class EvaluationHeader {
 
     private String professor; //NOME QUE APARECE NO CABECALHO
 
-    @Lob
+    // @Lob
     private String instructions;
 
-    @Lob
+    // @Lob
     private byte[] image;
 
     private LocalDate creationDate;
 
     @Column(nullable = false)
     private Long userId; // FK do usuário que criou
+
+    @PrePersist
+    public void prePersist() {
+        // DEFINE DATA CRIACAO
+        if (this.creationDate == null) {
+            this.creationDate = LocalDate.now();
+        }
+    }
 }

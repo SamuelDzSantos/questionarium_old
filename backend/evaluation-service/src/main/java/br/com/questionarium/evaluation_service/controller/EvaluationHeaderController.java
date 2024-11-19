@@ -1,5 +1,6 @@
 package br.com.questionarium.evaluation_service.controller;
 
+import br.com.questionarium.evaluation_service.dto.EvaluationHeaderUserDTO;
 import br.com.questionarium.evaluation_service.models.EvaluationHeader;
 import br.com.questionarium.evaluation_service.services.EvaluationHeaderService;
 import jakarta.persistence.EntityNotFoundException;
@@ -37,10 +38,10 @@ public class EvaluationHeaderController {
 
     // MOSTRA TODOS OS CABECALHOS DE 1 USER
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<EvaluationHeader>> getAllHeadersForUser(@PathVariable Long userId) {
-        List<EvaluationHeader> headers = evaluationHeaderService.getAllHeadersByUser(userId);
-        if (headers.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    public ResponseEntity<List<EvaluationHeaderUserDTO>> getAllHeadersForUser(@PathVariable Long userId) {
+        List<EvaluationHeaderUserDTO> headers = evaluationHeaderService.getAllHeadersByUser(userId);
+        if (headers == null || headers.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(headers, HttpStatus.OK);
     }

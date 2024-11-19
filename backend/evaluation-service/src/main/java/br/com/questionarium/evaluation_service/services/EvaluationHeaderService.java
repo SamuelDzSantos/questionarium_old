@@ -1,9 +1,12 @@
 package br.com.questionarium.evaluation_service.services;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import br.com.questionarium.evaluation_service.dto.EvaluationHeaderUserDTO;
 import br.com.questionarium.evaluation_service.models.EvaluationHeader;
 import br.com.questionarium.evaluation_service.repositories.EvaluationHeaderRepository;
 import jakarta.persistence.*;
@@ -17,6 +20,7 @@ public class EvaluationHeaderService {
 
     // CRIAR HEADER
     public EvaluationHeader createHeader(EvaluationHeader evaluationHeader) {
+        evaluationHeader.setCreationDate(LocalDate.now());
         return repository.save(evaluationHeader);
     }
 
@@ -27,8 +31,19 @@ public class EvaluationHeaderService {
     }
 
     // BUSCA TODOS HEADERS DE UM USER
-    public List<EvaluationHeader> getAllHeadersByUser(Long userId) {
-        return repository.findAllByUserId(userId);
+    public List<EvaluationHeaderUserDTO> getAllHeadersByUser(Long userId) {
+        List<EvaluationHeader> headers = repository.findAllHeadersByUserId(userId);
+        return headers.stream()
+                .map(header -> new EvaluationHeaderUserDTO(
+                        header.getId(),
+                        header.getInstitution(),
+                        header.getDepartment(),
+                        header.getCourse(),
+                        header.getClassroom(),
+                        header.getProfessor(),
+                        header.getCreationDate(),
+                        header.getUserId()))
+                .collect(Collectors.toList());
     }
 
     // ATUALIZA HEADER POR ID
@@ -50,8 +65,6 @@ public class EvaluationHeaderService {
             existingHeader.setInstructions(updatedHeader.getInstructions());
         if (updatedHeader.getImage() != null)
             existingHeader.setImage(updatedHeader.getImage());
-        if (updatedHeader.getCreationDate() != null)
-            existingHeader.setCreationDate(updatedHeader.getCreationDate());
 
         return repository.save(existingHeader);
     }

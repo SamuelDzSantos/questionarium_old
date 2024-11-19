@@ -10,5 +10,5 @@ import br.com.questionarium.evaluation_service.models.EvaluationHeader;
 @Repository
 public interface EvaluationHeaderRepository extends JpaRepository<EvaluationHeader, Long> {
     // List<EvaluationHeader> findByInstituicao(String instituicao); CASO PRECISE BUSCAR POR INSTITUICOES
-    List<EvaluationHeader> findAllByUserId(Long userId);
+    List<EvaluationHeader> findAllHeadersByUserId(Long userId);
 }
