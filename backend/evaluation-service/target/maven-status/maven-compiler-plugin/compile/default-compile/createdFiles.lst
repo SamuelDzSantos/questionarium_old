@@ -1,1 +1,3 @@
+br\com\questionarium\evaluation_service\model\EvaluationHeader.class
 br\com\questionarium\evaluation_service\EvaluationServiceApplication.class
+br\com\questionarium\evaluation_service\model\EvaluationHeader$EvaluationHeaderBuilder.class
