@@ -1,6 +1,5 @@
 package br.com.questionarium.evaluation_service.models;
 
-
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,27 +17,24 @@ public class EvaluationHeader {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String instituicao;
+    private String institution;
 
-    @Column(nullable = false)
-    private String departamento;
+    private String department;
 
-    @Column(nullable = false)
-    private String curso;
+    private String course;
 
-    @Column(nullable = false)
-    private String turma;
+    private String classroom;
 
-    @Column(nullable = false)
-    private String professor;
+    private String professor; //NOME QUE APARECE NO CABECALHO
 
     @Lob
-    private String instruction;
+    private String instructions;
 
     @Lob
     private byte[] image;
 
-    @Column(nullable = false)
     private LocalDate creationDate;
+
+    @Column(nullable = false)
+    private Long userId; // FK do usuário que criou
 }
