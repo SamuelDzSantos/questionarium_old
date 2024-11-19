@@ -1,2 +1,3 @@
 C:\Users\Alexandre\Documents\UFPR\TCC\Projeto\questionarium\backend\evaluation-service\src\main\java\br\com\questionarium\evaluation_service\EvaluationServiceApplication.java
-C:\Users\Alexandre\Documents\UFPR\TCC\Projeto\questionarium\backend\evaluation-service\src\main\java\br\com\questionarium\evaluation_service\model\EvaluationHeader.java
+C:\Users\Alexandre\Documents\UFPR\TCC\Projeto\questionarium\backend\evaluation-service\src\main\java\br\com\questionarium\evaluation_service\models\EvaluationHeader.java
+C:\Users\Alexandre\Documents\UFPR\TCC\Projeto\questionarium\backend\evaluation-service\src\main\java\br\com\questionarium\evaluation_service\repositories\EvaluationHeaderRepository.java
