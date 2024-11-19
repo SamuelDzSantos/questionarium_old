@@ -1,4 +1,4 @@
-package br.com.questionarium.evaluation_service.service;
+package br.com.questionarium.evaluation_service.services;
 
 import java.util.List;
 
