@@ -1,0 +1,11 @@
+br\com\questionarium\evaluation_service\repositories\EvaluationHeaderRepository.class
+br\com\questionarium\evaluation_service\services\EvaluationHeaderService.class
+br\com\questionarium\evaluation_service\controller\EvaluationHeaderController.class
+br\com\questionarium\evaluation_service\models\EvaluationHeader$EvaluationHeaderBuilder.class
+br\com\questionarium\evaluation_service\models\Evaluation.class
+br\com\questionarium\evaluation_service\models\EvaluationHeader.class
+br\com\questionarium\evaluation_service\controller\EvaluationController.class
+br\com\questionarium\evaluation_service\EvaluationServiceApplication.class
+br\com\questionarium\evaluation_service\services\EvaluationService.class
+br\com\questionarium\evaluation_service\dto\EvaluationHeaderUserDTO.class
+br\com\questionarium\evaluation_service\repositories\EvaluationRepository.class
