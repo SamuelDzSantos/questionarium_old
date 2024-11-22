@@ -16,10 +16,13 @@ public class Assessment {
     private Long id;
 
     @ElementCollection
-    private List<Long> questions;
+    private List<Long> questions; // [10, 11, 12, 13] -> Q = [12, 13, 10 ,11, ]
 
-    @Column
-    private String answerKey; // GABARITO DAS QUESTOES
+    @ElementCollection
+    @CollectionTable(name = "answer_key", joinColumns = @JoinColumn(name = "assessment_id"))
+    @MapKey(name = "answerKey")
+    @Column(name = "answer")
+    private String answerKey;
 
     private LocalDate creationDate;
 
