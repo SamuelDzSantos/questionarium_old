@@ -80,4 +80,32 @@ public class AssessmentController {
         return new ResponseEntity<>(updatedAssessment, HttpStatus.OK);
     }
 
+    // OBTEM A RESPOSTA DE UMA QUESTAO DE UMA AVALIACAO
+    @GetMapping("/{assessmentId}/questions/{questionId}/answer")
+    public ResponseEntity<String> getAnswer(
+            @PathVariable Long assessmentId,
+            @PathVariable Long questionId) {
+        String answer = assessmentService.getAnswer(assessmentId, questionId);
+        return ResponseEntity.ok(answer);
+    }
+
+    // ADICIONA OU ATUALIZA A RESPOSTA DE UMA QUESTAO DE UMA AVALIACAO
+    @PatchMapping("/{assessmentId}/questions/{questionId}/answer")
+    public ResponseEntity<Assessment> addOrUpdateAnswer(
+            @PathVariable Long assessmentId,
+            @PathVariable Long questionId,
+            @RequestBody String answer) {
+        Assessment updatedAssessment = assessmentService.addOrUpdateAnswer(assessmentId, questionId, answer);
+        return ResponseEntity.ok(updatedAssessment);
+    }
+
+    // REMOVE A RESPOSTA DE UMA QUESTAO DE UMA AVALIACAO
+    @DeleteMapping("/{assessmentId}/questions/{questionId}/answer")
+    public ResponseEntity<Assessment> removeAnswer(
+            @PathVariable Long assessmentId,
+            @PathVariable Long questionId) {
+        Assessment updatedAssessment = assessmentService.removeAnswer(assessmentId, questionId);
+        return ResponseEntity.ok(updatedAssessment);
+    }
+
 }
