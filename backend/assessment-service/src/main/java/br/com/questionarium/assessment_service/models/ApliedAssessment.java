@@ -1,7 +1,9 @@
 package br.com.questionarium.assessment_service.models;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -18,8 +20,11 @@ public class ApliedAssessment {
     @ElementCollection
     private List<Long> questions;
 
-    @Column
-    private String answerKey; // GABARITO DAS QUESTOES
+    @ElementCollection
+    @CollectionTable(name = "applied_answer_key", joinColumns = @JoinColumn(name = "applied_assessment_id"))
+    @MapKeyColumn(name = "question_id") // Define o nome da coluna para a chave do mapa
+    @Column(name = "answer") // Define o nome da coluna para o valor do mapa
+    private Map<Long, String> answerKey = new HashMap<>();
 
     private LocalDate creationDate;
     private LocalDate applicationDate;

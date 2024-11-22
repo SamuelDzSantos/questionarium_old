@@ -18,7 +18,7 @@ public class Assessment {
     private Long id;
 
     @ElementCollection
-    private List<Long> questions; // [10, 11, 12, 13] -> Q = [12, 13, 10 ,11, ]
+    private List<Long> questions;
 
     @ElementCollection
     @CollectionTable(name = "answer_key", joinColumns = @JoinColumn(name = "assessment_id"))
