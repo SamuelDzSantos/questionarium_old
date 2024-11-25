@@ -48,14 +48,23 @@ public class ApliedAssessmentService {
     }
 
     // BUSCAR 1 AVALIACAO APLICADA POR ID
-    public ApliedAssessment getApliedAssessmentById(Long id) {
-        return apliedAssessmentRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("ApliedAssessment not found with ID: " + id));
+    public ApliedAssessment getApliedAssessmentById(Long apliedAssessmentId) {
+        return apliedAssessmentRepository.findById(apliedAssessmentId)
+                .orElseThrow(() -> new EntityNotFoundException("ApliedAssessment not found with ID: " + apliedAssessmentId));
     }
 
     // BUSCA TODAS AVALIACOES APLICADAS DE UM USER
     public List<ApliedAssessment> getAllApliedAssessmentsByUserId(Long userId) {
         return apliedAssessmentRepository.findAllApliedAssessmentsByUserId(userId);
+    }
+
+    // ALTERAR STATUS PARA FALSE (DESATIVAR A AVALIAÇÃO)
+    public void deleteApliedAssessmentById(Long apliedAssessmentId) {
+        ApliedAssessment apliedAssessment = apliedAssessmentRepository.findById(apliedAssessmentId)
+                .orElseThrow(() -> new EntityNotFoundException("ApliedAssessment not found with ID: " + apliedAssessmentId));
+
+        apliedAssessment.setStatus(false);
+        apliedAssessmentRepository.save(apliedAssessment);
     }
 
 }
