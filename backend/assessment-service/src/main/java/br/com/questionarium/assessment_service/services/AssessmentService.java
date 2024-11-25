@@ -19,6 +19,11 @@ public class AssessmentService {
         return assessmentRepository.save(assessment);
     }
 
+    // PEGA TODAS AS AVALIACOES
+    public List<Assessment> getAllAssessments() {
+        return assessmentRepository.findAll();
+    }
+
     // PEGA UMA AVALIACAO POR ID
     public Assessment getAssessmentById(Long id) {
         return assessmentRepository.findById(id)
@@ -28,11 +33,6 @@ public class AssessmentService {
     // PEGA TODAS AVALIACOES DE 1 USER
     public List<Assessment> getAllAssessmentsByUserId(Long userId) {
         return assessmentRepository.findAllAssessmentsByUserId(userId);
-    }
-
-    // PEGA TODAS AS AVALIACOES
-    public List<Assessment> getAllAssessments() {
-        return assessmentRepository.findAll();
     }
 
     // DELETA AVALIACAO
