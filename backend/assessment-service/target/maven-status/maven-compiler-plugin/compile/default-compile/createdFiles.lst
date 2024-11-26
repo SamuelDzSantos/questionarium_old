@@ -4,9 +4,15 @@ br\com\questionarium\assessment_service\models\AssessmentHeader$AssessmentHeader
 br\com\questionarium\assessment_service\models\Assessment.class
 br\com\questionarium\assessment_service\services\AssessmentHeaderService.class
 br\com\questionarium\assessment_service\controller\AssessmentHeaderController.class
+br\com\questionarium\assessment_service\services\ApliedHeaderService.class
+br\com\questionarium\assessment_service\services\ApliedAssessmentService.class
+br\com\questionarium\assessment_service\repositories\ApliedHeaderRepository.class
 br\com\questionarium\assessment_service\AssessmentServiceApplication.class
 br\com\questionarium\assessment_service\repositories\AssessmentHeaderRepository.class
 br\com\questionarium\assessment_service\dto\AssessmentHeaderUserDTO.class
+br\com\questionarium\assessment_service\models\ApliedHeader.class
+br\com\questionarium\assessment_service\repositories\ApliedAssessmentRepository.class
 br\com\questionarium\assessment_service\services\AssessmentService.class
 br\com\questionarium\assessment_service\repositories\AssessmentRepository.class
+br\com\questionarium\assessment_service\controller\ApliedAssessmentController.class
 br\com\questionarium\assessment_service\models\AssessmentHeader.class
