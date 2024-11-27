@@ -3,9 +3,9 @@ package br.com.questionarium.assessment_service.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import br.com.questionarium.assessment_service.models.ApliedHeader;
+import br.com.questionarium.assessment_service.models.AppliedHeader;
 import br.com.questionarium.assessment_service.models.AssessmentHeader;
-import br.com.questionarium.assessment_service.repositories.ApliedHeaderRepository;
+import br.com.questionarium.assessment_service.repositories.AppliedHeaderRepository;
 import br.com.questionarium.assessment_service.repositories.AssessmentHeaderRepository;
 import jakarta.persistence.EntityNotFoundException;
 
@@ -13,24 +13,24 @@ import jakarta.persistence.EntityNotFoundException;
 public class ApliedHeaderService {
 
     @Autowired
-    private ApliedHeaderRepository apliedHeaderRepository;
+    private AppliedHeaderRepository apliedHeaderRepository;
 
     @Autowired
     private AssessmentHeaderRepository assessmentHeaderRepository;
 
-    public ApliedHeaderService(ApliedHeaderRepository apliedHeaderRepository,
+    public ApliedHeaderService(AppliedHeaderRepository apliedHeaderRepository,
             AssessmentHeaderRepository assessmentHeaderRepository) {
         this.apliedHeaderRepository = apliedHeaderRepository;
         this.assessmentHeaderRepository = assessmentHeaderRepository;
     }
 
     // CRIAR CABECALHO APLICADO
-    public ApliedHeader createApliedHeader(Long headerId, Long userId) {
+    public AppliedHeader createApliedHeader(Long headerId, Long userId) {
 
         AssessmentHeader originalHeader = assessmentHeaderRepository.findById(headerId)
                 .orElseThrow(() -> new EntityNotFoundException("Cabecalho nao encontrado com o id: " + headerId));
 
-        ApliedHeader apliedHeader = new ApliedHeader();
+        AppliedHeader apliedHeader = new AppliedHeader();
         apliedHeader.setInstitution(originalHeader.getInstitution());
         apliedHeader.setDepartment(originalHeader.getDepartment());
         apliedHeader.setCourse(originalHeader.getCourse());
@@ -45,7 +45,7 @@ public class ApliedHeaderService {
     }
 
     // BUSCAR 1 CABECALHO APLICADO POR ID
-    public ApliedHeader getApliedHeaderById(Long apliedHeaderId) {
+    public AppliedHeader getApliedHeaderById(Long apliedHeaderId) {
         return apliedHeaderRepository.findById(apliedHeaderId)
                 .orElseThrow(() -> new EntityNotFoundException("Cabecalho nao encontrado com o id: " + apliedHeaderId));
     }

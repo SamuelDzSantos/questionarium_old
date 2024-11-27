@@ -5,7 +5,7 @@ import java.time.LocalDate;
 import lombok.Data;
 
 @Data
-public class ApliedAssessmentRequest {
+public class AppliedAssessmentRequest {
     private Long assessmentId;
     private int quantity;
     private LocalDate applicationDate;

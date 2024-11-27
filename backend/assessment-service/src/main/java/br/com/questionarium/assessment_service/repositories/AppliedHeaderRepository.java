@@ -5,11 +5,11 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import br.com.questionarium.assessment_service.models.ApliedHeader;
+import br.com.questionarium.assessment_service.models.AppliedHeader;
 
 @Repository
-public interface ApliedHeaderRepository extends JpaRepository<ApliedHeader, Long> {
+public interface AppliedHeaderRepository extends JpaRepository<AppliedHeader, Long> {
 
-    List<ApliedHeader> findAllHeadersByUserId(Long userId);
+    List<AppliedHeader> findAllHeadersByUserId(Long userId);
 
 }
