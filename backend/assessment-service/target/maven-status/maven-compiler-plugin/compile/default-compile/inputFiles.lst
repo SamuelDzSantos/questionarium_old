@@ -2,6 +2,7 @@ C:\Users\Alexandre\Documents\UFPR\TCC\Projeto\questionarium\backend\assessment-s
 C:\Users\Alexandre\Documents\UFPR\TCC\Projeto\questionarium\backend\assessment-service\src\main\java\br\com\questionarium\assessment_service\controller\ApliedAssessmentController.java
 C:\Users\Alexandre\Documents\UFPR\TCC\Projeto\questionarium\backend\assessment-service\src\main\java\br\com\questionarium\assessment_service\controller\AssessmentController.java
 C:\Users\Alexandre\Documents\UFPR\TCC\Projeto\questionarium\backend\assessment-service\src\main\java\br\com\questionarium\assessment_service\controller\AssessmentHeaderController.java
+C:\Users\Alexandre\Documents\UFPR\TCC\Projeto\questionarium\backend\assessment-service\src\main\java\br\com\questionarium\assessment_service\dto\ApliedAssessmentRequest.java
 C:\Users\Alexandre\Documents\UFPR\TCC\Projeto\questionarium\backend\assessment-service\src\main\java\br\com\questionarium\assessment_service\dto\AssessmentHeaderUserDTO.java
 C:\Users\Alexandre\Documents\UFPR\TCC\Projeto\questionarium\backend\assessment-service\src\main\java\br\com\questionarium\assessment_service\models\ApliedAssessment.java
 C:\Users\Alexandre\Documents\UFPR\TCC\Projeto\questionarium\backend\assessment-service\src\main\java\br\com\questionarium\assessment_service\models\ApliedHeader.java

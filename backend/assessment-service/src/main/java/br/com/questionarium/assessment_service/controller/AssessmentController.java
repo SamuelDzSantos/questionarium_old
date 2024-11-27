@@ -82,10 +82,10 @@ public class AssessmentController {
 
     // OBTEM A RESPOSTA DE UMA QUESTAO DE UMA AVALIACAO
     @GetMapping("/{assessmentId}/questions/{questionId}/answer")
-    public ResponseEntity<String> getAnswer(
+    public ResponseEntity<Long> getAnswer(
             @PathVariable Long assessmentId,
             @PathVariable Long questionId) {
-        String answer = assessmentService.getAnswer(assessmentId, questionId);
+        Long answer = assessmentService.getAnswer(assessmentId, questionId);
         return ResponseEntity.ok(answer);
     }
 
@@ -94,7 +94,7 @@ public class AssessmentController {
     public ResponseEntity<Assessment> addOrUpdateAnswer(
             @PathVariable Long assessmentId,
             @PathVariable Long questionId,
-            @RequestBody String answer) {
+            @RequestBody Long answer) {
         Assessment updatedAssessment = assessmentService.addOrUpdateAnswer(assessmentId, questionId, answer);
         return ResponseEntity.ok(updatedAssessment);
     }

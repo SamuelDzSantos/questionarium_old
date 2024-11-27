@@ -49,7 +49,7 @@ public class AssessmentService {
             assessment.getQuestions().add(questionId);
 
             // ATUALIZA O GABARITO DA QUESTAO COM A RESPOSTA PADRAO
-            addOrUpdateAnswer(assessmentId, questionId, "A");// ***********ARRUMAR PARA PASSAR A RESPOSTA***********
+            addOrUpdateAnswer(assessmentId, questionId, null);// ***********ARRUMAR PARA PASSAR A RESPOSTA***********
 
             return assessmentRepository.save(assessment);
         }
@@ -91,7 +91,7 @@ public class AssessmentService {
     }
 
     // ADICIONA OU ATUALIZA RESPOSTA DE UMA QUESTAO
-    public Assessment addOrUpdateAnswer(Long assessmentId, Long questionId, String answer) {
+    public Assessment addOrUpdateAnswer(Long assessmentId, Long questionId, Long answer) {
         Assessment assessment = assessmentRepository.findById(assessmentId)
                 .orElseThrow(() -> new RuntimeException("Avaliação não encontrada com o ID: " + assessmentId));
 
@@ -111,7 +111,7 @@ public class AssessmentService {
     }
 
     // PEGA RESPOSTA DE UMA QUESTAO
-    public String getAnswer(Long assessmentId, Long questionId) {
+    public Long getAnswer(Long assessmentId, Long questionId) {
         Assessment assessment = assessmentRepository.findById(assessmentId)
                 .orElseThrow(() -> new RuntimeException("Avaliação não encontrada com o ID: " + assessmentId));
 
