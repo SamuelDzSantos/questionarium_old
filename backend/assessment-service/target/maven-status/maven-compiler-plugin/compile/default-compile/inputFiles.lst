@@ -8,6 +8,7 @@ C:\Users\Alexandre\Documents\UFPR\TCC\Projeto\questionarium\backend\assessment-s
 C:\Users\Alexandre\Documents\UFPR\TCC\Projeto\questionarium\backend\assessment-service\src\main\java\br\com\questionarium\assessment_service\models\AppliedHeader.java
 C:\Users\Alexandre\Documents\UFPR\TCC\Projeto\questionarium\backend\assessment-service\src\main\java\br\com\questionarium\assessment_service\models\Assessment.java
 C:\Users\Alexandre\Documents\UFPR\TCC\Projeto\questionarium\backend\assessment-service\src\main\java\br\com\questionarium\assessment_service\models\AssessmentHeader.java
+C:\Users\Alexandre\Documents\UFPR\TCC\Projeto\questionarium\backend\assessment-service\src\main\java\br\com\questionarium\assessment_service\rabbit\RabbitMQConfig.java
 C:\Users\Alexandre\Documents\UFPR\TCC\Projeto\questionarium\backend\assessment-service\src\main\java\br\com\questionarium\assessment_service\repositories\AppliedAssessmentRepository.java
 C:\Users\Alexandre\Documents\UFPR\TCC\Projeto\questionarium\backend\assessment-service\src\main\java\br\com\questionarium\assessment_service\repositories\AppliedHeaderRepository.java
 C:\Users\Alexandre\Documents\UFPR\TCC\Projeto\questionarium\backend\assessment-service\src\main\java\br\com\questionarium\assessment_service\repositories\AssessmentHeaderRepository.java
