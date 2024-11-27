@@ -10,7 +10,7 @@ import br.com.questionarium.assessment_service.repositories.AssessmentHeaderRepo
 import jakarta.persistence.EntityNotFoundException;
 
 @Service
-public class ApliedHeaderService {
+public class AppliedHeaderService {
 
     @Autowired
     private AppliedHeaderRepository apliedHeaderRepository;
@@ -18,7 +18,7 @@ public class ApliedHeaderService {
     @Autowired
     private AssessmentHeaderRepository assessmentHeaderRepository;
 
-    public ApliedHeaderService(AppliedHeaderRepository apliedHeaderRepository,
+    public AppliedHeaderService(AppliedHeaderRepository apliedHeaderRepository,
             AssessmentHeaderRepository assessmentHeaderRepository) {
         this.apliedHeaderRepository = apliedHeaderRepository;
         this.assessmentHeaderRepository = assessmentHeaderRepository;

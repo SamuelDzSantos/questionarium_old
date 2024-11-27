@@ -9,6 +9,8 @@ import java.util.List;
 @Repository
 public interface AppliedAssessmentRepository extends JpaRepository<AppliedAssessment, Long> {
 
-    List<AppliedAssessment> findAllApliedAssessmentsByUserId(Long userId);
+    List<AppliedAssessment> findAllAppliedAssessmentsByUserId(Long userId);
+
+    List<AppliedAssessment> findAllByUserIdAndStatus(Long userId, boolean status);
 
 }
