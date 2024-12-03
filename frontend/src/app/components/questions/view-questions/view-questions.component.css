@@ -1,0 +1,127 @@
+.container {
+    padding: 20px;
+    font-family: Arial, sans-serif;
+  }
+  
+  
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    margin: 25px;
+  }
+  
+  h1 {
+    margin: 0;
+    font-size: 24px;
+    text-align: center;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  
+  .btn-new-question {
+    padding: 10px 20px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    position: absolute;
+    right: 0;
+  }
+  
+  .btn-new-question:hover {
+    background-color: #218838;
+  }
+  
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 20px;
+    padding: 10px;
+    justify-content: center;
+    background-color: #002436;
+    color: white;
+    border-radius: 10px;
+  }
+  
+  .filter-group {
+    display: flex;
+    flex-direction: row;
+  }
+  
+  .form-select {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    margin-left: 5px;
+  }
+  
+  .search {
+    display: flex;
+    align-items: center;
+    gap: 0;
+  }
+  
+  .search input {
+    flex: 1;
+    padding: 8px;
+    border-radius: 5px 0 0 5px;
+    font-size: 14px;
+    box-sizing: border-box;
+    width: 300px;
+  }
+  
+  .search .btn-search {
+    padding: 8px 15px;
+    background-color: #007bff;
+    color: white;
+    border-left: none;
+    border-radius: 0 5px 5px 0;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  
+  .search .btn-search:hover {
+    background-color: #0056b3;
+  }
+  
+  
+  .questions {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+  }
+  
+  .question-card {
+    background-color: #D9D9D9;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 15px;
+    text-align: center;
+  }
+  
+  .assuntos {
+    text-align: left;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  .btn-view {
+    margin-top: 10px;
+    padding: 8px 15px;
+    background-color: #002436;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  

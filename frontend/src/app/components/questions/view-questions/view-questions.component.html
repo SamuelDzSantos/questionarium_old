@@ -1,0 +1,61 @@
+<div class="container">
+    <div class="header">
+        <h1>Questões</h1>
+        <button class="btn-new-question" routerLink="/questions/criar">
+          <span>+ Nova Questão</span>
+        </button>
+      </div>
+    <div class="filters">
+      <div class="filter-group">
+        <label for="disciplina">Disciplina:</label>
+        <select id="disciplina" class="form-select">
+          <option>Selecione uma opção</option>
+          <!-- Adicione opções dinamicamente -->
+        </select>
+      </div>
+      <div class="filter-group">
+        <label for="assunto">Assunto:</label>
+        <select id="assunto" class="form-select">
+          <option>Selecione uma opção</option>
+          <!-- Adicione opções dinamicamente -->
+        </select>
+      </div>
+      <div class="filter-group">
+        <label for="dificuldade">Dificuldade:</label>
+        <select id="dificuldade" class="form-select">
+          <option>Selecione uma opção</option>
+          <!-- Adicione opções dinamicamente -->
+        </select>
+      </div>
+      <div class="filter-group">
+        <label for="tipo">Tipo de questão:</label>
+        <select id="tipo" class="form-select">
+          <option>Selecione uma opção</option>
+          <!-- Adicione opções dinamicamente -->
+        </select>
+      </div>
+      <div class="filter-group">
+        <label for="nivel">Nível:</label>
+        <select id="nivel" class="form-select">
+          <option>Selecione uma opção</option>
+          <!-- Adicione opções dinamicamente -->
+        </select>
+      </div>
+      <div class="filter-group search">
+        <input type="text" placeholder="Pesquisar..." />
+        <button class="btn-search">🔍</button>
+      </div>      
+    </div>
+
+    <div class="questions">
+      <div class="question-card" *ngFor="let question of questions">
+        <h3>Disciplina</h3>
+        <div class="assuntos">
+          <span>Assuntos</span>
+        </div>
+        <p>{{ question.description }}</p>
+        <button class="btn-view">Visualizar</button>
+      </div>
+    </div>
+  </div>
+  
