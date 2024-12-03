@@ -20,12 +20,6 @@ public class Assessment {
     @ElementCollection
     private List<Long> questions;
 
-    @ElementCollection
-    @CollectionTable(name = "answer_key", joinColumns = @JoinColumn(name = "assessment_id"))
-    @MapKeyColumn(name = "question_id") // Define o nome da coluna para a chave do mapa
-    @Column(name = "answer") // Define o nome da coluna para o valor do mapa
-    private Map<Long, Long> answerKey = new HashMap<>();
-
     private LocalDate creationDate;
 
     @Column(nullable = false)

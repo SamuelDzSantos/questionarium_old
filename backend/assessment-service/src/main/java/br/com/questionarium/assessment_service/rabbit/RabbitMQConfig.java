@@ -1,8 +1,8 @@
 package br.com.questionarium.assessment_service.rabbit;
 
-import org.springframework.amqp.core.Binding;
-import org.springframework.amqp.core.BindingBuilder;
-import org.springframework.amqp.core.Queue;
+// import org.springframework.amqp.core.Binding;
+// import org.springframework.amqp.core.BindingBuilder;
+// import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.AsyncRabbitTemplate;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -29,15 +29,15 @@ public class RabbitMQConfig {
         return new Jackson2JsonMessageConverter();
     }
 
-    @Bean
-    Queue questionQueue() {
-        return new Queue("question-queue", true);
-    }
+    // @Bean
+    // Queue questionQueue() {
+    //     return new Queue("question-queue", true);
+    // }
 
-    @Bean
-    Binding questionQueueBinding() {
-        return BindingBuilder.bind(questionQueue())
-                .to(defaultExchange())
-                .with("question.#");
-    }
+    // @Bean
+    // Binding questionQueueBinding() {
+    //     return BindingBuilder.bind(questionQueue())
+    //             .to(defaultExchange())
+    //             .with("question.#");
+    // }
 }

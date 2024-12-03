@@ -52,19 +52,19 @@ public class AssessmentController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    // ADICIONA QUESTAO NO FINAL DA LISTA DE QUESTOES DE UMA AVALIACAO
-    @PutMapping("/{assessmentId}/questions/add/{questionId}")
-    public ResponseEntity<Assessment> addQuestion(@PathVariable Long assessmentId, @PathVariable Long questionId) {
-        Assessment updatedAssessment = assessmentService.addQuestion(assessmentId, questionId);
-        return new ResponseEntity<>(updatedAssessment, HttpStatus.OK);
-    }
+    // // ADICIONA QUESTAO NO FINAL DA LISTA DE QUESTOES DE UMA AVALIACAO
+    // @PutMapping("/{assessmentId}/questions/add/{questionId}")
+    // public ResponseEntity<Assessment> addQuestion(@PathVariable Long assessmentId, @PathVariable Long questionId) {
+    //     Assessment updatedAssessment = assessmentService.addQuestion(assessmentId, questionId);
+    //     return new ResponseEntity<>(updatedAssessment, HttpStatus.OK);
+    // }
 
-    // REMOVE QUESTAO DA LISTA DE QUESTOES DE UMA AVALIACAO
-    @PutMapping("/{assessmentId}/questions/remove/{questionId}")
-    public ResponseEntity<Assessment> removeQuestion(@PathVariable Long assessmentId, @PathVariable Long questionId) {
-        Assessment updatedAssessment = assessmentService.removeQuestion(assessmentId, questionId);
-        return new ResponseEntity<>(updatedAssessment, HttpStatus.OK);
-    }
+    // // REMOVE QUESTAO DA LISTA DE QUESTOES DE UMA AVALIACAO
+    // @PutMapping("/{assessmentId}/questions/remove/{questionId}")
+    // public ResponseEntity<Assessment> removeQuestion(@PathVariable Long assessmentId, @PathVariable Long questionId) {
+    //     Assessment updatedAssessment = assessmentService.removeQuestion(assessmentId, questionId);
+    //     return new ResponseEntity<>(updatedAssessment, HttpStatus.OK);
+    // }
 
     // ALTERA ORDEM DAS QUESTOES NA LISTA DE QUESTOES DE UMA AVALIACAO
     @PatchMapping("/{id}/reorder")
@@ -80,32 +80,32 @@ public class AssessmentController {
         return new ResponseEntity<>(updatedAssessment, HttpStatus.OK);
     }
 
-    // OBTEM A RESPOSTA DE UMA QUESTAO DE UMA AVALIACAO
-    @GetMapping("/{assessmentId}/questions/{questionId}/answer")
-    public ResponseEntity<Long> getAnswer(
-            @PathVariable Long assessmentId,
-            @PathVariable Long questionId) {
-        Long answer = assessmentService.getAnswer(assessmentId, questionId);
-        return ResponseEntity.ok(answer);
-    }
+    // // OBTEM A RESPOSTA DE UMA QUESTAO DE UMA AVALIACAO
+    // @GetMapping("/{assessmentId}/questions/{questionId}/answer")
+    // public ResponseEntity<Long> getAnswer(
+    //         @PathVariable Long assessmentId,
+    //         @PathVariable Long questionId) {
+    //     Long answer = assessmentService.getAnswer(assessmentId, questionId);
+    //     return ResponseEntity.ok(answer);
+    // }
 
-    // ADICIONA OU ATUALIZA A RESPOSTA DE UMA QUESTAO DE UMA AVALIACAO
-    @PatchMapping("/{assessmentId}/questions/{questionId}/answer")
-    public ResponseEntity<Assessment> addOrUpdateAnswer(
-            @PathVariable Long assessmentId,
-            @PathVariable Long questionId,
-            @RequestBody Long answer) {
-        Assessment updatedAssessment = assessmentService.addOrUpdateAnswer(assessmentId, questionId, answer);
-        return ResponseEntity.ok(updatedAssessment);
-    }
+    // // ADICIONA OU ATUALIZA A RESPOSTA DE UMA QUESTAO DE UMA AVALIACAO
+    // @PatchMapping("/{assessmentId}/questions/{questionId}/answer")
+    // public ResponseEntity<Assessment> addOrUpdateAnswer(
+    //         @PathVariable Long assessmentId,
+    //         @PathVariable Long questionId,
+    //         @RequestBody Long answer) {
+    //     Assessment updatedAssessment = assessmentService.addOrUpdateAnswer(assessmentId, questionId, answer);
+    //     return ResponseEntity.ok(updatedAssessment);
+    // }
 
-    // REMOVE A RESPOSTA DE UMA QUESTAO DE UMA AVALIACAO
-    @DeleteMapping("/{assessmentId}/questions/{questionId}/answer")
-    public ResponseEntity<Assessment> removeAnswer(
-            @PathVariable Long assessmentId,
-            @PathVariable Long questionId) {
-        Assessment updatedAssessment = assessmentService.removeAnswer(assessmentId, questionId);
-        return ResponseEntity.ok(updatedAssessment);
-    }
+    // // REMOVE A RESPOSTA DE UMA QUESTAO DE UMA AVALIACAO
+    // @DeleteMapping("/{assessmentId}/questions/{questionId}/answer")
+    // public ResponseEntity<Assessment> removeAnswer(
+    //         @PathVariable Long assessmentId,
+    //         @PathVariable Long questionId) {
+    //     Assessment updatedAssessment = assessmentService.removeAnswer(assessmentId, questionId);
+    //     return ResponseEntity.ok(updatedAssessment);
+    // }
 
 }
