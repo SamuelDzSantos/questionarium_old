@@ -1,15 +1,18 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { GerarQuestaoComponent } from '../../../modal/gerar-questao/gerar-questao.component';
 
 @Component({
   selector: 'app-create-question',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, GerarQuestaoComponent],
   templateUrl: './create-question.component.html',
   styleUrl: './create-question.component.css'
 })
 export class CreateQuestionComponent {
+
+  modalEnabled = false;
 
   alternativeLabels = ['A', 'B', 'C', 'D', 'E'];
 
@@ -31,6 +34,7 @@ export class CreateQuestionComponent {
   }
 
   generateQuestion() {
+    this.mostrarModal();
     console.log('Gerar questão automaticamente');
   }
 
@@ -40,5 +44,13 @@ export class CreateQuestionComponent {
 
   cancel() {
     console.log('Ação cancelada');
+  }
+
+  public mostrarModal() {
+    this.modalEnabled = true;
+  }
+
+  public fecharModal() {
+    this.modalEnabled = false;
   }
 }

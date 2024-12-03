@@ -16,7 +16,7 @@
     font-weight: bold;
     margin-top: 1%;
     width: 95%;
-    margin-bottom: 10%;
+    margin-bottom: 2%;
 }
 
 .cabeçalho_area {
@@ -57,7 +57,7 @@
     display: flex;
     justify-content: end;
     margin-top: 0.5%;
-    height: 50%;
+    height: 30%;
 }
 
 .button_area button {
@@ -95,4 +95,76 @@
 .button_area button:last-child {
     background-color: #002436;
     color: white;
+}
+
+.question_area {
+    width: 90%;
+    margin-bottom: 15%;
+}
+
+
+.question {
+    padding: 15px;
+    font-weight: 700;
+    box-sizing: border-box;
+    border-radius: 10px;
+    box-shadow: 3px 3px rgba(0, 0, 0, 0.1), -1em 0 .4em rgba(0, 0, 0, 0.1);
+    height: 30%;
+    margin-top: 30px;
+
+}
+
+.question div {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+.question div div {
+    width: 7%;
+    height: 40px;
+    border-radius: 10px;
+}
+
+
+.question span:nth-child(2) {
+    overflow: hidden;
+    width: 70%;
+}
+
+.question img {
+    position: inherit;
+    height: 50px;
+}
+
+.bottom-button-area {
+    width: 90%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 5%;
+}
+
+.bottom-button-area button:first-child {
+    margin-right: 70%;
+    margin-left: 0%;
+    width: 200px;
+    background-color: #6BE061;
+}
+
+.bottom-button-area button {
+    margin-left: 2%;
+    width: 5%;
+    height: 40px;
+    width: 120px;
+    border: none;
+    border-radius: 10px;
+    background-color: #78F05A;
+}
+
+.bottom-button-area button:nth-child(2) {
+    background-color: #FF8A8A;
 }

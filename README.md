@@ -13,7 +13,7 @@ https://questionarium.onrender.com
 | User Service        | 14002  |
 | Email Service       | 14003  |
 | Question Service    | 14004  |
-| Evaluation Service  | 14005  |
+| Assessment Service  | 14005  |
 | Report Service      | 14006  |
 
 ### 🖥️ Frontend

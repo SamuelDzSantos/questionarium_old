@@ -1,0 +1,38 @@
+<div class="modal-backdrop">
+    <div class="modal-container">
+        <h2>Criar Cabeçalho</h2>
+        <form (ngSubmit)="saveHeader()">
+            <div class="form-group">
+                <label for="institution">Instituição:</label>
+                <input id="institution" type="text" [(ngModel)]="header.institution" name="institution" required>
+            </div>
+
+            <div class="form-group">
+                <label for="course">Curso:</label>
+                <input id="course" type="text" [(ngModel)]="header.course" name="course" required>
+            </div>
+
+            <!-- <div class="form-group">
+                <label for="discipline">Disciplina:</label>
+                <input id="discipline" type="text" [(ngModel)]="header.discipline" name="discipline" required>
+            </div> -->
+
+            <div class="form-group">
+                <label for="professor">Professor:</label>
+                <input id="professor" type="text" [(ngModel)]="header.professor" name="professor" required>
+            </div>
+
+            <button type="button" class="add-field-btn" (click)="addField()">+ Novo Campo</button>
+
+            <div class="form-group">
+                <label for="instructions">Instruções:</label>
+                <textarea id="instructions" [(ngModel)]="header.instructions" name="instructions"></textarea>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="save-btn">Salvar</button>
+                <button type="button" class="cancel-btn" (click)="closeModal()">Cancelar</button>
+            </div>
+        </form>
+    </div>
+</div>

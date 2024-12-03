@@ -32,7 +32,7 @@ export const defaultCanActivateGuard: CanActivateFn = (route, state) => {
                     if (user != null) {
                         console.log("Usuário logado " + user.name + " tentou acessar o caminho: " + route.url.toString() + "permitido apenas para usuários não logados , redirecionando para Home!");
                     }
-                    return user == null ? true : router.createUrlTree(["home"])
+                  return true//  return user == null ? true : router.createUrlTree(["home"])
                 }
                 // Confere url com base nas urls restantes ( urls permitidas apenas para usuários logados) se não estiver logado redireciona para a tela de login,
                 // caso constrário permite o acesso.
@@ -40,7 +40,7 @@ export const defaultCanActivateGuard: CanActivateFn = (route, state) => {
                     if (user == null) {
                         console.log("Usuário não logado tentou acessar o caminho: " + route.url.toString() + "permitido apenas para usuários logados , redirecionando para Home!");
                     }
-                    return user == null ? router.createUrlTree(["login"]) : true;
+                    return true //return user == null ? router.createUrlTree(["login"]) : true;
                 }
             }
             ))

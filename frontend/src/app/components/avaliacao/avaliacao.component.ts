@@ -1,5 +1,7 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { AssessmentHeaderService } from '../../services/assessment-header.service';
+import { AssessmentHeader } from '../../types/dto/AssessmentHeader';
 
 @Component({
   selector: 'app-avaliacao',
@@ -11,9 +13,11 @@ import { RouterModule } from '@angular/router';
 export class AvaliacaoComponent {
 
   @ViewChild('titulo') titulo!: ElementRef<HTMLElement>;
-
+  
   montar() {
     this.titulo.nativeElement.textContent = "Selecione uma avaliação para montagem";
   }
+
+
 
 }

@@ -1,0 +1,53 @@
+<div class="modal-backdrop">
+  <div class="modal-container">
+    <div class="modal-header">
+      <h2>Gerar Questão</h2>
+      <button class="close-button" (click)="closeModal()">X</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label for="discipline">Disciplina:</label>
+        <select id="discipline" [(ngModel)]="selectedDiscipline" (change)="loadSubjects()">
+          <option value="" disabled selected>Selecione uma opção</option>
+          <option *ngFor="let discipline of disciplines" [value]="discipline">
+            {{ discipline }}
+          </option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="questionType">Tipo de Questão:</label>
+        <select id="questionType" [(ngModel)]="selectedQuestionType">
+          <option value="" disabled selected>Selecione uma opção</option>
+          <option *ngFor="let type of questionTypes" [value]="type">
+            {{ type }}
+          </option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="subjects">Assunto(s):</label>
+        <select id="subjects" [(ngModel)]="selectedSubject" [disabled]="!subjects.length">
+          <option value="" disabled selected>Selecione uma opção</option>
+          <option *ngFor="let subject of subjects" [value]="subject">
+            {{ subject }}
+          </option>
+        </select>
+      </div>
+
+      <button (click)="generateQuestion()">Gerar</button>
+
+      <div class="visualization">
+        <label for="visualization">Visualização:</label>
+        <textarea id="visualization" rows="10" readonly>
+            {{ generatedQuestion }}
+          </textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button (click)="acceptQuestion()">Aceitar</button>
+      <button (click)="generateAnother()">Gerar Outra</button>
+      <button (click)="cancel()">Cancelar</button>
+    </div>
+  </div>
+</div>

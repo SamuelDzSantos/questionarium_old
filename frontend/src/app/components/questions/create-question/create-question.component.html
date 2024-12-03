@@ -1,74 +1,68 @@
 <div class="container">
-    <div class="header" style="text-align: center;">
-      <h1>Adicionar Questão</h1>
+  <div class="header" style="text-align: center;">
+    <h1>Adicionar Questão</h1>
+  </div>
+
+  <div class="filters">
+    <div class="filter-group">
+      <label for="disciplina">Disciplina:</label>
+      <select id="disciplina" class="form-select">
+        <option>Selecione uma opção</option>
+        <!-- Adicione opções dinamicamente -->
+      </select>
     </div>
-    
-    <div class="filters">
-      <div class="filter-group">
-        <label for="disciplina">Disciplina:</label>
-        <select id="disciplina" class="form-select">
-          <option>Selecione uma opção</option>
-          <!-- Adicione opções dinamicamente -->
-        </select>
-      </div>
-      <div class="filter-group">
-        <label for="assunto">Assunto:</label>
-        <select id="assunto" class="form-select">
-          <option>Selecione uma opção</option>
-          <!-- Adicione opções dinamicamente -->
-        </select>
-      </div>
-      <div class="filter-group">
-        <label for="dificuldade">Dificuldade:</label>
-        <select id="dificuldade" class="form-select">
-          <option>Selecione uma opção</option>
-          <!-- Adicione opções dinamicamente -->
-        </select>
-      </div>
-      <div class="filter-group">
-        <label for="tipo">Tipo de questão:</label>
-        <select id="tipo" class="form-select">
-          <option>Selecione uma opção</option>
-          <!-- Adicione opções dinamicamente -->
-        </select>
-      </div>
-      <div class="filter-group">
-        <label for="nivel">Nível:</label>
-        <select id="nivel" class="form-select">
-          <option>Selecione uma opção</option>
-          <!-- Adicione opções dinamicamente -->
-        </select>
+    <div class="filter-group">
+      <label for="assunto">Assunto:</label>
+      <select id="assunto" class="form-select">
+        <option>Selecione uma opção</option>
+        <!-- Adicione opções dinamicamente -->
+      </select>
+    </div>
+    <div class="filter-group">
+      <label for="dificuldade">Dificuldade:</label>
+      <select id="dificuldade" class="form-select">
+        <option>Selecione uma opção</option>
+        <!-- Adicione opções dinamicamente -->
+      </select>
+    </div>
+    <div class="filter-group">
+      <label for="tipo">Tipo de questão:</label>
+      <select id="tipo" class="form-select">
+        <option>Selecione uma opção</option>
+        <!-- Adicione opções dinamicamente -->
+      </select>
+    </div>
+    <div class="filter-group">
+      <label for="nivel">Nível:</label>
+      <select id="nivel" class="form-select">
+        <option>Selecione uma opção</option>
+        <!-- Adicione opções dinamicamente -->
+      </select>
+    </div>
+  </div>
+
+  <div class="add-question-form">
+    <label for="enunciado">ENUNCIADO:</label>
+    <textarea id="enunciado" [(ngModel)]="question.description" rows="5"
+      placeholder="Escreva o enunciado aqui..."></textarea>
+
+    <div class="alternatives">
+      <div class="alternative" *ngFor="let alternative of question.alternatives; let i = index">
+        <input type="checkbox" [(ngModel)]="alternative.isCorrect" (change)="ensureSingleCorrect(i)" />
+        <label for="alternative-{{i}}" style="margin-right: 5px;"> {{alternativeLabels[i]}})</label>
+        <textarea id="alternative-{{i}}" type="text" [(ngModel)]="alternative.text" placeholder="Escreva a alternativa"
+          rows="1"></textarea>
       </div>
     </div>
-  
-    <div class="add-question-form">
-      <label for="enunciado">ENUNCIADO:</label>
-      <textarea id="enunciado" [(ngModel)]="question.description" rows="5" placeholder="Escreva o enunciado aqui..."></textarea>
-  
-      <div class="alternatives">
-        <div class="alternative" *ngFor="let alternative of question.alternatives; let i = index">
-          <input 
-            type="checkbox" 
-            [(ngModel)]="alternative.isCorrect" 
-            (change)="ensureSingleCorrect(i)" 
-          />
-          <label for="alternative-{{i}}" style="margin-right: 5px;"> {{alternativeLabels[i]}})</label>
-          <textarea 
-            id="alternative-{{i}}" 
-            type="text" 
-            [(ngModel)]="alternative.text" 
-            placeholder="Escreva a alternativa"
-            rows="1"
-          ></textarea>
-        </div>
-      </div>
-  
-      <button class="btn-generate" (click)="generateQuestion()">Gerar Automaticamente</button>
-    </div>
-  
+
+    <button class="btn-generate" (click)="generateQuestion()">Gerar Automaticamente</button>
     <div class="actions">
       <button class="btn-save" (click)="saveQuestion()">Salvar</button>
       <button class="btn-cancel" (click)="cancel()">Cancelar</button>
     </div>
   </div>
-  
+
+
+  <app-gerar-questao-modal [style.display]="modalEnabled ? 'block' :'none'"
+    (closeModalEvent)="fecharModal()"></app-gerar-questao-modal>
+</div>

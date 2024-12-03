@@ -11,10 +11,12 @@ C:\Users\Alexandre\Documents\UFPR\TCC\Projeto\questionarium\backend\assessment-s
 C:\Users\Alexandre\Documents\UFPR\TCC\Projeto\questionarium\backend\assessment-service\src\main\java\br\com\questionarium\assessment_service\models\AssessmentHeader.java
 C:\Users\Alexandre\Documents\UFPR\TCC\Projeto\questionarium\backend\assessment-service\src\main\java\br\com\questionarium\assessment_service\models\StudentAssessment.java
 C:\Users\Alexandre\Documents\UFPR\TCC\Projeto\questionarium\backend\assessment-service\src\main\java\br\com\questionarium\assessment_service\rabbit\RabbitMQConfig.java
+C:\Users\Alexandre\Documents\UFPR\TCC\Projeto\questionarium\backend\assessment-service\src\main\java\br\com\questionarium\assessment_service\repositories\AppliedAssessmentRepository.java
 C:\Users\Alexandre\Documents\UFPR\TCC\Projeto\questionarium\backend\assessment-service\src\main\java\br\com\questionarium\assessment_service\repositories\AppliedQuestionRepository.java
 C:\Users\Alexandre\Documents\UFPR\TCC\Projeto\questionarium\backend\assessment-service\src\main\java\br\com\questionarium\assessment_service\repositories\AssessmentHeaderRepository.java
 C:\Users\Alexandre\Documents\UFPR\TCC\Projeto\questionarium\backend\assessment-service\src\main\java\br\com\questionarium\assessment_service\repositories\AssessmentRepository.java
 C:\Users\Alexandre\Documents\UFPR\TCC\Projeto\questionarium\backend\assessment-service\src\main\java\br\com\questionarium\assessment_service\repositories\StudentAssessmentRepository.java
+C:\Users\Alexandre\Documents\UFPR\TCC\Projeto\questionarium\backend\assessment-service\src\main\java\br\com\questionarium\assessment_service\services\AppliedAssessmentService.java
 C:\Users\Alexandre\Documents\UFPR\TCC\Projeto\questionarium\backend\assessment-service\src\main\java\br\com\questionarium\assessment_service\services\AssessmentHeaderService.java
 C:\Users\Alexandre\Documents\UFPR\TCC\Projeto\questionarium\backend\assessment-service\src\main\java\br\com\questionarium\assessment_service\services\AssessmentService.java
 C:\Users\Alexandre\Documents\UFPR\TCC\Projeto\questionarium\backend\assessment-service\src\main\java\br\com\questionarium\assessment_service\services\StudentAssessmentService.java

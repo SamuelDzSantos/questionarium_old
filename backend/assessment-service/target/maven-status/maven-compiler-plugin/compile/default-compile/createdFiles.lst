@@ -13,9 +13,11 @@ br\com\questionarium\assessment_service\services\StudentAssessmentService.class
 br\com\questionarium\assessment_service\AssessmentServiceApplication.class
 br\com\questionarium\assessment_service\repositories\AssessmentHeaderRepository.class
 br\com\questionarium\assessment_service\repositories\StudentAssessmentRepository.class
+br\com\questionarium\assessment_service\repositories\AppliedAssessmentRepository.class
 br\com\questionarium\assessment_service\dto\AssessmentHeaderUserDTO.class
 br\com\questionarium\assessment_service\services\AssessmentService.class
 br\com\questionarium\assessment_service\repositories\AssessmentRepository.class
 br\com\questionarium\assessment_service\dto\StudentAssessmentDTO.class
+br\com\questionarium\assessment_service\services\AppliedAssessmentService.class
 br\com\questionarium\assessment_service\models\StudentAssessment.class
 br\com\questionarium\assessment_service\models\AssessmentHeader.class
