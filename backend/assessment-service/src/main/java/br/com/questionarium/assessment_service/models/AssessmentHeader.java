@@ -30,8 +30,7 @@ public class AssessmentHeader {
     // @Lob
     private String instructions;
 
-    // @Lob
-    private byte[] image;
+    private String image;
 
     private LocalDate creationDate;
 

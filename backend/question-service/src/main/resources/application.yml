@@ -1,27 +1,32 @@
 server:
-    port: 14004
+    port: 14006
 
 spring:
+    application:
+        name: question-service
+
     rabbitmq:
         host: localhost
         username: admin
         password: admin
         port: 5672
-    
-    application:
-        name: question-service
+
     data:
         jdbc:
             dialect: postgresql
+
     datasource:
         url: jdbc:postgresql://localhost:5432/questionarium
-        password: postgres
+        password: admin
         username: postgres
 
     jpa:
         show-sql: true
         hibernate:
-            ddl-auto: create-drop
+          ddl-auto: update    
+        properties:
+            hibernate:
+                dialect: org.hibernate.dialect.PostgreSQLDialect
 
 logging:
     level:
