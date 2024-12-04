@@ -3,7 +3,7 @@ package br.com.questionarium.gateway.model;
 import jakarta.persistence.*;
 
 
-@Entity
+@//Entity
 @Table(name = "user_table")
 public class User {
 

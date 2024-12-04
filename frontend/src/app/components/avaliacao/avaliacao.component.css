@@ -1,86 +1,125 @@
-h1{
-    position: relative;
-    margin-left:50%;    
-    font-size:2em;
-    font-family: 'Inter';
+body {
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    padding: 0;
 }
 
-.topArea{
-    width:100%;
+h1 {
+    position: relative;
+    margin-left: 50%;
+    font-size: 2em;
+    font-family: 'Inter', sans-serif;
+    transform: translateX(-50%);
+}
+
+h2 {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.8em;
+    margin-bottom: 20px;
+}
+
+.topArea {
+    width: 100%;
     box-sizing: border-box;
-    padding-left: 25%;
+    padding: 0 20px;
     position: relative;
     display: flex;
-    justify-content: center;
-    gap:4%;
-}
-
-.topArea button{
-    width: 8%;
-    border: none;
-    border-radius: 3vmin;
-    display: flex;
-    justify-content:space-around;
+    justify-content: space-between;
     align-items: center;
-    font-size: 1.2em;
+    gap: 10px;
 }
 
-.novaButton{
-    background-color: #6BE061;
-}
-
-.montarButton{
-    background-color: #D9D9D9;
-}
-
-.inputArea{
-    border: 1px solid black;
+.inputArea {
+    border: 1px solid #ccc;
     display: flex;
-    padding: 0.2%;
+    padding: 8px;
     width: 45%;
-    justify-content: flex-end;
+    justify-content: space-between;
+    align-items: center;
 }
 
-.inputArea input{
+.inputArea input {
     border: none;
-    font-size: 1.2em;
-    flex:1;
+    font-size: 1.1em;
+    flex: 1;
+    padding: 5px;
 }
 
-.inputArea input:focus{
+.inputArea input:focus {
     outline: none;
 }
 
-.gridArea{
-    width: 78%;
-    background-color: red;
-    margin-left:11%;
-    margin-right:11%;
-    margin-bottom:10%;
-    margin-top: 3%;
-    height:55%;
-    display: grid;
-    grid-template-columns: 21.25% 21.25% 21.25% 21.25%;
-    gap:5%;
-    grid-template-rows: 47.5% 47.5%;
+.topArea button {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 15px;
+    border-radius: 3px;
+    font-size: 1.2em;
+    cursor: pointer;
 }
 
-.avaliacaoElement{
+.novaButton {
+    background-color: #6BE061;
+    color: #fff;
+}
+
+.montarButton {
+    background-color: #D9D9D9;
+    color: #333;
+}
+
+.gridArea {
+    font-family: 'Inter', sans-serif;
+    width: 85%;
+    margin: 20px auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    grid-template-rows: auto;
+}
+
+.avaliacaoElement {
     background-color: #C6D4FF;
     border-radius: 15px;
     display: flex;
     flex-direction: column;
     align-items: center;
+    padding: 15px;
 }
 
-.avaliacaoElement span{
-    margin-top: 10%;
-    font-size:1em;
+.avaliacaoElement span {
+    margin-top: 10px;
+    font-size: 1em;
+    text-align: center;
 }
 
-.avaliacaoElement div{
-    margin-top: 10%;
-    width:80%;
-    height:20%;
-    background: linear-gradient(90deg, rgba(255,154,158,1) 0%, rgba(250,208,196,1) 100%);
+.avaliacaoElement div {
+    margin-top: 10px;
+    width: 80%;
+    height: 30px;
+    background: linear-gradient(90deg, rgba(255, 154, 158, 1) 0%, rgba(250, 208, 196, 1) 100%);
+    border-radius: 8px;
 }
+
+.app-criar-cabecalho-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+}
+
+.app-criar-cabecalho-modal .modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 500px;
+    width: 100%;
+}
+

@@ -8,7 +8,7 @@ import { CreateQuestionComponent } from '../../components/questions';
   templateUrl: './gerar-questao.component.html',
   styleUrls: ['./gerar-questao.component.css'],
   standalone: true,
-  imports: [FormsModule, CreateQuestionComponent],
+  imports: [FormsModule],
 })
 export class GerarQuestaoComponent {
   disciplines: string[] = ['Matemática', 'Português', 'História']; // Exemplos

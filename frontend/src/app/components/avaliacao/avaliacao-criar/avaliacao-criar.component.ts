@@ -3,6 +3,8 @@ import { AssessmentHeader } from '../../../types/dto/AssessmentHeader';
 import { AssessmentHeaderService } from '../../../services/assessment-header.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { CriarCabecalhoComponent } from '../../../modal/criar-cabecalho/criar-cabecalho.component';
+import { ConsultarCabecalhoComponent } from '../../../modal/consultar-cabecalho/consultar-cabecalho.component';
 
 interface question {
   instituicao: string,
@@ -11,16 +13,30 @@ interface question {
 }
 
 
+
 @Component({
   selector: 'app-avaliacao-criar',
   standalone: true,
-  imports: [FormsModule,CommonModule],
+  imports: [FormsModule,CommonModule, CriarCabecalhoComponent, ConsultarCabecalhoComponent],
   templateUrl: './avaliacao-criar.component.html',
   styleUrl: './avaliacao-criar.component.css'
 })
 export class AvaliacaoCriarComponent {
   [x: string]: any;
   
+  modalCreateCabecalhoEnabled = false;
+  modalGetCabecalhoEnabled = false;
+
+  header: AssessmentHeader = {
+    id: 0,
+    institution: '',
+    department: '',
+    course: '',
+    classroom: '',
+    professor: '',
+    instructions: '',
+    userId: 0,
+  };
 
   questoes: question[] = [{
     instituicao: "InstituiçãoXX",
@@ -46,15 +62,24 @@ export class AvaliacaoCriarComponent {
     return s;
   }
 
-  header: AssessmentHeader = {
-    id: 0,
-    institution: '',
-    department: '',
-    course: '',
-    classroom: '',
-    professor: '',
-    instructions: '',
-    userId: 0
+  createHeader() {
+    this.mostrarModalCreate();
+  }
+
+  getHeaders() {
+    this.mostrarModal();
+  }
+
+  mostrarModalCreate() {
+    this.modalCreateCabecalhoEnabled = true;
+  }
+
+  mostrarModal() {
+    this.modalGetCabecalhoEnabled = true;
+  }
+
+  setHeader(header:AssessmentHeader){
+    this.header = header;
   }
 
   constructor(private headerService: AssessmentHeaderService) { }
@@ -73,4 +98,13 @@ export class AvaliacaoCriarComponent {
   loadHeader(): void{
     console.log("loadHeader")
   }
+
+  public fecharCreateCabecalhoModal() {
+    this.modalCreateCabecalhoEnabled = false;
+  }
+
+  public fecharGetCabecalhoModal() {
+    this.modalGetCabecalhoEnabled = false;
+  }
+
 }

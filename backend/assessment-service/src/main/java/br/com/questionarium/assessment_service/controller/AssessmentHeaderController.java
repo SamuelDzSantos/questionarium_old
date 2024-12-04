@@ -1,5 +1,6 @@
 package br.com.questionarium.assessment_service.controller;
 
+import br.com.questionarium.assessment_service.dto.AssessmentHeaderDTO;
 import br.com.questionarium.assessment_service.dto.AssessmentHeaderUserDTO;
 import br.com.questionarium.assessment_service.models.AssessmentHeader;
 import br.com.questionarium.assessment_service.services.AssessmentHeaderService;
@@ -21,10 +22,15 @@ public class AssessmentHeaderController {
 
     // CRIAR CABECALHO
     @PostMapping
-    public ResponseEntity<AssessmentHeader> createHeader(@RequestBody AssessmentHeader header) {
-        AssessmentHeader createdHeader = assessmentHeaderService.createHeader(header);
+    public ResponseEntity<AssessmentHeader> createHeader(@RequestBody AssessmentHeaderDTO assessmentHeaderDTO) {
+        AssessmentHeader createdHeader = assessmentHeaderService.createHeader(assessmentHeaderDTO);
         return new ResponseEntity<>(createdHeader, HttpStatus.CREATED);
     }
+
+    // @GetMapping("/test")
+    // public ResponseEntity<String> test(){
+    //     return ResponseEntity.ok("hi");
+    // }
 
     // MOSTRA 1 CABECALHO POR ID
     @GetMapping("/{id}")
@@ -46,15 +52,15 @@ public class AssessmentHeaderController {
         return new ResponseEntity<>(headers, HttpStatus.OK);
     }
 
-    // ALTERAR UM CABECALHO POR ID
-    @PutMapping("/{id}")
-    public ResponseEntity<AssessmentHeader> updateHeader(@PathVariable Long id, @RequestBody AssessmentHeader header) {
-        AssessmentHeader updatedHeader = assessmentHeaderService.updateHeader(id, header);
-        if (updatedHeader == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(updatedHeader, HttpStatus.OK);
-    }
+    // // ALTERAR UM CABECALHO POR ID
+    // @PutMapping("/{id}")
+    // public ResponseEntity<AssessmentHeader> updateHeader(@PathVariable Long id, @RequestBody AssessmentHeaderDTO assessmentHeaderDTO) {
+    //     AssessmentHeader updatedHeader = assessmentHeaderService.updateHeader(id, assessmentHeaderDTO);
+    //     if (updatedHeader == null) {
+    //         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    //     }
+    //     return new ResponseEntity<>(updatedHeader, HttpStatus.OK);
+    // }
 
     // DELETA 1 CABECALHO POR ID
     @DeleteMapping("/{id}")

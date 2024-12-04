@@ -1,7 +1,6 @@
 import { Routes } from '@angular/router';
 import { LoginComponent } from './components/login/login.component';
 import { HomeComponent } from './components/home/home.component';
-// import { CadastroComponent } from './components/cadastro/cadastro.component';
 import { EdicaoComponent } from './components/edicao/edicao.component';
 import { defaultCanActivateGuard } from './guards/default-can-activate.guard';
 import { MainComponent } from './components/main/main.component';
@@ -16,6 +15,7 @@ import { RecuperarSenhaComponent } from './components/recuperar-senha/recuperar-
 import { CreateQuestionComponent, ViewQuestionsComponent } from './components/questions';
 import { GerarQuestaoComponent } from './modal/gerar-questao/gerar-questao.component';
 import { CriarCabecalhoComponent } from './modal/criar-cabecalho/criar-cabecalho.component';
+import { CadastroComponent } from './components/cadastro/cadastro.component';
 
 export const routes: Routes = [
     {
@@ -24,7 +24,7 @@ export const routes: Routes = [
             { path: "", component: MainComponent },
             { path: "login", component: LoginComponent },
             { path: "home", component: HomeComponent },
-            // { path: "cadastro", component: CadastroComponent },
+            { path: "cadastro", component: CadastroComponent },
             {
                 path: "edicao",
                 children: [
@@ -53,8 +53,7 @@ export const routes: Routes = [
             { path: "turma", component: TurmaComponent },
             { path: "addturma", component: AddTurmaComponent },
             { path: "recuperar-senha", component: RecuperarSenhaComponent },
-            { path: "modal-gerar-questao", component: GerarQuestaoComponent},
-            { path: "criar-cabecalho", component: CriarCabecalhoComponent},
+            { path: "modal-criar-cabecalho", component: CriarCabecalhoComponent},
             { path: "**", component: PageNotFoundComponent },
         ],
         //canActivateChild: [defaultCanActivateGuard]
