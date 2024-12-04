@@ -10,11 +10,23 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Document(collation = "auth_users")
-public class AuthUser {
-    
+@Entity
+public class AuthUser implements UserDetails {
+
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Id
+    private Long id;
     private String email;
     private String password;
+    private Role role;
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority(role.getAsString()));
+    }
+
+    @Override
+    public String getUsername() {
+        return this.email;
+    }
 }

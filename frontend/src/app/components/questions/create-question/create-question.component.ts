@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { GerarQuestaoComponent } from '../../../modal/gerar-questao/gerar-questao.component';
 import { UserService } from '../../../services/user.service';
@@ -25,6 +25,7 @@ export class CreateQuestionComponent implements OnInit{
     private questionService: QuestionService,
     private router: Router,
     private route: ActivatedRoute,
+    private cdr: ChangeDetectorRef
   ) {}
 
   user$!: Observable<UserData | null>;
@@ -33,31 +34,13 @@ export class CreateQuestionComponent implements OnInit{
   questionId: number | null = null;
 
   question: Question | null = null;
-
-  ngOnInit(): void {
-    this.user$ = this.userService.getCurrentUser();
-    this.user$.subscribe((user) => this.userId = user == null ? 0 : user.id);
-    this.route.paramMap.subscribe(params => {
-      this.questionId = +params.get('id')!;
-      if (this.questionId) {
-        this.loadQuestion(this.questionId);
-      }
-    });
-  }
-
-  questionForm = new FormBuilder().group({
-    enunciado: ["", [Validators.required]],
-    alternativa: ["", [Validators.required]], explicacao: [""], isCorrectA: [],
-    alternativaB: [""], explicacaoB: [""], isCorrectB: [],
-    alternativaC: [""], explicacaoC: [""], isCorrectC: [],
-    alternativaD: [""], explicacaoD: [""], isCorrectD: [],
-    alternativaE: [""], explicacaoE: [""], isCorrectE: [],
-  })
+  
+  questionForm: any;
 
   niveis = [
-    { label: 'ENSINO FUNDAMENTAL', value: 0 },
-    { label: 'ENSINO MÉDIO', value: 1 },
-    { label: 'ENSINO SUPERIOR', value: 2 }
+    { label: 'ENSINO_FUNDAMENTAL', value: 0 },
+    { label: 'ENSINO_MÉDIO', value: 1 },
+    { label: 'ENSINO_SUPERIOR', value: 2 }
   ];
 
   categorias = [
@@ -68,6 +51,7 @@ export class CreateQuestionComponent implements OnInit{
 
   selectedNivel: number | null = null;
   selectedCategoria: number | null = null;
+  difficultyLevel: number | null = null;
 
   discursiva: boolean = false;
   numberLines: number = 0;
@@ -75,14 +59,59 @@ export class CreateQuestionComponent implements OnInit{
 
   modalEnabled = false;
 
-  loadQuestion(id: number){
-    this.questionService.getQuestionById(id).subscribe(response => {
-      this.question = response; 
-      console.log(response)
-      this.selectedCategoria = response.tagIds![0];
-      this.selectedNivel = response.educationLevel ==? "PRIVATE";
-    
+  ngOnInit(): void {
+    this.questionForm = new FormBuilder().group({
+      enunciado: ["", [Validators.required]],
+      alternativa: ["", [Validators.required]], explicacao: [""], isCorrectA: [0],
+      alternativaB: [""], explicacaoB: [""], isCorrectB: [0],
+      alternativaC: [""], explicacaoC: [""], isCorrectC: [0],
+      alternativaD: [""], explicacaoD: [""], isCorrectD: [0],
+      alternativaE: [""], explicacaoE: [""], isCorrectE: [0],
+    })
+    this.user$ = this.userService.getCurrentUser();
+    this.user$.subscribe((user) => this.userId = user == null ? 0 : user.id);
+    this.route.paramMap.subscribe(params => {
+      this.questionId = +params.get('id')!;
+      if (this.questionId) {
+        this.loadQuestion(this.questionId);
+      }
     });
+  }
+
+  loadQuestion(id: number): void {
+    this.questionService.getQuestionById(id).subscribe((response) => {
+      this.question = response;
+      this.selectedCategoria = response.tagIds![0];
+      this.selectedNivel = response.educationLevel;
+      this.discursiva = !response.multipleChoice;
+      this.access = response.accessLevel == 0 ? true : false;
+      this.difficultyLevel = response.difficultyLevel;
+  
+      const alternativesMap = new Map<string, Alternative>();
+      response.alternatives.forEach((alt) => {
+        alternativesMap.set(alt.option, alt);
+      });
+  
+      this.questionForm.patchValue({
+        enunciado: response.header.content,
+        alternativa: alternativesMap.get('A')?.description || '',
+        explicacao: alternativesMap.get('A')?.explanation || '',
+        isCorrectA: alternativesMap.get('A')?.isCorrect ? 1 : 0,
+        alternativaB: alternativesMap.get('B')?.description || '',
+        explicacaoB: alternativesMap.get('B')?.explanation || '',
+        isCorrectB: alternativesMap.get('B')?.isCorrect ? 2 : 0,
+        alternativaC: alternativesMap.get('C')?.description || '',
+        explicacaoC: alternativesMap.get('C')?.explanation || '',
+        isCorrectC: alternativesMap.get('C')?.isCorrect ? 3 : 0,
+        alternativaD: alternativesMap.get('D')?.description || '',
+        explicacaoD: alternativesMap.get('D')?.explanation || '',
+        isCorrectD: alternativesMap.get('D')?.isCorrect ? 4 : 0,
+        alternativaE: alternativesMap.get('E')?.description || '',
+        explicacaoE: alternativesMap.get('E')?.explanation || '',
+        isCorrectE: alternativesMap.get('E')?.isCorrect ? 5 : 0,
+      });
+    });
+    this.cdr.detectChanges();
   }
 
   generateQuestion() {
@@ -96,6 +125,7 @@ export class CreateQuestionComponent implements OnInit{
   onNivelChange(event: Event): void {
     const selectElement = event.target as HTMLSelectElement;
     this.selectedNivel = Number(selectElement.value);
+    console.log("onNivelChange")
   }
 
   onCategoriaChange(event: Event): void {
@@ -114,19 +144,22 @@ export class CreateQuestionComponent implements OnInit{
   }
 
   onSubmit() {
-
     const values = this.questionForm.value;
-    
+  
     const alternatives: Alternative[] = [
-      { id: null, option: 'A', description: values.alternativa!, imagePath: '', isCorrect: values.isCorrectA! === 1, explanation: values.explicacao!, question_id: null },
-      { id: null, option: 'B', description: values.alternativaB!, imagePath: '', isCorrect: values.isCorrectB! === 2, explanation: values.explicacaoB!, question_id: null },
-      { id: null, option: 'C', description: values.alternativaC!, imagePath: '', isCorrect: values.isCorrectC! === 3, explanation: values.explicacaoC!, question_id: null },
-      { id: null, option: 'D', description: values.alternativaD!, imagePath: '', isCorrect: values.isCorrectD! === 4, explanation: values.explicacaoD!, question_id: null },
-      { id: null, option: 'E', description: values.alternativaE!, imagePath: '', isCorrect: values.isCorrectE! === 5, explanation: values.explicacaoE!, question_id: null }
+      { id: this.question?.alternatives.find(a => a.option === 'A')?.id || null, option: 'A', description: values.alternativa!, imagePath: '', isCorrect: values.isCorrectA! === 1, explanation: values.explicacao!, question_id: this.question?.id || null },
+      { id: this.question?.alternatives.find(a => a.option === 'B')?.id || null, option: 'B', description: values.alternativaB!, imagePath: '', isCorrect: values.isCorrectB! === 2, explanation: values.explicacaoB!, question_id: this.question?.id || null },
+      { id: this.question?.alternatives.find(a => a.option === 'C')?.id || null, option: 'C', description: values.alternativaC!, imagePath: '', isCorrect: values.isCorrectC! === 3, explanation: values.explicacaoC!, question_id: this.question?.id || null },
+      { id: this.question?.alternatives.find(a => a.option === 'D')?.id || null, option: 'D', description: values.alternativaD!, imagePath: '', isCorrect: values.isCorrectD! === 4, explanation: values.explicacaoD!, question_id: this.question?.id || null },
+      { id: this.question?.alternatives.find(a => a.option === 'E')?.id || null, option: 'E', description: values.alternativaE!, imagePath: '', isCorrect: values.isCorrectE! === 5, explanation: values.explicacaoE!, question_id: this.question?.id || null }
     ];
-
-    const header: QuestionHeader = {id:null, content:values.enunciado!, image_path:''}
-
+  
+    const header: QuestionHeader = {
+      id: this.question?.header.id || null,
+      content: values.enunciado!,
+      image_path: this.question?.header.image_path || ''
+    };
+  
     const question: Question = {
       id: this.questionId ?? 0,
       multipleChoice: !this.discursiva,
@@ -141,13 +174,20 @@ export class CreateQuestionComponent implements OnInit{
       tagIds: [this.selectedCategoria ?? 0],
       alternatives: alternatives
     };
-
-    this.questionService.createQuestion(question).subscribe(response => {
-      console.log('Questão criada com sucesso:', response);
-    }, error => {
-      console.error('Erro ao criar a questão:', error);
-    });
+  
+    if (this.questionId) {
+      this.questionService.updateQuestion(this.questionId, question).subscribe(response => {
+        console.log('Questão atualizada com sucesso:', response);
+        this.router.navigate(['/questions']);
+      });
+    } else {
+      this.questionService.createQuestion(question).subscribe(response => {
+        console.log('Questão criada com sucesso:', response);
+        this.router.navigate(['/questions']);
+      });
+    }
   }
+  
 
   public mostrarModal() {
     this.modalEnabled = true;

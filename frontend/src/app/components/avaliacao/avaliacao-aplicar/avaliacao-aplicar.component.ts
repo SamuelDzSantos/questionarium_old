@@ -6,6 +6,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { map, Observable, switchMap } from 'rxjs';
 import { UserService } from '../../../services/user.service';
 import { UserData } from '../../../types/dto/UserData';
+import { Question } from '../../../types/dto/Question';
+import { Alternative } from '../../../types/dto/Alternative';
+import { QuestionHeader } from '../../../types/dto/QuestionHeader';
 
 export interface Assessment {
   id: number,
@@ -34,6 +37,7 @@ export interface Header {
   styleUrl: './avaliacao-aplicar.component.css'
 })
 export class AvaliacaoAplicarComponent {
+
   appliesAssessment = {
     applicationDate: '',
     quantity: 1,
@@ -68,6 +72,7 @@ export class AvaliacaoAplicarComponent {
 
   apiUrlAssessment = 'http://localhost:14005/assessments/';
   apiUrlHeader = 'http://localhost:14005/header/';
+  apiUrlAppliedAssessment = 'http://localhost:14005/';
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -92,25 +97,25 @@ export class AvaliacaoAplicarComponent {
   ngOnInit(): void {
     this.user$ = this.userService.getCurrentUser();
 
-    // Primeiro, buscamos o Assessment.
+    // BUSCAR ASSESSMENT E HEADER
     this.http.get<Assessment>(this.apiUrlAssessment + `${this.assessmentId}`)
       .pipe(
         map((response) => {
-          // Atualizamos o Assessment com a resposta.
+          // ATUALIZAR O ASSESSMENT COM A RESPOSTA
           this.assessment = response;
           console.log('Assessment carregado:', response);
 
-          // Retornamos o ID do Header para a próxima requisição.
+          // RETORNAR O ID DO HEADER
           return this.assessment.headerId;
         }),
-        // Encadeamos a requisição para buscar o Header usando o ID retornado.
+        // ENCADEIA A REQUISIÇÃO PARA BUSCAR O HEADER
         switchMap((headerId) => {
           return this.http.get<Header>(this.apiUrlHeader + `${headerId}`);
         })
       )
       .subscribe({
         next: (headerResponse) => {
-          // Atualizamos o Header com a resposta.
+          // ATUALIZAR O HEADER COM A RESPOSTA
           this.header = headerResponse;
           console.log('Header carregado:', headerResponse);
         },
@@ -118,6 +123,7 @@ export class AvaliacaoAplicarComponent {
           console.error('Erro ao carregar avaliação ou cabeçalho:', error);
         }
       });
+
   }
 
   return_assessment() {
@@ -134,10 +140,73 @@ export class AvaliacaoAplicarComponent {
   }
 
   validateDate() {
-    // Você pode adicionar mais validações aqui, se necessário
     if (new Date(this.appliesAssessment.applicationDate) < new Date(this.minDate)) {
       alert('Data de aplicação não pode ser no passado!');
-      this.appliesAssessment.applicationDate = this.minDate; // Ajusta a data para o mínimo permitido
+      this.appliesAssessment.applicationDate = this.minDate;
     }
   }
+
+  save_applied_assessment() {
+    this.http.post
+  }
+
+  headerQuestion: QuestionHeader = {
+    id: 1,
+    content: "Qual é a capital da França?",
+    image_path: ""
+  }
+
+  alternativesQuestion: Alternative[] = [
+    {
+      id: 1,
+      option: "A",
+      description: "Paris",
+      imagePath: "images/paris.jpg",
+      isCorrect: true,
+      explanation: "Paris é a capital da França, conhecida por sua história e cultura.",
+      question_id: 1
+    },
+    {
+      id: 2,
+      option: "B",
+      description: "Londres",
+      imagePath: "images/londres.jpg",
+      isCorrect: false,
+      explanation: "Londres é a capital do Reino Unido, não da França.",
+      question_id: 1
+    },
+    {
+      id: 3,
+      option: "C",
+      description: "Berlim",
+      imagePath: "images/berlim.jpg",
+      isCorrect: false,
+      explanation: "Berlim é a capital da Alemanha, não da França.",
+      question_id: 1
+    },
+    {
+      id: 4,
+      option: "D",
+      description: "Madrid",
+      imagePath: "images/madrid.jpg",
+      isCorrect: false,
+      explanation: "Madrid é a capital da Espanha, não da França.",
+      question_id: 1
+    }
+  ]
+
+  questionExample: Question[] = [{
+    id: 1,
+    multipleChoice: true,
+    numberLines: 3,
+    personId: 101,
+    header: this.headerQuestion,
+    answerId: 2,
+    difficultyLevel: 2,
+    enable: true,
+    educationLevel: 3,
+    accessLevel: 1,
+    tagIds: [1, 2],
+    alternatives: this.alternativesQuestion
+  }];
 }

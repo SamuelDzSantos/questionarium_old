@@ -1,3 +1,4 @@
+import { Alternative } from './../../types/dto/Alternative';
 import { QuestionHeader } from './../../types/dto/QuestionHeader';
 import { Question } from './../../types/dto/Question';
 import { CommonModule } from '@angular/common';
@@ -5,7 +6,6 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { CriarCabecalhoComponent } from '../../modal/criar-cabecalho/criar-cabecalho.component';
-import { Alternative } from '../../types/dto/Alternative';
 import { UserService } from '../../services/user.service';
 import { UserData } from '../../types/dto/UserData';
 import { Observable } from 'rxjs';
@@ -58,6 +58,14 @@ export class AvaliacaoComponent implements OnInit {
     this.user$ = this.userService.getCurrentUser();
   }
 
+  select_assessment(id: number) {
+    this.router.navigateByUrl("/avaliacao/aplicar", { state: { "id": id } })
+  }
+
+
+
+
+
   headers: Header[] = [{
     id: 1,
     department: "dep1",
@@ -89,7 +97,7 @@ export class AvaliacaoComponent implements OnInit {
 
   assessments: Assessment[] = [{
     id: 1,
-    questions: [1, 2, 3, 4, 5],
+    questions: [1],
     creationDate: "2024-08-14",
     header: this.headers[0]
   }, {
@@ -104,162 +112,65 @@ export class AvaliacaoComponent implements OnInit {
     header: this.headers[2]
   }]
 
-  select_assessment(id: number) {
-    this.router.navigateByUrl("/avaliacao/aplicar", { state: { "id": id } })
+  headerQuestion: QuestionHeader = {
+    id: 1,
+    content: "Qual é a capital da França?",
+    image_path: ""
   }
 
-  questionsHeaders: QuestionHeader[] = [{
-    id: 1,
-    content: "Qual é a capital do Brasil?",
-    image_path: ''
-  }, {
-    id: 2,
-    content: "Quem escreveu 'Dom Casmurro'?",
-    image_path: ''
-  }, {
-    id: 3,
-    content: "Qual é o maior planeta do Sistema Solar?",
-    image_path: ''
-  }]
-
-  alternatives: Alternative[] = [{
-    id: 1,
-    option: 'A',
-    description: 'São Paulo',
-    imagePath: '',
-    isCorrect: false,
-    explanation: 'Explicação da alternativa A',
-    question_id: 1
-  }, {
-    id: 2,
-    option: 'B',
-    description: 'Brasília',
-    imagePath: '',
-    isCorrect: true,
-    explanation: 'Explicação da alternativa B',
-    question_id: 1
-  }, {
-    id: 3,
-    option: 'C',
-    description: 'Rio de Janeiro',
-    imagePath: '',
-    isCorrect: false,
-    explanation: 'Explicação da alternativa C',
-    question_id: 1
-  }, {
-    id: 4,
-    option: 'A',
-    description: 'José de Alencar',
-    imagePath: '',
-    isCorrect: false,
-    explanation: 'Explicação da alternativa A',
-    question_id: 2
-  }, {
-    id: 5,
-    option: 'B',
-    description: 'Machado de Assis',
-    imagePath: '',
-    isCorrect: true,
-    explanation: 'Explicação da alternativa B',
-    question_id: 2
-  }, {
-    id: 6,
-    option: 'C',
-    description: 'Monteiro Lobato',
-    imagePath: '',
-    isCorrect: false,
-    explanation: 'Explicação da alternativa C',
-    question_id: 2
-  }, {
-    id: 7,
-    option: 'A',
-    description: 'Júpiter',
-    imagePath: '',
-    isCorrect: true,
-    explanation: 'Explicação da alternativa A',
-    question_id: 3
-  }, {
-    id: 8,
-    option: 'B',
-    description: 'Saturno',
-    imagePath: '',
-    isCorrect: false,
-    explanation: 'Explicação da alternativa B',
-    question_id: 3
-  }, {
-    id: 9,
-    option: 'C',
-    description: 'Terra',
-    imagePath: '',
-    isCorrect: false,
-    explanation: 'Explicação da alternativa C',
-    question_id: 3
-  }]
-
-
-
-
-    questions: Question[] = [
+  alternativesQuestion: Alternative[] = [
     {
       id: 1,
-      multipleChoice: true,
-      numberLines: 3,
-      personId: this.userId,
-      header: this.questionsHeaders[0],
-      answerId: 2,
-      difficultyLevel: 1,
-      enable: true,
-      educationLevel: 2,
-      accessLevel: 1,
-      tagIds: [101, 102],
-      alternatives: this.alternatives
+      option: "A",
+      description: "Paris",
+      imagePath: "images/paris.jpg",
+      isCorrect: true,
+      explanation: "Paris é a capital da França, conhecida por sua história e cultura.",
+      question_id: 1
     },
     {
       id: 2,
-      multipleChoice: false,
-      numberLines: 2,
-      personId: 102,
-      header: {
-        id:null,
-        content: "Quem escreveu 'Dom Casmurro'?",
-        image_path: ""
-      },
-      answerId: 3,
-      difficultyLevel: 2,
-      enable: true,
-      educationLevel: 3,
-      accessLevel: 2,
-      tagIds: [103, 104],
-      alternatives: [
-        { id: 1, option: "" ,description: "José de Alencar", isCorrect: false, imagePath: "", explanation: "explicação", question_id: null },
-        { id: 2, option: "" ,description: "Machado de Assis", isCorrect: true, imagePath: "", explanation: "explicação", question_id: null },
-        { id: 3, option: "" ,description: "Monteiro Lobato", isCorrect: false, imagePath: "", explanation: "explicação", question_id: null }
-      ]
+      option: "B",
+      description: "Londres",
+      imagePath: "images/londres.jpg",
+      isCorrect: false,
+      explanation: "Londres é a capital do Reino Unido, não da França.",
+      question_id: 1
     },
     {
       id: 3,
-      multipleChoice: true,
-      numberLines: 1,
-      personId: 103,
-      header: {
-        id: null,
-        content: "Qual é o maior planeta do Sistema Solar?",
-        image_path: ''
-      },
-      answerId: 1,
-      difficultyLevel: 1,
-      enable: true,
-      educationLevel: 1,
-      accessLevel: 1,
-      tagIds: [105],
-      alternatives: [
-        { id: 1, option: "" ,description: "Júpiter", isCorrect: false, imagePath: "", explanation: "explicação", question_id: null },
-        { id: 2, option: "" ,description: "Saturno", isCorrect: true, imagePath: "", explanation: "explicação", question_id: null },
-        { id: 3, option: "" ,description: "Terra", isCorrect: false, imagePath: "", explanation: "explicação", question_id: null }
-      ]
+      option: "C",
+      description: "Berlim",
+      imagePath: "images/berlim.jpg",
+      isCorrect: false,
+      explanation: "Berlim é a capital da Alemanha, não da França.",
+      question_id: 1
+    },
+    {
+      id: 4,
+      option: "D",
+      description: "Madrid",
+      imagePath: "images/madrid.jpg",
+      isCorrect: false,
+      explanation: "Madrid é a capital da Espanha, não da França.",
+      question_id: 1
     }
-  ];
+  ]
 
+  questionExample: Question[] = [{
+    id: 1,
+    multipleChoice: true,
+    numberLines: 3,
+    personId: 101,
+    header: this.headerQuestion,
+    answerId: 2,
+    difficultyLevel: 2,
+    enable: true,
+    educationLevel: 3,
+    accessLevel: 1,
+    tagIds: [1, 2],
+    alternatives: this.alternativesQuestion
+  }];
 
 
 

@@ -6,18 +6,18 @@
   <div class="filters">
     <div class="filter-group">
       <label for="categoria">Categoria:</label>
-      <select id="categoria" class="form-select" (change)="onCategoriaChange($event)">
+      <select id="categoria" class="form-select" (change)="onCategoriaChange($event)" [(ngModel)]="selectedCategoria">
         <option value="" selected>Selecione uma categoria</option>
         <option *ngFor="let categoria of categorias" [value]="categoria.value">{{ categoria.label }}</option>
       </select>
     </div>
     <div class="filter-group">
       <label for="dificuldade">Dificuldade:</label>
-      <input id="dificuldade" name="dificuldade" type="number" max="5" min="1"/>
+      <input id="dificuldade" name="dificuldade" type="number" max="5" min="1" [(ngModel)]="difficultyLevel"/>
     </div>
     <div class="filter-group">
       <label for="tipo">Discursiva: </label>
-      <input type="checkbox" id="tipo" name="tipo" (change)="onDiscursivaChange($event)"/>
+      <input type="checkbox" id="tipo" name="tipo" (change)="onDiscursivaChange($event)" [(ngModel)]="discursiva"/>
     </div>
     <div class="filter-group" *ngIf="discursiva">
       <label for="numberLines">Número de linhas:</label>
@@ -25,14 +25,14 @@
     </div>
     <div class="filter-group">
       <label for="nivel">Nível:</label>
-      <select id="nivel" class="form-select" (change)="onNivelChange($event)">
+      <select id="nivel" class="form-select" (change)="onNivelChange($event)" [(ngModel)]="selectedNivel">
         <option value="" selected>Selecione uma opção</option>
         <option *ngFor="let nivel of niveis" [value]="nivel.value">{{ nivel.label }}</option>
       </select>
     </div>
     <div class="filter-group">
       <label for="access">Pública: </label>
-      <input type="checkbox" id="access" name="access" (change)="onAccessChange($event)"/>
+      <input type="checkbox" id="access" name="access" (change)="onAccessChange($event)" [(ngModel)]="access"/>
     </div>
   </div>
 
@@ -52,7 +52,7 @@
         <textarea id="alternative" type="text" placeholder="Escreva a alternativa"
           rows="1" formControlName="alternativa"></textarea>
         <textarea id="explicacao" type="text" placeholder="Escreva a explicação"
-          rows="1"></textarea>
+          rows="1" formControlName="explicacao"></textarea>
         <div *ngIf="questionForm.get('alternativa')?.invalid && questionForm.get('alternativa')?.touched" class="error-message">
           A alternativa é obrigatória.
         </div>
@@ -61,33 +61,33 @@
         <input type="radio" id="correctB" name="correct" formControlName="isCorrectB" [value]="2"/>
         <label for="alternativeB" style="margin-right: 5px;"> B)</label>
         <textarea id="alternativeB" type="text" placeholder="Escreva a alternativa"
-          rows="1"></textarea>
+          rows="1" formControlName="alternativaB"></textarea>
         <textarea id="explicacaoB" type="text" placeholder="Escreva a explicação"
-          rows="1"></textarea>
+          rows="1" formControlName="explicacaoB"></textarea>
       </div>
       <div class="alternative">
         <input type="radio" id="correctC" name="correct" formControlName="isCorrectC" [value]="3"/>
         <label for="alternativeC" style="margin-right: 5px;"> C)</label>
         <textarea id="alternativeC" type="text" placeholder="Escreva a alternativa"
-          rows="1"></textarea>
+          rows="1" formControlName="alternativaC"></textarea>
         <textarea id="explicacaoC" type="text" placeholder="Escreva a explicação"
-          rows="1"></textarea>
+          rows="1" formControlName="explicacaoC"></textarea>
       </div>
       <div class="alternative">
         <input type="radio" id="correctD" name="correct" formControlName="isCorrectD" [value]="4"/>
         <label for="alternativeD" style="margin-right: 5px;"> D)</label>
         <textarea id="alternativeD" type="text" placeholder="Escreva a alternativa"
-          rows="1"></textarea>
+          rows="1" formControlName="alternativaD"></textarea>
         <textarea id="explicacaoD" type="text" placeholder="Escreva a explicação"
-          rows="1"></textarea>
+          rows="1" formControlName="explicacaoD"></textarea>
       </div>
       <div class="alternative">
         <input type="radio" id="correctE" name="correct" formControlName="isCorrectE" [value]="5"/>
         <label for="alternativeE" style="margin-right: 5px;"> E)</label>
         <textarea id="alternativeE" type="text" placeholder="Escreva a alternativa"
-          rows="1"></textarea>
+          rows="1" formControlName="alternativaE"></textarea>
         <textarea id="explicacaoE" type="text" placeholder="Escreva a explicação"
-          rows="1"></textarea>
+          rows="1" formControlName="explicacaoE"></textarea>
       </div>
     </div>
 
@@ -106,6 +106,7 @@
 
     <button type="button" class="btn-generate" (click)="generateQuestion()">Gerar Automaticamente</button>
     <div class="actions">
+      <button class="btn-save" type="submit" [disabled]="!questionForm.valid">Salvar</button>
       <button class="btn-save" type="submit" [disabled]="!questionForm.valid">Salvar</button>
       <button class="btn-cancel" type="button" (click)="cancel()">Cancelar</button>
     </div>

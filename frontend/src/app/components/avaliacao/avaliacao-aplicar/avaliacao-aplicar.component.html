@@ -55,26 +55,27 @@
         </div>
 
     </div>
-    
-    <!-- <div class="question_area">
-        @for (questao of questoes; track $index) {
-        <div class="question">
-            Questão {{this.pad(($index + 1).toString(),2)}}
+
+    <div class="question_area">
+        <div *ngFor="let questao of questionExample; let i = index" class="question">
+            Questão {{ i + 1 }}
             <div>
-                <span>Instituição: {{questao.instituicao}}</span>
-                <span>Enunciado: {{questao.enunciado}}</span>
-                <div [ngStyle]="{'background-color': questao.tipo == 'Pública'  ? '#BBE8BA' : 'red'}">Pública</div>
-                <img src="/resources/Eye.png" />
-                <img src="/resources/pencil--change-edit-modify-pencil-write-writing.png" />
+                <span>Enunciado: {{ questao.header.content }}</span>
+                <span>Nível Escolar: {{questao.educationLevel}}  </span>
+                <span>Tags: {{questao.tagIds}}</span>
+                <span>{{ questao.accessLevel === 1 ? 'PÚBLICO' : 'PRIVADO' }}</span>
+                <div [ngStyle]="{'background-color': questao.difficultyLevel > 2 ? '#BBE8BA' : 'red'}">
+                    {{ questao.difficultyLevel > 2 ? 'Fácil' : 'Difícil' }}
+                </div>
             </div>
         </div>
-        }
-    </div> -->
+    </div>
+
 
     <div class="bottom-button-area">
         <button>Nova Questão</button>
         <button (click)="return_assessment()">Cancelar</button>
-        <button>Salvar</button>
+        <button (click)="save_applied_assessment()">Salvar</button>
     </div>
     <a href="">Crie sua questão aqui</a>
     <div>

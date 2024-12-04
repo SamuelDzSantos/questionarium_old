@@ -2,19 +2,20 @@
 <div class="topArea">
     <div class="inputArea">
         <input />
-        <img src="/resources/magnifier.png"/>
+        <img src="/resources/magnifier.png" />
     </div>
     <button class="novaButton" routerLink="/avaliacao/criar">
-        <img src="/resources/cross.png"/>
+        <img src="/resources/cross.png" />
         Nova
     </button>
     <button class="montarButton" (click)="montar()">
-        <img src="/resources/gear.png"/>
+        <img src="/resources/gear.png" />
         Aplicar Avaliação
     </button>
 </div>
 <div class="gridArea">
-    <div *ngFor="let assessment of assessments; let i = index" (click)="select_assessment(assessment.id)" class="avaliacaoElement">
+    <div *ngFor="let assessment of assessments; let i = index" (click)="select_assessment(assessment.id)"
+        class="avaliacaoElement">
         <span>Aval {{assessment.header.course}}</span>
         <span>{{assessment.header.department}} {{assessment.header.institution}}</span>
         <div></div>
@@ -22,11 +23,10 @@
     </div>
 </div>
 
-    <!-- <div class="avaliacaoElement">
+<!-- <div class="avaliacaoElement">
         <span>Aval DAC 5P 2022</span>
         <span>TADS N UFPR</span>
         <div></div>
         <span>23/01/2024</span>
     </div>
     -->
-    

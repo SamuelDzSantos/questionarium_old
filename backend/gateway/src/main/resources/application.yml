@@ -4,9 +4,30 @@ server:
 spring:
   application:
     name: gateway
-
+  datasource:
+    url: jdbc:postgresql://localhost:10000/auth
+    username: admin
+    password: Admin_123
+  jpa:
+    generate-ddl: true
+    hibernate:
+      ddl-auto: create-drop
 logging:
   level:
     org:
       springframework:
         security: DEBUG
+      
+      data:
+          mongodb:
+            core:
+              MongoTemplate: DEBUG
+              ReactiveMongoTemplate: DEBUG
+
+      mongodb:
+        driver:
+          protocol:
+            command: DEBUG
+
+key:
+  secret: 1231dwjaodij1023aowdijao10woiajdowiaj109diajwoijaodl10wodiajlijzlkscjlzkjclkajclawkjdldfwel
