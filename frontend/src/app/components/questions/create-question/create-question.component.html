@@ -107,8 +107,8 @@
     <button type="button" class="btn-generate" (click)="generateQuestion()">Gerar Automaticamente</button>
     <div class="actions">
       <button class="btn-save" type="submit" [disabled]="!questionForm.valid">Salvar</button>
-      <button class="btn-save" type="submit" [disabled]="!questionForm.valid">Salvar</button>
-      <button class="btn-cancel" type="button" (click)="cancel()">Cancelar</button>
+      <button class="btn-cancel" type="button"  (click)="cancel()">Excluir</button>
+      <button class="btn-cancel" type="button" style="background-color: gray;" (click)="cancel()">Voltar</button>
     </div>
   </form>
   </div>

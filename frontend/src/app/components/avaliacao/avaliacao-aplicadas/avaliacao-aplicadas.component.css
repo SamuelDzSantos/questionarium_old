@@ -24,7 +24,7 @@ h2 {
     justify-content: space-between;
     align-items: center;
     gap: 15px;
-    /* background-color: #002436; /* Fundo padronizado */
+    background-color: #002436; /* Fundo padronizado */
     padding: 10px 20px;
     border-radius: 5px;
     font-family: 'Arial', sans-serif;
@@ -39,7 +39,6 @@ h2 {
     border: 1px solid #ccc;
     border-radius: 5px;
     flex: 1;
-    margin-left:600px;
     max-width: 600px;
 }
 

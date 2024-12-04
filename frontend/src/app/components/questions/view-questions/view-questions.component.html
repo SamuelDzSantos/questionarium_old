@@ -5,47 +5,34 @@
           <span>+ Nova Questão</span>
         </button>
       </div>
-    <div class="filters">
-      <div class="filter-group">
-        <label for="disciplina">Disciplina:</label>
-        <select id="disciplina" class="form-select">
-          <option>Selecione uma opção</option>
-          <!-- Adicione opções dinamicamente -->
-        </select>
+      <div class="filters">
+        <div class="filter-group">
+          <label for="categoria">Categoria:</label>
+          <select id="categoria" class="form-select" (change)="onCategoriaChange($event)" [(ngModel)]="selectedCategoria">
+            <option value="" selected>Selecione uma categoria</option>
+            <option *ngFor="let categoria of categorias" [value]="categoria.value">{{ categoria.label }}</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="dificuldade">Dificuldade:</label>
+          <input id="dificuldade" name="dificuldade" type="number" max="5" min="1" [(ngModel)]="difficultyLevel"/>
+        </div>
+        <div class="filter-group">
+          <label for="tipo">Discursiva: </label>
+          <input type="checkbox" id="tipo" name="tipo" (change)="onDiscursivaChange($event)" [(ngModel)]="discursiva"/>
+        </div>
+        <div class="filter-group">
+          <label for="nivel">Nível:</label>
+          <select id="nivel" class="form-select" (change)="onNivelChange($event)" [(ngModel)]="selectedNivel">
+            <option value="" selected>Selecione uma opção</option>
+            <option *ngFor="let nivel of niveis" [value]="nivel.value">{{ nivel.label }}</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="access">Pública: </label>
+          <input type="checkbox" id="access" name="access" (change)="onAccessChange($event)" [(ngModel)]="access"/>
+        </div>
       </div>
-      <div class="filter-group">
-        <label for="assunto">Assunto:</label>
-        <select id="assunto" class="form-select">
-          <option>Selecione uma opção</option>
-          <!-- Adicione opções dinamicamente -->
-        </select>
-      </div>
-      <div class="filter-group">
-        <label for="dificuldade">Dificuldade:</label>
-        <select id="dificuldade" class="form-select">
-          <option>Selecione uma opção</option>
-          <!-- Adicione opções dinamicamente -->
-        </select>
-      </div>
-      <div class="filter-group">
-        <label for="tipo">Tipo de questão:</label>
-        <select id="tipo" class="form-select">
-          <option>Selecione uma opção</option>
-          <!-- Adicione opções dinamicamente -->
-        </select>
-      </div>
-      <div class="filter-group">
-        <label for="nivel">Nível:</label>
-        <select id="nivel" class="form-select">
-          <option>Selecione uma opção</option>
-          <!-- Adicione opções dinamicamente -->
-        </select>
-      </div>
-      <div class="filter-group search">
-        <input type="text" placeholder="Pesquisar..." />
-        <button class="btn-search">🔍</button>
-      </div>      
-    </div>
 
     <div class="questions">
       <div class="question-card" *ngFor="let question of questions">

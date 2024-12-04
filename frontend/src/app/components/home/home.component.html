@@ -26,4 +26,12 @@
             Aplicações
         </div>
     </div>
+
+    <button *ngIf="!modalEnabled" (click)="openModal()" class="button-chatbot">
+        <img src="/resources/chatbot.png" />
+        ChatBot
+    </button>
+    <app-chat-bot-modal [style.display]="modalEnabled ? 'inline-block' :'none'"
+    (closeModalEvent)="closeModal()"></app-chat-bot-modal>
+
 </div>

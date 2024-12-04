@@ -17,15 +17,17 @@ import { GerarQuestaoComponent } from './modal/gerar-questao/gerar-questao.compo
 import { CriarCabecalhoComponent } from './modal/criar-cabecalho/criar-cabecalho.component';
 import { CadastroComponent } from './components/cadastro/cadastro.component';
 import { AvaliacaoAplicarComponent } from './components/avaliacao/avaliacao-aplicar/avaliacao-aplicar.component';
+import { AvaliacaoAplicadasComponent } from './components/avaliacao/avaliacao-aplicadas/avaliacao-aplicadas.component';
 
 export const routes: Routes = [
     {
         path: "",
         children: [
             { path: "", component: MainComponent },
-            { path: "login", component: LoginComponent },
             { path: "home", component: HomeComponent },
+            { path: "login", component: LoginComponent },
             { path: "cadastro", component: CadastroComponent },
+            { path: "recuperar-senha", component: RecuperarSenhaComponent },
             {
                 path: "edicao",
                 children: [
@@ -40,7 +42,8 @@ export const routes: Routes = [
                 children: [
                     { path: "", component: AvaliacaoComponent },
                     { path: "criar", component: AvaliacaoCriarComponent },  
-                    { path: "aplicar", component: AvaliacaoAplicarComponent }
+                    { path: "aplicar", component: AvaliacaoAplicarComponent },
+                    { path: "aplicadas", component: AvaliacaoAplicadasComponent }
                 ]
             },
             {
@@ -53,10 +56,8 @@ export const routes: Routes = [
             },
             { path: "sobre", component: SobreComponent },
             { path: "devs", component: DevsComponent },
-            { path: "turma", component: TurmaComponent },
-            { path: "addturma", component: AddTurmaComponent },
-            { path: "recuperar-senha", component: RecuperarSenhaComponent },
-            { path: "modal-criar-cabecalho", component: CriarCabecalhoComponent},
+            // { path: "turma", component: TurmaComponent },
+            // { path: "addturma", component: AddTurmaComponent },
             { path: "**", component: PageNotFoundComponent },
         ],
         //canActivateChild: [defaultCanActivateGuard]

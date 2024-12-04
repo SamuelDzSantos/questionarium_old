@@ -23,10 +23,21 @@ export class GerarQuestaoComponent {
 
   @Output() closeModalEvent = new EventEmitter<void>();
 
-  loadSubjects() {
-    // Carregar assuntos com base na disciplina selecionada
-    this.subjects = ['Assunto 1', 'Assunto 2', 'Assunto 3']; // Exemplos
-  }
+  niveis = [
+    { label: 'ENSINO_FUNDAMENTAL', value: 0 },
+    { label: 'ENSINO_MÉDIO', value: 1 },
+    { label: 'ENSINO_SUPERIOR', value: 2 }
+  ];
+
+  categorias = [
+    { label: 'MATEMÁTICA', value: 0 },
+    { label: 'PORTUGUÊS', value: 1 },
+    { label: 'FÍSICA', value: 2 }
+  ];
+
+  selectedNivel: number | null = null;
+  selectedCategoria: number | null = null;
+  discursiva: boolean = false;
 
   generateQuestion() {
     const prompt = `Gere uma questão de ${this.selectedQuestionType} para a disciplina ${this.selectedDiscipline} sobre ${this.selectedSubject}.`;

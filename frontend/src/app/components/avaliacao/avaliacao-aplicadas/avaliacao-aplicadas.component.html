@@ -1,0 +1,20 @@
+<h2 #titulo>Suas Avaliações Aplicadas</h2>
+<div class="topArea">
+    <div class="inputArea">
+        <input />
+        <img src="/resources/magnifier.png" />
+    </div>
+
+</div>
+<div class="gridArea">
+    <div *ngFor="let appliedAssessment of appliedAssessments; let i = index"
+        class="avaliacaoElement">
+        <span>{{appliedAssessment.department}} {{appliedAssessment.institution}}</span>
+        <span>{{appliedAssessment.course}}</span>
+        <span>{{appliedAssessment.classroom}}</span>
+        <span>Quantidade Aplicações: {{appliedAssessment.quantity}}</span>
+        <span>Data Aplicação: {{appliedAssessment.appliedDate}}</span>
+        <button>Ver relatório</button>
+    </div>
+</div>
+

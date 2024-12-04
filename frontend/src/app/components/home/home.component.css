@@ -1,4 +1,8 @@
+body {
+    font-family: 'Arial', sans-serif;
+}	
 .menu-area{
+    font-family: 'Arial', sans-serif;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -6,12 +10,14 @@
 }
 
 .menu-grid{
+    font-family: 'Arial', sans-serif;
     display:grid;
     grid-template-columns: 200px 200px 200px;
     gap: 50px 150px;
 }
 
 .menu-grid div{
+    font-family: 'Arial', sans-serif;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -21,4 +27,12 @@
 
 .menu-grid div:hover{
     cursor:pointer;
+}
+
+.button-chatbot{
+    
+    position: fixed;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
 }

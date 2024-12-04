@@ -6,18 +6,18 @@
     </div>
     <div class="modal-body">
       <div class="form-group">
-        <label for="discipline">Disciplina:</label>
-        <select id="discipline" [(ngModel)]="selectedDiscipline" (change)="loadSubjects()">
+        <label for="categoria">Categoria:</label>
+        <select id="categoria" [(ngModel)]="selectedCategoria">
           <option value="" disabled selected>Selecione uma opção</option>
-          <option *ngFor="let discipline of disciplines" [value]="discipline">
-            {{ discipline }}
+          <option *ngFor="let categoria of categorias" [value]="categoria.value">
+            {{ categoria.label }}
           </option>
         </select>
       </div>
 
       <div class="form-group">
         <label for="questionType">Tipo de Questão:</label>
-        <select id="questionType" [(ngModel)]="selectedQuestionType">
+        <select id="questionType" [(ngModel)]="selectedCategoria">
           <option value="" disabled selected>Selecione uma opção</option>
           <option *ngFor="let type of questionTypes" [value]="type">
             {{ type }}
@@ -26,13 +26,18 @@
       </div>
 
       <div class="form-group">
-        <label for="subjects">Assunto(s):</label>
-        <select id="subjects" [(ngModel)]="selectedSubject" [disabled]="!subjects.length">
+        <label for="nivel">Nível:</label>
+        <select id="nivel" [(ngModel)]="selectedNivel">
           <option value="" disabled selected>Selecione uma opção</option>
-          <option *ngFor="let subject of subjects" [value]="subject">
-            {{ subject }}
+          <option *ngFor="let nivel of niveis" [value]="nivel.value">
+            {{ nivel.label }}
           </option>
         </select>
+      </div>
+
+      <div class="form-group">
+        <label for="tipo">Discursiva: </label>
+        <input type="checkbox" id="tipo" name="tipo"/>
       </div>
 
       <button (click)="generateQuestion()">Gerar</button>

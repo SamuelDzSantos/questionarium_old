@@ -6,11 +6,12 @@ import { Question } from '../../../types/dto/Question';
 import { UserService } from '../../../services/user.service';
 import { Observable } from 'rxjs';
 import { UserData } from '../../../types/dto/UserData';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-view-questions',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, FormsModule],
   templateUrl: './view-questions.component.html',
   styleUrl: './view-questions.component.css'
 })
@@ -19,6 +20,26 @@ export class ViewQuestionsComponent implements OnInit{
   question$!: Observable<Question[]>;
   userId = 0
   questions : Question[] = [];
+
+  niveis = [
+    { label: 'ENSINO_FUNDAMENTAL', value: 0 },
+    { label: 'ENSINO_MÉDIO', value: 1 },
+    { label: 'ENSINO_SUPERIOR', value: 2 }
+  ];
+
+  categorias = [
+    { label: 'MATEMÁTICA', value: 0 },
+    { label: 'PORTUGUÊS', value: 1 },
+    { label: 'FÍSICA', value: 2 }
+  ];
+
+  selectedNivel: number | null = null;
+  selectedCategoria: number | null = null;
+  difficultyLevel: number | null = null;
+
+  discursiva: boolean = false;
+  numberLines: number = 0;
+  access: boolean = false;
 
   constructor(private questionService: QuestionService, private userService: UserService, private router : Router){}  
 
@@ -31,5 +52,26 @@ export class ViewQuestionsComponent implements OnInit{
 
   viewQuestion(id:number){
     this.router.navigate(['/questions/', id])
+  }
+
+  onNivelChange(event: Event): void {
+    const selectElement = event.target as HTMLSelectElement;
+    this.selectedNivel = Number(selectElement.value);
+    console.log("onNivelChange")
+  }
+
+  onCategoriaChange(event: Event): void {
+    const selectElement = event.target as HTMLSelectElement;
+    this.selectedNivel = Number(selectElement.value);
+  }
+
+  onDiscursivaChange(event: Event): void {
+    const checkbox = event.target as HTMLInputElement;
+    this.discursiva = checkbox.checked;
+  }
+
+  onAccessChange(event: Event): void {
+    const checkbox = event.target as HTMLInputElement;
+    this.access = checkbox.checked;
   }
 }

@@ -174,7 +174,7 @@ export class AvaliacaoAplicarComponent {
 
   headerQuestion: QuestionHeader = {
     id: 1,
-    content: "Qual é a capital da França?",
+    content: "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
     image_path: ""
   }
 
@@ -182,37 +182,46 @@ export class AvaliacaoAplicarComponent {
     {
       id: 1,
       option: "A",
-      description: "Paris",
-      imagePath: "images/paris.jpg",
+      description: "Lorem Ipsum",
+      imagePath: "",
       isCorrect: true,
-      explanation: "Paris é a capital da França, conhecida por sua história e cultura.",
+      explanation: "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
       question_id: 1
     },
     {
       id: 2,
       option: "B",
-      description: "Londres",
-      imagePath: "images/londres.jpg",
+      description: "Lorem Ipsum",
+      imagePath: "",
       isCorrect: false,
-      explanation: "Londres é a capital do Reino Unido, não da França.",
+      explanation: "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
       question_id: 1
     },
     {
       id: 3,
       option: "C",
-      description: "Berlim",
-      imagePath: "images/berlim.jpg",
+      description: "Lorem Ipsum",
+      imagePath: "",
       isCorrect: false,
-      explanation: "Berlim é a capital da Alemanha, não da França.",
+      explanation: "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
       question_id: 1
     },
     {
       id: 4,
       option: "D",
-      description: "Madrid",
-      imagePath: "images/madrid.jpg",
+      description: "Lorem Ipsum",
+      imagePath: "",
       isCorrect: false,
-      explanation: "Madrid é a capital da Espanha, não da França.",
+      explanation: "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+      question_id: 1
+    },
+    {
+      id: 5,
+      option: "E",
+      description: "Lorem Ipsum",
+      imagePath: "",
+      isCorrect: false,
+      explanation: "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
       question_id: 1
     }
   ]

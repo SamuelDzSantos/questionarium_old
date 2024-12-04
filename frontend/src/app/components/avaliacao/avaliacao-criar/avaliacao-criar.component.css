@@ -1,74 +1,114 @@
+/* Reset e Fonte Global */
 body {
-    font-family: 'Inter', sans-serif;
+    font-family: 'Arial', sans-serif;
     margin: 0;
     padding: 0;
 }
 
-h1 {
-    font-size: 2em;
+/* Títulos */
+h1, h2 {
+    font-family: 'Arial', sans-serif;
     text-align: center;
-    margin-top: 20px;
-    font-family: 'Inter', sans-serif;
+    color: #002436; /* Azul escuro padronizado */
 }
 
+h1 {
+    font-size: 2em;
+    margin-top: 20px;
+    font-family: 'Arial', sans-serif;
+}
+
+h2 {
+    font-size: 1.8em;
+    margin-bottom: 20px;
+    font-family: 'Arial', sans-serif;
+}
+
+/* Containers Principais */
 .area {
     width: 90%;
     margin: 0 auto;
     padding: 20px;
-    font-family: 'Inter', sans-serif;
+    font-family: 'Arial', sans-serif;
 }
 
 .cabecalho, .question_area, .bottom-button-area {
     margin-bottom: 20px;
+    font-family: 'Arial', sans-serif;
 }
 
 .cabecalho {
-    background-color: #F9F9F9;
+    background-color: #D9D9D9; /* Cinza claro padronizado */
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    font-family: 'Arial', sans-serif;
 }
 
-.cabecalho h2 {
-    margin-bottom: 20px;
-    font-size: 1.8em;
-}
-
-.button_area {
+/* Áreas de Botões */
+.button_area, .bottom-button-area {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 20px;
-    margin-top: 20px;
+    gap: 10px;
+    font-family: 'Arial', sans-serif;
 }
 
+button {
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 1em;
+    cursor: pointer;
+    border: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Arial', sans-serif;
+}
+
+button:first-child {
+    background-color: #4caf50; /* Verde padronizado */
+    color: #fff;
+    font-family: 'Arial', sans-serif;
+}
+
+button:nth-child(2) {
+    background-color: #D9D9D9; /* Cinza claro padronizado */
+    color: #333;
+    font-family: 'Arial', sans-serif;
+}
+
+button:nth-child(3) {
+    background-color: #002436; /* Azul escuro padronizado */
+    color: white;
+    font-family: 'Arial', sans-serif;
+}
+
+button:hover {
+    font-family: 'Arial', sans-serif;
+    opacity: 0.9;
+}
+
+/* Botão de Geração */
 .btn-generate {
     padding: 8px 15px;
-    background-color: #6BE061;
+    background-color: #4caf50; /* Verde padronizado */
     color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
     font-size: 1em;
 }
 
 .btn-generate:hover {
-    background-color: #5bb152;
+    background-color: #3e8e41; /* Verde mais escuro */
 }
 
-.cabeçalho_area {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
-}
-
+/* Inputs e Textareas */
 .input, .input_text {
     display: flex;
     flex-direction: column;
+    gap: 5px;
 }
 
 .input span, .input_text span {
     font-weight: bold;
-    margin-bottom: 5px;
 }
 
 .input input, .input_text textarea {
@@ -80,7 +120,7 @@ h1 {
 }
 
 .input input:focus, .input_text textarea:focus {
-    border-color: #6BE061;
+    border-color: #4caf50; /* Verde padronizado */
 }
 
 .input_text textarea {
@@ -88,44 +128,35 @@ h1 {
     min-height: 100px;
 }
 
-.button_area button {
-    padding: 8px 15px;
-    border-radius: 5px;
-    font-size: 1em;
-    cursor: pointer;
-    border: none;
+/* Grid Layout */
+.cabeçalho_area {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    font-family: 'Arial', sans-serif;
 }
 
-.button_area button:first-child {
-    background-color: #6BE061;
-    color: #fff;
-}
-
-.button_area button:last-child {
-    background-color: #D9D9D9;
-    color: #333;
-}
-
-.button_area button:hover {
-    opacity: 0.8;
-}
-
+/* Questões */
 .question_area {
     display: flex;
     flex-direction: column;
+    gap: 15px;
+    font-family: 'Arial', sans-serif;
 }
 
 .question {
-    background-color: #C6D4FF;
+    background-color: #C6D4FF; /* Azul claro padronizado */
     border-radius: 15px;
     padding: 15px;
-    margin-bottom: 15px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    font-family: 'Arial', sans-serif;
 }
 
 .question span {
     font-size: 1em;
-    display: block;
     margin-bottom: 5px;
+    display: block;
+    font-family: 'Arial', sans-serif;
 }
 
 .question div {
@@ -133,67 +164,44 @@ h1 {
     justify-content: space-between;
     align-items: center;
     margin-top: 10px;
+    font-family: 'Arial', sans-serif;
 }
 
 .question div span {
     font-size: 1em;
 }
 
-.question div div {
-    padding: 5px;
-    border-radius: 5px;
-    color: white;
-}
-
-.question div img {
-    cursor: pointer;
-}
-
-.question div img:first-child {
-    margin-left: 10px;
-}
-
-.bottom-button-area {
-    display: flex;
-    justify-content: space-between;
-}
-
-.bottom-button-area button {
-    padding: 8px 15px;
-    font-size: 1.1em;
-    border-radius: 5px;
-    cursor: pointer;
-    border: none;
-}
-
-.bottom-button-area button:first-child {
-    background-color: #6BE061;
-    color: white;
-}
-
-.bottom-button-area button:nth-child(2) {
-    background-color: #D9D9D9;
-    color: #333;
-}
-
-.bottom-button-area button:nth-child(3) {
-    background-color: #007BFF;
-    color: white;
-}
-
-.bottom-button-area button:hover {
-    opacity: 0.8;
-}
-
+/* Links */
 a {
     display: block;
     text-align: center;
     margin-top: 20px;
     text-decoration: none;
-    color: #007BFF;
+    color: #002436; /* Azul escuro padronizado */
     font-size: 1.1em;
 }
 
 a:hover {
     text-decoration: underline;
+}
+
+.remover-btn {
+    background-color: #f44336; /* Vermelho para chamar atenção */
+    color: white; /* Texto branco */
+    border: none; /* Sem borda */
+    border-radius: 5px; /* Bordas arredondadas */
+    padding: 8px 16px; /* Espaçamento interno */
+    font-size: 14px; /* Tamanho da fonte */
+    cursor: pointer; /* Cursor de ponteiro ao passar o mouse */
+    transition: background-color 0.3s ease; /* Suavidade na mudança de cor */
+    margin: 2px;
+}
+
+.remover-btn:hover {
+    background-color: #d32f2f; /* Vermelho mais escuro ao passar o mouse */
+}
+
+.remover-btn:active {
+    background-color: #b71c1c; /* Vermelho ainda mais escuro ao clicar */
+    transform: scale(0.95); /* Leve redução ao clicar */
 }

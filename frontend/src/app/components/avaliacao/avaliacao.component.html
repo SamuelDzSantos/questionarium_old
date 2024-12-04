@@ -1,17 +1,19 @@
 <h2 #titulo>Avaliações</h2>
 <div class="topArea">
+  
     <div class="inputArea">
-        <input />
+        <input [(ngModel)]="searchValue" (input)="search()"/>
         <img src="/resources/magnifier.png" />
     </div>
+   
     <button class="novaButton" routerLink="/avaliacao/criar">
         <img src="/resources/cross.png" />
         Nova
     </button>
-    <button class="montarButton" (click)="montar()">
+    <!-- <button class="montarButton" (click)="montar()">
         <img src="/resources/gear.png" />
         Aplicar Avaliação
-    </button>
+    </button> -->
 </div>
 <div class="gridArea">
     <div *ngFor="let assessment of assessments; let i = index" (click)="select_assessment(assessment.id)"
