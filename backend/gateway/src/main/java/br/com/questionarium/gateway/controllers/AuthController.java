@@ -1,5 +1,6 @@
 package dev.questionarium.controllers;
 
+
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,7 +21,6 @@ import reactor.core.publisher.Mono;
 public class AuthController {
 
     private final AuthUserService authUserService;
-    private final RestTemplate restTemplate;
 
     @PostMapping("login")
     public Mono<String> login(@RequestBody LoginForm form) {
@@ -41,10 +41,10 @@ public class AuthController {
     }
 
     @GetMapping("current")
-    public Void current(Authentication authentication){
+    public void current(Authentication authentication){
         Jwt token = (Jwt) authentication.getPrincipal();
         String userId = token.getClaimAsString("user_id");
-        restTemplate.
+        return;
     } 
 
 }

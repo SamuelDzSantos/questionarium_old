@@ -1,15 +1,22 @@
 package dev.questionarium.model;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import java.util.Collection;
+import java.util.List;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import dev.questionarium.types.Role;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 @Entity
 public class AuthUser implements UserDetails {
 
@@ -20,6 +27,17 @@ public class AuthUser implements UserDetails {
     private String password;
     private Role role;
 
+    public AuthUser(Long id , String email , String password , Role role ) {
+        this.id = id;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+    }    
+
+    public AuthUser(){
+
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.getAsString()));
@@ -29,4 +47,10 @@ public class AuthUser implements UserDetails {
     public String getUsername() {
         return this.email;
     }
+
+    @Override
+    public String getPassword() {
+        return this.password;
+    }
+
 }

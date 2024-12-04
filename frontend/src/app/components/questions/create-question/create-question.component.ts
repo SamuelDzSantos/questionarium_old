@@ -187,6 +187,19 @@ export class CreateQuestionComponent implements OnInit{
       });
     }
   }
+
+  deleteQuestion(): void {
+    const id = this.questionId!;
+    this.questionService.deleteQuestion(id).subscribe(
+      () => {
+        console.log(`Questão com ID ${id} excluída com sucesso!`);
+        this.router.navigate(['/questions']);
+      },
+      error => {
+        console.error('Erro ao excluir a questão:', error);
+      }
+    );
+  }
   
 
   public mostrarModal() {

@@ -1,6 +1,8 @@
 package dev.questionarium.repositories;
 
-import org.springframework.data.repository.reactive.ReactiveCrudRepository;
+import java.util.Optional;
+
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import dev.questionarium.model.AuthUser;
 

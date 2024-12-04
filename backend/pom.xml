@@ -20,11 +20,9 @@
 	</properties>
 
 	<modules>
-		<module>eureka-service</module>
-		<module>config-service</module>
 		<module>shared</module>
 		<module>user-service</module>
-		<module>reactive-gateway-service</module>
+		<module>gateway</module>
 		<module>email-service</module>
 
 	</modules>

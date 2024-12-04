@@ -50,6 +50,30 @@ export class ViewQuestionsComponent implements OnInit{
     this.question$.subscribe((question) => this.questions = question == null ? [] : question);
   }
 
+  loadQuestions() {
+
+    const labelNivel = this.niveis.find(nivel => nivel.value === this.selectedNivel)
+
+    this.question$ = this.questionService.filterQuestions(
+      !this.discursiva,
+      this.userId,
+      this.difficultyLevel == null ? 0 : this.difficultyLevel,
+      labelNivel?.label,
+      this.access ? 'PUBLIC' : 'PRIVATE',
+      this.selectedCategoria == null ? 0 : this.selectedCategoria
+    );
+
+    this.question$.subscribe({
+      next: (questions) => {
+        this.questions = questions || [];
+      },
+      error: (err) => {
+        console.error('Error fetching questions', err);
+        this.questions = [];
+      }
+    });
+  }
+
   viewQuestion(id:number){
     this.router.navigate(['/questions/', id])
   }
@@ -73,5 +97,9 @@ export class ViewQuestionsComponent implements OnInit{
   onAccessChange(event: Event): void {
     const checkbox = event.target as HTMLInputElement;
     this.access = checkbox.checked;
+  }
+
+  onFilterClick() {
+    this.loadQuestions();
   }
 }

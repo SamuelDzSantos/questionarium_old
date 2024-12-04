@@ -37,7 +37,7 @@ export class QuestionService {
     difficultyLevel?: number,
     educationLevel?: string,
     accessLevel?: string,
-    tagIds?: number[]
+    tagIds?: number
   ): Observable<Question[]> {
     let params = new HttpParams();
     if (multipleChoice !== undefined) params = params.set('multipleChoice', multipleChoice);
@@ -45,7 +45,7 @@ export class QuestionService {
     if (difficultyLevel !== undefined) params = params.set('difficultyLevel', difficultyLevel);
     if (educationLevel) params = params.set('educationLevel', educationLevel);
     if (accessLevel) params = params.set('accessLevel', accessLevel);
-    if (tagIds && tagIds.length > 0) params = params.set('tagIds', tagIds.join(','));
+    if (tagIds) params = params.set('tagIds', tagIds);
     
     return this.http.get<Question[]>(`${this.baseUrl}/filter`, { params });
   }

@@ -8,15 +8,17 @@
             <img routerLink="/questions" src="/resources/questoes.png" />
             Questões
         </div>
-        
+        <!--
         <div>
             <img src="/resources/cabecalho.png"/>
             Cabeçalhos
         </div>
+        
         <div routerLink="/turma">
             <img src="/resources/turmas.png">
             Turmas
         </div>
+        -->
         <div routerLink="/sobre">
             <img src="/resources/sobre.png"/>
             Sobre
@@ -28,8 +30,7 @@
     </div>
 
     <button *ngIf="!modalEnabled" (click)="openModal()" class="button-chatbot">
-        <img src="/resources/chatbot.png" />
-        ChatBot
+        <img src="/resources/msg.jpg" width="50" height="50"/>
     </button>
     <app-chat-bot-modal [style.display]="modalEnabled ? 'inline-block' :'none'"
     (closeModalEvent)="closeModal()"></app-chat-bot-modal>

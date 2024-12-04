@@ -8,7 +8,7 @@ import { env } from '../../enviroments/enviroment';
 })
 export class OpenAIService {
   private apiUrl = 'https://api.openai.com/v1/completions';
-  private apiKey = env.openAiApiKey;
+  private apiKey = env.openAiApikey;
   private aiServiceUrl = 'http://localhost:5001/chat'
 
   constructor(private http: HttpClient) {}
