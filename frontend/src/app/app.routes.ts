@@ -16,6 +16,7 @@ import { CreateQuestionComponent, ViewQuestionsComponent } from './components/qu
 import { GerarQuestaoComponent } from './modal/gerar-questao/gerar-questao.component';
 import { CriarCabecalhoComponent } from './modal/criar-cabecalho/criar-cabecalho.component';
 import { CadastroComponent } from './components/cadastro/cadastro.component';
+import { AvaliacaoAplicarComponent } from './components/avaliacao/avaliacao-aplicar/avaliacao-aplicar.component';
 
 export const routes: Routes = [
     {
@@ -38,14 +39,16 @@ export const routes: Routes = [
                 path: "avaliacao",
                 children: [
                     { path: "", component: AvaliacaoComponent },
-                    { path: "criar", component: AvaliacaoCriarComponent }
+                    { path: "criar", component: AvaliacaoCriarComponent },  
+                    { path: "aplicar", component: AvaliacaoAplicarComponent }
                 ]
             },
             {
                 path: "questions",
                 children: [
-                    { path: "", component: ViewQuestionsComponent },
-                    { path: "criar", component: CreateQuestionComponent }
+                    { path: "", component: ViewQuestionsComponent},
+                    { path: "criar", component: CreateQuestionComponent },
+                    { path: ":id", component: CreateQuestionComponent }
                 ]
             },
             { path: "sobre", component: SobreComponent },

@@ -1,10 +1,11 @@
 <div class="area">
 
-    <h1>Avaliação</h1>
+    <h1>Criação de Avaliação</h1>
     <!-- <img src="/resources/Botão Excluir.png" /> -->
 
     <div class="cabecalho">
-        Cabeçalho
+        <h2>Cabeçalho da Avaliação</h2>
+        <p>Crie um novo ou utilize de cabeçalhos anteriores.</p>
         <div class="button_area">
             <button class="btn-generate" (click)="createHeader()">Criar Novo Cabeçalho</button>
             <button class="btn-generate" (click)="getHeaders()">Carregar Cabeçalho</button>
@@ -15,9 +16,12 @@
             <div class="input"><span>Curso</span> <input [(ngModel)]="header.course" /></div>
             <div class="input"><span>Turma</span> <input [(ngModel)]="header.classroom" /></div>
             <div class="input"><span>Professor</span> <input [(ngModel)]="header.professor" /></div>
-            <div class="input_text"><span>Instruções</span> <textarea [(ngModel)]="header.instructions"></textarea></div>
-          </div>
+            <div class="input_text"><span>Instruções</span> <textarea [(ngModel)]="header.instructions"></textarea>
+            </div>
+        </div>
     </div>
+
+
     <div class="question_area">
         @for (questao of questoes; track $index) {
         <div class="question">
@@ -35,7 +39,7 @@
 
     <div class="bottom-button-area">
         <button>Nova Questão</button>
-        <button>Cancelar</button>
+        <button (click)="return_assessment()">Cancelar</button>
         <button>Salvar</button>
     </div>
     <a href="">Crie sua questão aqui</a>
@@ -43,8 +47,10 @@
         <p></p>
     </div>
 
-    <app-criar-cabecalho-modal *ngIf="modalCreateCabecalhoEnabled" (closeModalEvent)="fecharCreateCabecalhoModal()"></app-criar-cabecalho-modal>
-    <app-consultar-cabecalho-modal *ngIf="modalGetCabecalhoEnabled" (closeModalEvent)="fecharGetCabecalhoModal()" (clickedEvent)="header = $event"></app-consultar-cabecalho-modal>
+    <app-criar-cabecalho-modal *ngIf="modalCreateCabecalhoEnabled"
+        (closeModalEvent)="fecharCreateCabecalhoModal()"></app-criar-cabecalho-modal>
+    <app-consultar-cabecalho-modal *ngIf="modalGetCabecalhoEnabled" (closeModalEvent)="fecharGetCabecalhoModal()"
+        (clickedEvent)="header = $event"></app-consultar-cabecalho-modal>
 
     <!-- <app-criar-cabecalho-modal [style.display]="modalEnabled ? 'block' :'none'"
     (closeModalEvent)="fecharModal()"></app-criar-cabecalho-modal> -->

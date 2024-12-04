@@ -54,7 +54,7 @@
           <span>Assuntos</span>
         </div>
         <p>{{ question.header.content }}</p>
-        <button class="btn-view">Visualizar</button>
+        <button class="btn-view" (click)='viewQuestion(question.id!)'>Visualizar</button>
       </div>
     </div>
     <div style="margin-bottom: 70px;"></div>

@@ -61,6 +61,7 @@ export class CriarCabecalhoComponent {
         console.error('Erro ao criar cabeçalho:', error);
       }
     });
+    this.closeModalEvent.emit()
   }
 
   resetForm(): void {

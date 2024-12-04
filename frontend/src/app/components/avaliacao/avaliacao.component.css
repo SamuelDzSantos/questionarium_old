@@ -71,12 +71,14 @@ h2 {
 
 .gridArea {
     font-family: 'Inter', sans-serif;
-    width: 85%;
     margin: 20px auto;
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start; /* Alinha os itens à esquerda */
     gap: 20px;
-    grid-template-rows: auto;
+    max-width: 1200px; /* Limita a largura máxima da área */
+    padding: 0 20px; /* Adiciona espaço nas laterais */
+    box-sizing: border-box;
 }
 
 .avaliacaoElement {
@@ -86,6 +88,9 @@ h2 {
     flex-direction: column;
     align-items: center;
     padding: 15px;
+    width: calc(25% - 20px); /* Ajusta o tamanho para 4 itens por linha */
+    box-sizing: border-box;
+    margin-bottom: 20px; /* Espaço inferior */
 }
 
 .avaliacaoElement span {
@@ -123,3 +128,15 @@ h2 {
     width: 100%;
 }
 
+/* Responsividade para telas menores */
+@media (max-width: 768px) {
+    .avaliacaoElement {
+        width: calc(50% - 20px); /* 2 itens por linha em telas menores */
+    }
+}
+
+@media (max-width: 480px) {
+    .avaliacaoElement {
+        width: calc(100% - 20px); /* 1 item por linha em telas muito pequenas */
+    }
+}

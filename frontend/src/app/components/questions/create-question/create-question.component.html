@@ -5,61 +5,111 @@
 
   <div class="filters">
     <div class="filter-group">
-      <label for="disciplina">Disciplina:</label>
-      <select id="disciplina" class="form-select">
-        <option>Selecione uma opção</option>
-        <!-- Adicione opções dinamicamente -->
-      </select>
-    </div>
-    <div class="filter-group">
-      <label for="assunto">Assunto:</label>
-      <select id="assunto" class="form-select">
-        <option>Selecione uma opção</option>
-        <!-- Adicione opções dinamicamente -->
+      <label for="categoria">Categoria:</label>
+      <select id="categoria" class="form-select" (change)="onCategoriaChange($event)">
+        <option value="" selected>Selecione uma categoria</option>
+        <option *ngFor="let categoria of categorias" [value]="categoria.value">{{ categoria.label }}</option>
       </select>
     </div>
     <div class="filter-group">
       <label for="dificuldade">Dificuldade:</label>
-      <select id="dificuldade" class="form-select">
-        <option>Selecione uma opção</option>
-        <!-- Adicione opções dinamicamente -->
-      </select>
+      <input id="dificuldade" name="dificuldade" type="number" max="5" min="1"/>
     </div>
     <div class="filter-group">
-      <label for="tipo">Tipo de questão:</label>
-      <select id="tipo" class="form-select">
-        <option>Selecione uma opção</option>
-        <!-- Adicione opções dinamicamente -->
-      </select>
+      <label for="tipo">Discursiva: </label>
+      <input type="checkbox" id="tipo" name="tipo" (change)="onDiscursivaChange($event)"/>
+    </div>
+    <div class="filter-group" *ngIf="discursiva">
+      <label for="numberLines">Número de linhas:</label>
+      <input id="numberLines" name="numberLines" type="number" max="15" min="1" [(ngModel)]="numberLines"/>
     </div>
     <div class="filter-group">
       <label for="nivel">Nível:</label>
-      <select id="nivel" class="form-select">
-        <option>Selecione uma opção</option>
-        <!-- Adicione opções dinamicamente -->
+      <select id="nivel" class="form-select" (change)="onNivelChange($event)">
+        <option value="" selected>Selecione uma opção</option>
+        <option *ngFor="let nivel of niveis" [value]="nivel.value">{{ nivel.label }}</option>
       </select>
+    </div>
+    <div class="filter-group">
+      <label for="access">Pública: </label>
+      <input type="checkbox" id="access" name="access" (change)="onAccessChange($event)"/>
     </div>
   </div>
 
-  <div class="add-question-form">
+  <div class="add-question-form" >
+    <form [formGroup]="questionForm" (ngSubmit)="onSubmit()">
     <label for="enunciado">ENUNCIADO:</label>
-    <textarea id="enunciado" [(ngModel)]="question.description" rows="5"
-      placeholder="Escreva o enunciado aqui..."></textarea>
+    <textarea id="enunciado" rows="5"
+      placeholder="Escreva o enunciado aqui..." id="enunciado" type="text" formControlName="enunciado" required></textarea>
+      <div *ngIf="questionForm.get('enunciado')?.invalid && questionForm.get('enunciado')?.touched" class="error-message">
+        O enunciado é obrigatório.
+      </div>
 
-    <div class="alternatives">
-      <div class="alternative" *ngFor="let alternative of question.alternatives; let i = index">
-        <input type="checkbox" [(ngModel)]="alternative.isCorrect" (change)="ensureSingleCorrect(i)" />
-        <label for="alternative-{{i}}" style="margin-right: 5px;"> {{alternativeLabels[i]}})</label>
-        <textarea id="alternative-{{i}}" type="text" [(ngModel)]="alternative.text" placeholder="Escreva a alternativa"
+    <div class="alternatives" *ngIf="!discursiva">
+      <div class="alternative">
+        <input type="radio" id="correct" name="correct" formControlName="isCorrectA" [value]="1"/>
+        <label for="alternative" style="margin-right: 5px;"> A)</label>
+        <textarea id="alternative" type="text" placeholder="Escreva a alternativa"
+          rows="1" formControlName="alternativa"></textarea>
+        <textarea id="explicacao" type="text" placeholder="Escreva a explicação"
+          rows="1"></textarea>
+        <div *ngIf="questionForm.get('alternativa')?.invalid && questionForm.get('alternativa')?.touched" class="error-message">
+          A alternativa é obrigatória.
+        </div>
+      </div>
+      <div class="alternative">
+        <input type="radio" id="correctB" name="correct" formControlName="isCorrectB" [value]="2"/>
+        <label for="alternativeB" style="margin-right: 5px;"> B)</label>
+        <textarea id="alternativeB" type="text" placeholder="Escreva a alternativa"
+          rows="1"></textarea>
+        <textarea id="explicacaoB" type="text" placeholder="Escreva a explicação"
+          rows="1"></textarea>
+      </div>
+      <div class="alternative">
+        <input type="radio" id="correctC" name="correct" formControlName="isCorrectC" [value]="3"/>
+        <label for="alternativeC" style="margin-right: 5px;"> C)</label>
+        <textarea id="alternativeC" type="text" placeholder="Escreva a alternativa"
+          rows="1"></textarea>
+        <textarea id="explicacaoC" type="text" placeholder="Escreva a explicação"
+          rows="1"></textarea>
+      </div>
+      <div class="alternative">
+        <input type="radio" id="correctD" name="correct" formControlName="isCorrectD" [value]="4"/>
+        <label for="alternativeD" style="margin-right: 5px;"> D)</label>
+        <textarea id="alternativeD" type="text" placeholder="Escreva a alternativa"
+          rows="1"></textarea>
+        <textarea id="explicacaoD" type="text" placeholder="Escreva a explicação"
+          rows="1"></textarea>
+      </div>
+      <div class="alternative">
+        <input type="radio" id="correctE" name="correct" formControlName="isCorrectE" [value]="5"/>
+        <label for="alternativeE" style="margin-right: 5px;"> E)</label>
+        <textarea id="alternativeE" type="text" placeholder="Escreva a alternativa"
+          rows="1"></textarea>
+        <textarea id="explicacaoE" type="text" placeholder="Escreva a explicação"
           rows="1"></textarea>
       </div>
     </div>
 
-    <button class="btn-generate" (click)="generateQuestion()">Gerar Automaticamente</button>
-    <div class="actions">
-      <button class="btn-save" (click)="saveQuestion()">Salvar</button>
-      <button class="btn-cancel" (click)="cancel()">Cancelar</button>
+    <div class="alternatives" *ngIf="discursiva">
+      <div class="alternative">
+        <label for="alternative" style="margin-right: 5px;"></label>
+        <textarea id="alternative" type="text" formControlName="alternativa" placeholder="Escreva a alternativa"
+          rows="5"></textarea>
+        <div *ngIf="questionForm.get('alternativa')?.invalid && questionForm.get('alternativa')?.touched" class="error-message">
+          A alternativa é obrigatória.
+        </div>
+      </div>
     </div>
+
+
+
+    <button type="button" class="btn-generate" (click)="generateQuestion()">Gerar Automaticamente</button>
+    <div class="actions">
+      <button class="btn-save" type="submit" [disabled]="!questionForm.valid">Salvar</button>
+      <button class="btn-cancel" type="button" (click)="cancel()">Cancelar</button>
+    </div>
+  </form>
   </div>
 
 

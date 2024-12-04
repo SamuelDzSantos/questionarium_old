@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { QuestionService } from '../../../services/question-service/question-service.service';
 import { Question } from '../../../types/dto/Question';
 import { UserService } from '../../../services/user.service';
@@ -20,12 +20,16 @@ export class ViewQuestionsComponent implements OnInit{
   userId = 0
   questions : Question[] = [];
 
-  constructor(private questionService: QuestionService, private userService: UserService){}  
+  constructor(private questionService: QuestionService, private userService: UserService, private router : Router){}  
 
   ngOnInit() {
     this.user$ = this.userService.getCurrentUser();
     this.user$.subscribe((user) => this.userId = user == null ? 0 : user.id);
     this.question$ = this.questionService.filterQuestions(undefined,this.userId);
     this.question$.subscribe((question) => this.questions = question == null ? [] : question);
+  }
+
+  viewQuestion(id:number){
+    this.router.navigate(['/questions/', id])
   }
 }

@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { CriarCabecalhoComponent } from '../../../modal/criar-cabecalho/criar-cabecalho.component';
 import { ConsultarCabecalhoComponent } from '../../../modal/consultar-cabecalho/consultar-cabecalho.component';
+import { Router } from '@angular/router';
 
 interface question {
   instituicao: string,
@@ -17,13 +18,13 @@ interface question {
 @Component({
   selector: 'app-avaliacao-criar',
   standalone: true,
-  imports: [FormsModule,CommonModule, CriarCabecalhoComponent, ConsultarCabecalhoComponent],
+  imports: [FormsModule, CommonModule, CriarCabecalhoComponent, ConsultarCabecalhoComponent],
   templateUrl: './avaliacao-criar.component.html',
   styleUrl: './avaliacao-criar.component.css'
 })
 export class AvaliacaoCriarComponent {
   [x: string]: any;
-  
+
   modalCreateCabecalhoEnabled = false;
   modalGetCabecalhoEnabled = false;
 
@@ -78,11 +79,15 @@ export class AvaliacaoCriarComponent {
     this.modalGetCabecalhoEnabled = true;
   }
 
-  setHeader(header:AssessmentHeader){
+  setHeader(header: AssessmentHeader) {
     this.header = header;
   }
 
-  constructor(private headerService: AssessmentHeaderService) { }
+  constructor(
+    private headerService: AssessmentHeaderService,
+    private router: Router,) { 
+      let navigation = this.router.getCurrentNavigation();
+    }
 
   saveHeader(): void {
     this.headerService.createHeader(this.header).subscribe({
@@ -95,7 +100,7 @@ export class AvaliacaoCriarComponent {
     });
   }
 
-  loadHeader(): void{
+  loadHeader(): void {
     console.log("loadHeader")
   }
 
@@ -107,4 +112,7 @@ export class AvaliacaoCriarComponent {
     this.modalGetCabecalhoEnabled = false;
   }
 
+  return_assessment() {
+    this.router.navigateByUrl("/avaliacao");
+  }
 }

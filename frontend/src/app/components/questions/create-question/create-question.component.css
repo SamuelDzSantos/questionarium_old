@@ -24,6 +24,7 @@
 .filter-group {
   display: flex;
   flex-direction: row;
+  align-items: center;
 }
 
 .form-select {
@@ -117,4 +118,10 @@ textarea {
 .btn-generate {
   background-color: #002436;
   color: white;
+}
+
+.error-message {
+  color: red;
+  font-size: 0.9em;
+  margin-top: 5px;
 }

@@ -1,0 +1,331 @@
+body {
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+h1 {
+    font-size: 2em;
+    text-align: center;
+    margin-top: 20px;
+    font-family: 'Inter', sans-serif;
+}
+
+.area {
+    width: 90%;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: 'Inter', sans-serif;
+}
+
+.cabecalho, .question_area, .bottom-button-area {
+    margin-bottom: 20px;
+}
+
+.cabecalho {
+    background-color: #F9F9F9;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.cabecalho h2 {
+    margin-bottom: 20px;
+    font-size: 1.8em;
+}
+
+.button_area {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+
+.btn-generate {
+    padding: 8px 15px;
+    background-color: #6BE061;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+}
+
+.btn-generate:hover {
+    background-color: #5bb152;
+}
+
+.cabeçalho_area {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.input, .input_text {
+    display: flex;
+    flex-direction: column;
+}
+
+.input span, .input_text span {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.input input, .input_text textarea {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1em;
+    outline: none;
+}
+
+.input input:focus, .input_text textarea:focus {
+    border-color: #6BE061;
+}
+
+.input_text textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.button_area button {
+    padding: 8px 15px;
+    border-radius: 5px;
+    font-size: 1em;
+    cursor: pointer;
+    border: none;
+}
+
+.button_area button:first-child {
+    background-color: #6BE061;
+    color: #fff;
+}
+
+.button_area button:last-child {
+    background-color: #D9D9D9;
+    color: #333;
+}
+
+.button_area button:hover {
+    opacity: 0.8;
+}
+
+.question_area {
+    display: flex;
+    flex-direction: column;
+}
+
+.question {
+    background-color: #C6D4FF;
+    border-radius: 15px;
+    padding: 15px;
+    margin-bottom: 15px;
+}
+
+.question span {
+    font-size: 1em;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.question div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.question div span {
+    font-size: 1em;
+}
+
+.question div div {
+    padding: 5px;
+    border-radius: 5px;
+    color: white;
+}
+
+.question div img {
+    cursor: pointer;
+}
+
+.question div img:first-child {
+    margin-left: 10px;
+}
+
+.bottom-button-area {
+    display: flex;
+    justify-content: space-between;
+}
+
+.bottom-button-area button {
+    padding: 8px 15px;
+    font-size: 1.1em;
+    border-radius: 5px;
+    cursor: pointer;
+    border: none;
+}
+
+.bottom-button-area button:first-child {
+    background-color: #6BE061;
+    color: white;
+}
+
+.bottom-button-area button:nth-child(2) {
+    background-color: #D9D9D9;
+    color: #333;
+}
+
+.bottom-button-area button:nth-child(3) {
+    background-color: #007BFF;
+    color: white;
+}
+
+.bottom-button-area button:hover {
+    opacity: 0.8;
+}
+
+a {
+    display: block;
+    text-align: center;
+    margin-top: 20px;
+    text-decoration: none;
+    color: #007BFF;
+    font-size: 1.1em;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+
+.atributos_area {
+    background-color: #F9F9F9; /* Fundo semelhante ao cabecalho */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px; /* Espaço abaixo da área de atributos */
+}
+
+.atributos_area .input, 
+.atributos_area .input_text {
+    margin-bottom: 20px; /* Espaçamento entre os inputs */
+}
+
+.atributos_area .input span,
+.atributos_area .input_text span {
+    font-weight: bold;
+    margin-bottom: 8px; /* Ajuste do espaçamento para ficar mais harmonioso */
+    font-size: 1.1em; /* Um pouco maior para destacar */
+}
+
+.atributos_area .input input,
+.atributos_area .input_text textarea {
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1em;
+    outline: none;
+    width: 100%; /* Para que os inputs ocupem toda a largura disponível */
+    box-sizing: border-box; /* Para garantir que o padding não afete o tamanho do input */
+}
+
+.atributos_area .input input:focus,
+.atributos_area .input_text textarea:focus {
+    border-color: #6BE061; /* Cor de borda no foco */
+}
+
+.atributos_area .input_text textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.atributos_area input[type="checkbox"] {
+    margin-right: 10px;
+    transform: scale(1.2); /* Aumenta um pouco o tamanho da caixa de seleção para ficar mais visível */
+}
+
+.atributos_area .input label {
+    font-size: 1.1em;
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+.atributos_area .input input[type="number"] {
+    width: auto; /* Para manter o campo numérico ajustado */
+    max-width: 120px; /* Limita o tamanho da caixa para quantidade */
+}
+
+.atributos_area .input input[type="date"] {
+    max-width: 250px; /* Limita o tamanho do campo de data */
+}
+
+.atributos_area .input input[type="checkbox"] {
+    transform: scale(1.3);
+    margin-top: 5px;
+}
+
+.atributos_area .input_text textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.atributos_area .input {
+    display: flex;
+    align-items: center; /* Alinha a caixa de seleção e o texto verticalmente */
+    margin-bottom: 20px;
+}
+
+.atributos_area .input input[type="checkbox"] {
+    margin-right: 10px; /* Ajuste do espaçamento entre a caixa de seleção e a etiqueta */
+    transform: scale(1.3); /* Aumenta o tamanho da caixa de seleção */
+}
+
+.atributos_area .input label {
+    font-size: 1.1em;
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+.atributos_area .input input[type="checkbox"]:checked + label {
+    /* Aqui você pode adicionar um efeito quando o checkbox estiver marcado, se necessário */
+}
+
+.atributos_area .input {
+    display: flex;
+    justify-content: space-between; /* Distribui os elementos igualmente entre si */
+    align-items: center; /* Alinha verticalmente os elementos */
+    margin-bottom: 20px;
+}
+
+.atributos_area .input span {
+    font-size: 1.1em;
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+.atributos_area .input input,
+.atributos_area .input_text textarea {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1em;
+    width: 30%; /* Ajuste a largura dos campos para ficarem bem distribuídos */
+    box-sizing: border-box;
+}
+
+.atributos_area .input input[type="checkbox"] {
+    transform: scale(1.3); /* Aumenta o tamanho da caixa de seleção */
+    margin-left: 10px; /* Espaço entre o checkbox e a etiqueta */
+}
+
+.atributos_area .input label {
+    font-size: 1.1em;
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+.atributos_area .input input[type="number"],
+.atributos_area .input input[type="date"] {
+    max-width: 120px; /* Ajusta o tamanho dos campos numéricos e de data */
+}
