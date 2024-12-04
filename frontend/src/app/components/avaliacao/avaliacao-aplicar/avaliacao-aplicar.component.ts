@@ -147,7 +147,29 @@ export class AvaliacaoAplicarComponent {
   }
 
   save_applied_assessment() {
-    this.http.post
+    if (!this.appliesAssessment.applicationDate) {
+      alert('A data de aplicação é obrigatória!');
+      return;
+    }
+  
+    const appliedAssessmentPayload = {
+      id: this.assessment.id,
+      quantity: this.appliesAssessment.quantity,
+      shuffle: this.appliesAssessment.shuffle,
+      applicationDate: this.appliesAssessment.applicationDate,
+    };
+  
+    this.http.post(`${this.apiUrlAppliedAssessment}applied-assessment`, appliedAssessmentPayload, { responseType: 'text' })
+      .subscribe({
+        next: (response) => {
+          alert('Avaliação aplicada salva com sucesso!');
+          this.return_assessment();
+        },
+        error: (error) => {
+          console.error('Erro ao salvar avaliação aplicada:', error);
+          alert('Erro ao salvar a aplicação da avaliação. Tente novamente.');
+        }
+      });
   }
 
   headerQuestion: QuestionHeader = {
