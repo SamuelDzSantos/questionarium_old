@@ -8,14 +8,15 @@
       <div class="filters">
         <div class="filter-group">
           <label for="categoria">Categoria:</label>
-          <select id="categoria" class="form-select" (change)="onCategoriaChange($event)" [(ngModel)]="selectedCategoria">
-            <option value="" selected>Selecione uma categoria</option>
-            <option *ngFor="let categoria of categorias" [value]="categoria.value">{{ categoria.label }}</option>
+          <select id="categoria" class="form-select" (change)="onCategoriaChange($event)" multiple>
+            <option value="0" selected>Selecione uma categoria</option>
+            <option *ngFor="let categoria of categorias" [value]="categoria.id">{{ categoria.description }}</option>
           </select>
-        </div>
-        <div class="filter-group">
-          <label for="dificuldade">Dificuldade:</label>
-          <input id="dificuldade" name="dificuldade" type="number" max="5" min="1" [(ngModel)]="difficultyLevel"/>
+          <div *ngIf="selectedCategorias.length > 0" class="selected-tags">
+            <span *ngFor="let tagId of selectedCategorias" class="badge">
+              {{ getTagName(tagId) }}
+            </span>
+          </div>
         </div>
         <div class="filter-group">
           <label for="tipo">Discursiva: </label>
@@ -23,14 +24,17 @@
         </div>
         <div class="filter-group">
           <label for="nivel">Nível:</label>
-          <select id="nivel" class="form-select" (change)="onNivelChange($event)" [(ngModel)]="selectedNivel">
-            <option value="" selected>Selecione uma opção</option>
+          <select id="nivel" class="nivel-select" (change)="onNivelChange($event)" [(ngModel)]="selectedNivel">
+            <option value="-1" selected>Selecione uma opção</option>
             <option *ngFor="let nivel of niveis" [value]="nivel.value">{{ nivel.label }}</option>
           </select>
         </div>
         <div class="filter-group">
           <label for="access">Pública: </label>
           <input type="checkbox" id="access" name="access" (change)="onAccessChange($event)" [(ngModel)]="access"/>
+        </div>
+        <div class="filter-group search">
+          <input type="text" id="enunciado" name="enunciado" [(ngModel)]="enunciado" placeholder="Palavras-chave, enunciado..."/>
         </div>
         <div class="search">
           <button class="btn-search" (click)="onFilterClick()">Pesquisar</button>
@@ -43,7 +47,7 @@
         <div class="assuntos">
           <span>Assuntos</span>
         </div> -->
-        <p>{{ question.header.content }}</p>
+        <p>{{ question.header }}</p>
         <button class="btn-view" (click)='viewQuestion(question.id!)'>Visualizar</button>
       </div>
     </div>

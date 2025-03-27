@@ -25,6 +25,7 @@
   display: flex;
   flex-direction: row;
   align-items: center;
+  margin: 5px;
 }
 
 .form-select {
@@ -123,5 +124,29 @@ textarea {
 .error-message {
   color: red;
   font-size: 0.9em;
-  margin-top: 5px;
+  margin: 5px;
+}
+
+.selected-tags {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin: 5px;
+}
+
+.selected-tags .badge {
+  background-color: #e0e0e0;
+  color: #333;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.8em;
+}
+
+.alternative.selected textarea {
+  border: 2px solid green;
+}
+
+.alternative.error textarea {
+  border: 2px solid red;
 }

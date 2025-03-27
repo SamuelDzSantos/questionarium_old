@@ -7,6 +7,7 @@ import { UserService } from '../../../services/user.service';
 import { Observable } from 'rxjs';
 import { UserData } from '../../../types/dto/UserData';
 import { FormsModule } from '@angular/forms';
+import { Tag } from '../../../types/dto/Tag';
 
 @Component({
   selector: 'app-view-questions',
@@ -22,45 +23,50 @@ export class ViewQuestionsComponent implements OnInit{
   questions : Question[] = [];
 
   niveis = [
-    { label: 'ENSINO_FUNDAMENTAL', value: 0 },
-    { label: 'ENSINO_MÉDIO', value: 1 },
-    { label: 'ENSINO_SUPERIOR', value: 2 }
+    { label: 'Ensino Fundamental', value: 0 },
+    { label: 'Ensino Méidio', value: 1 },
+    { label: 'Ensino Superior', value: 2 }
   ];
 
-  categorias = [
-    { label: 'MATEMÁTICA', value: 0 },
-    { label: 'PORTUGUÊS', value: 1 },
-    { label: 'FÍSICA', value: 2 }
-  ];
+  categorias : Tag[] = [];
 
+  selectedCategorias: number[] = [];
   selectedNivel: number | null = null;
-  selectedCategoria: number | null = null;
-  difficultyLevel: number | null = null;
 
   discursiva: boolean = false;
-  numberLines: number = 0;
   access: boolean = false;
+
+  enunciado: string | undefined = undefined; 
 
   constructor(private questionService: QuestionService, private userService: UserService, private router : Router){}  
 
   ngOnInit() {
     this.user$ = this.userService.getCurrentUser();
     this.user$.subscribe((user) => this.userId = user == null ? 0 : user.id);
-    this.question$ = this.questionService.filterQuestions(undefined,this.userId);
+    //TODO current userId
+    // this.question$ = this.questionService.filterQuestions(undefined,this.userId);
+    this.question$ = this.questionService.getAllQuestions();
     this.question$.subscribe((question) => this.questions = question == null ? [] : question);
+    this.questionService.getAllTags().subscribe(
+          (tags: Tag[]) => {
+            this.categorias = tags;
+          }, (error) => {
+            console.error('Error fetching tags:', error); }
+        );
   }
 
   loadQuestions() {
-
+    //TODO current userId
     const labelNivel = this.niveis.find(nivel => nivel.value === this.selectedNivel)
 
     this.question$ = this.questionService.filterQuestions(
       !this.discursiva,
-      this.userId,
-      this.difficultyLevel == null ? 0 : this.difficultyLevel,
-      labelNivel?.label,
-      this.access ? 'PUBLIC' : 'PRIVATE',
-      this.selectedCategoria == null ? 0 : this.selectedCategoria
+      // this.userId,
+      1,
+      labelNivel?.value != -1 ? labelNivel?.value : undefined,
+      this.access? 1 : 0,
+      this.selectedCategorias,
+      this.enunciado
     );
 
     this.question$.subscribe({
@@ -80,15 +86,28 @@ export class ViewQuestionsComponent implements OnInit{
 
   onNivelChange(event: Event): void {
     const selectElement = event.target as HTMLSelectElement;
-    this.selectedNivel = Number(selectElement.value);
-    console.log("onNivelChange")
+    this.selectedNivel = Number(selectElement.value)
   }
 
-  onCategoriaChange(event: Event): void {
+  onCategoriaChange(event: Event) { 
     const selectElement = event.target as HTMLSelectElement;
-    this.selectedNivel = Number(selectElement.value);
-  }
+  
+    const selectedValues = Array.from(selectElement.selectedOptions)
+      .map(option => {
+        const value = option.value.trim();
+        const match = value.match(/^(\d+)/);
+        const numValue = match ? Number(match[1]) : NaN;
+        return numValue;
+      })
+      .filter(value => !isNaN(value) && value !== 0);
 
+      if (selectedValues.length === 1 && selectedValues[0] === 0) {
+        this.selectedCategorias = [];
+      } else {
+        this.selectedCategorias = selectedValues;
+      }
+  }
+  
   onDiscursivaChange(event: Event): void {
     const checkbox = event.target as HTMLInputElement;
     this.discursiva = checkbox.checked;
@@ -101,5 +120,10 @@ export class ViewQuestionsComponent implements OnInit{
 
   onFilterClick() {
     this.loadQuestions();
+  }
+
+  getTagName(tagId: number): string {
+    const tag = this.categorias.find(c => c.id === tagId);
+    return tag ? tag.name : '';
   }
 }

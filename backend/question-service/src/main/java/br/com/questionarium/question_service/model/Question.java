@@ -51,8 +51,11 @@ public class Question {
     @Column(name = "person_id", nullable = false)
     private Long personId;
 
-    @Column(name = "header_id", nullable = false)
-    private Long headerId;
+    @Column(name = "header", nullable = false)
+    private String header;
+
+    @Column(name = "header_image", nullable = true)
+    private String header_image;
 
     @Column(name = "answer_id", nullable = false)
     private Long answerId;

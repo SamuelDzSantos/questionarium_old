@@ -7,19 +7,20 @@ import { env } from '../../enviroments/enviroment';
   providedIn: 'root',
 })
 export class OpenAIService {
-  private apiUrl = 'https://api.openai.com/v1/completions';
-  private apiKey = env.openAiApikey;
+  private apiUrl = 'https://api.openai.com/v1/chat/completions';
+  private apiKey = env.openAiApiKey;
   private aiServiceUrl = 'http://localhost:5001/chat'
 
   constructor(private http: HttpClient) {}
 
   generateText(prompt: string): Observable<any> {
+  
     const body = {
-      model: 'text-davinci-003',
-      prompt: prompt,
-      max_tokens: 150,
+      model: 'gpt-3.5-turbo',
+      messages: [{ role: 'user', content: prompt }],
+      max_tokens: 500,
     };
-
+    
     return this.http.post(this.apiUrl, body, {
       headers: {
         Authorization: `Bearer ${this.apiKey}`,

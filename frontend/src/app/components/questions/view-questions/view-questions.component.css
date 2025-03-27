@@ -55,6 +55,7 @@
   .filter-group {
     display: flex;
     flex-direction: row;
+    align-items: center;
   }
   
   .form-select {
@@ -64,6 +65,15 @@
     font-size: 14px;
     margin-left: 5px;
   }
+
+  .form-select, .search input {
+    height: 50px;
+  }
+
+  .nivel-select {
+    height: 40px;
+  }
+  
   
   .search {
     display: flex;
@@ -78,6 +88,7 @@
     font-size: 14px;
     box-sizing: border-box;
     width: 300px;
+    height: 40px;
   }
   
   .search .btn-search {
@@ -88,6 +99,7 @@
     border-radius: 0 5px 5px 0;
     cursor: pointer;
     font-size: 14px;
+    height: 40px;
   }
   
   .search .btn-search:hover {
@@ -125,3 +137,18 @@
     cursor: pointer;
   }
   
+  .selected-tags {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin: 5px;
+  }
+  
+  .selected-tags .badge {
+    background-color: #e0e0e0;
+    color: #333;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.8em;
+  }

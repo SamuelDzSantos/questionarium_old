@@ -16,7 +16,8 @@ public class QuestionDTO {
     private boolean multipleChoice;
     private Integer numberLines;
     private Long personId;
-    private Long headerId;
+    private String header;
+    private String header_image;
     private Long answerId;
     private boolean enable;
     private QuestionEducationLevel educationLevel;
@@ -24,4 +25,5 @@ public class QuestionDTO {
 
     private Set<Long> tagIds;
     private Set<AlternativeDTO> alternatives;
+
 }

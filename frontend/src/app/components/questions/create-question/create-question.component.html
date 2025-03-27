@@ -6,15 +6,15 @@
   <div class="filters">
     <div class="filter-group">
       <label for="categoria">Categoria:</label>
-      <select id="categoria" class="form-select" (change)="onCategoriaChange($event)" [(ngModel)]="selectedCategoria">
-        <option value="" selected>Selecione uma categoria</option>
-        <option *ngFor="let categoria of categorias" [value]="categoria.value">{{ categoria.label }}</option>
+      <select id="categoria" class="form-select" (change)="onCategoriaChange($event)" multiple>
+        <option value="-1" selected>Selecione uma categoria</option>
+        <option *ngFor="let categoria of categorias" [value]="categoria.id">{{ categoria.description }}</option>
       </select>
-    </div>
-    <div class="filter-group">
-      <label for="dificuldade">Dificuldade:</label>
-      <input id="dificuldade" name="dificuldade" type="number" max="5" min="1" [(ngModel)]="difficultyLevel"/>
-    </div>
+      <div *ngIf="selectedCategorias.length > 0" class="selected-tags">
+        <span *ngFor="let tagId of selectedCategorias" class="badge">
+          {{ getTagName(tagId) }}
+        </span>
+      </div>
     <div class="filter-group">
       <label for="tipo">Discursiva: </label>
       <input type="checkbox" id="tipo" name="tipo" (change)="onDiscursivaChange($event)" [(ngModel)]="discursiva"/>
@@ -35,54 +35,64 @@
       <input type="checkbox" id="access" name="access" (change)="onAccessChange($event)" [(ngModel)]="access"/>
     </div>
   </div>
+  </div>
 
   <div class="add-question-form" >
     <form [formGroup]="questionForm" (ngSubmit)="onSubmit()">
+
     <label for="enunciado">ENUNCIADO:</label>
     <textarea id="enunciado" rows="5"
-      placeholder="Escreva o enunciado aqui..." id="enunciado" type="text" formControlName="enunciado" required></textarea>
+      placeholder="Escreva o enunciado aqui..." id="enunciado" type="text" formControlName="enunciado" required [(ngModel)]="enunciado"></textarea>
       <div *ngIf="questionForm.get('enunciado')?.invalid && questionForm.get('enunciado')?.touched" class="error-message">
         O enunciado é obrigatório.
       </div>
 
+    <div *ngIf="showNoNivelSelected" class="error-message">
+      Selecione um nível de educação.
+    </div>
+
+    <div *ngIf="showCorrectAlternativeError" class="error-message">
+      Selecione uma alternativa correta.
+    </div>
+
     <div class="alternatives" *ngIf="!discursiva">
-      <div class="alternative">
-        <input type="radio" id="correct" name="correct" formControlName="isCorrectA" [value]="1"/>
+      <div class="alternative" [class.selected]="questionForm.get('isCorrect')?.value === 1">
+        <input type="radio" id="correctA" formControlName="isCorrect" [value]="1"/>
         <label for="alternative" style="margin-right: 5px;"> A)</label>
         <textarea id="alternative" type="text" placeholder="Escreva a alternativa"
           rows="1" formControlName="alternativa"></textarea>
         <textarea id="explicacao" type="text" placeholder="Escreva a explicação"
           rows="1" formControlName="explicacao"></textarea>
-        <div *ngIf="questionForm.get('alternativa')?.invalid && questionForm.get('alternativa')?.touched" class="error-message">
-          A alternativa é obrigatória.
         </div>
-      </div>
-      <div class="alternative">
-        <input type="radio" id="correctB" name="correct" formControlName="isCorrectB" [value]="2"/>
+        <div *ngIf="questionForm.get('alternativa')?.invalid && questionForm.get('alternativa')?.touched" class="error-message">
+          Uma alternativa é obrigatória.
+        </div>
+      <div class="alternative" [class.selected]="questionForm.get('isCorrect')?.value === 2">
+        <input type="radio" id="correctB" formControlName="isCorrect" [value]="2"/>
         <label for="alternativeB" style="margin-right: 5px;"> B)</label>
         <textarea id="alternativeB" type="text" placeholder="Escreva a alternativa"
           rows="1" formControlName="alternativaB"></textarea>
         <textarea id="explicacaoB" type="text" placeholder="Escreva a explicação"
           rows="1" formControlName="explicacaoB"></textarea>
       </div>
-      <div class="alternative">
-        <input type="radio" id="correctC" name="correct" formControlName="isCorrectC" [value]="3"/>
+      <div class="alternative" [class.selected]="questionForm.get('isCorrect')?.value === 3">
+        <input type="radio" id="correctC" formControlName="isCorrect" [value]="3"/>
         <label for="alternativeC" style="margin-right: 5px;"> C)</label>
         <textarea id="alternativeC" type="text" placeholder="Escreva a alternativa"
           rows="1" formControlName="alternativaC"></textarea>
         <textarea id="explicacaoC" type="text" placeholder="Escreva a explicação"
           rows="1" formControlName="explicacaoC"></textarea>
       </div>
-      <div class="alternative">
-        <input type="radio" id="correctD" name="correct" formControlName="isCorrectD" [value]="4"/>
+      <div class="alternative" [class.selected]="questionForm.get('isCorrect')?.value === 4">
+        <input type="radio" id="correctD" formControlName="isCorrect" [value]="4"/>
         <label for="alternativeD" style="margin-right: 5px;"> D)</label>
         <textarea id="alternativeD" type="text" placeholder="Escreva a alternativa"
           rows="1" formControlName="alternativaD"></textarea>
         <textarea id="explicacaoD" type="text" placeholder="Escreva a explicação"
           rows="1" formControlName="explicacaoD"></textarea>
       </div>
-      <div class="alternative">
-        <input type="radio" id="correctE" name="correct" formControlName="isCorrectE" [value]="5"/>
+      <div class="alternative" [class.selected]="questionForm.get('isCorrect')?.value === 5">
+        <input type="radio" id="correctE" formControlName="isCorrect" [value]="5"/>
         <label for="alternativeE" style="margin-right: 5px;"> E)</label>
         <textarea id="alternativeE" type="text" placeholder="Escreva a alternativa"
           rows="1" formControlName="alternativaE"></textarea>
@@ -102,11 +112,9 @@
       </div>
     </div>
 
-
-
     <button type="button" class="btn-generate" (click)="generateQuestion()">Gerar Automaticamente</button>
     <div class="actions">
-      <button class="btn-save" type="submit" [disabled]="!questionForm.valid">Salvar</button>
+      <button class="btn-save" type="submit" >Salvar</button>
       <button class="btn-cancel" type="button"  (click)="deleteQuestion()">Excluir</button>
       <button class="btn-cancel" type="button" style="background-color: gray;" (click)="cancel()">Voltar</button>
     </div>
@@ -114,6 +122,7 @@
   </div>
 
 
-  <app-gerar-questao-modal [style.display]="modalEnabled ? 'block' :'none'"
-    (closeModalEvent)="fecharModal()"></app-gerar-questao-modal>
+  <app-gerar-questao-modal [style.display]="modalEnabled ? 'block' : 'none'"
+    (closeModalEvent)="fecharModal()" 
+    (generatedQuestionEvent)="carregarQuestaoGerada($event)"></app-gerar-questao-modal>
 </div>

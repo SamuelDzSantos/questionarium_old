@@ -8,7 +8,6 @@ import { UserService } from '../../../services/user.service';
 import { UserData } from '../../../types/dto/UserData';
 import { Question } from '../../../types/dto/Question';
 import { Alternative } from '../../../types/dto/Alternative';
-import { QuestionHeader } from '../../../types/dto/QuestionHeader';
 
 export interface Assessment {
   id: number,
@@ -172,57 +171,56 @@ export class AvaliacaoAplicarComponent {
       });
   }
 
-  headerQuestion: QuestionHeader = {
-    id: 1,
-    content: "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-    image_path: ""
-  }
-
   alternativesQuestion: Alternative[] = [
     {
       id: 1,
-      option: "A",
+      // option: "A",
       description: "Lorem Ipsum",
       imagePath: "",
       isCorrect: true,
       explanation: "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-      question_id: 1
+      question_id: 1,
+      order: 1
     },
     {
       id: 2,
-      option: "B",
+      // option: "B",
       description: "Lorem Ipsum",
       imagePath: "",
       isCorrect: false,
       explanation: "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-      question_id: 1
+      question_id: 1,
+      order: 2
     },
     {
       id: 3,
-      option: "C",
+      // option: "C",
       description: "Lorem Ipsum",
       imagePath: "",
       isCorrect: false,
       explanation: "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-      question_id: 1
+      question_id: 1,
+      order: 3
     },
     {
       id: 4,
-      option: "D",
+      // option: "D",
       description: "Lorem Ipsum",
       imagePath: "",
       isCorrect: false,
       explanation: "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-      question_id: 1
+      question_id: 1,
+      order: 3
     },
     {
       id: 5,
-      option: "E",
+      // option: "E",
       description: "Lorem Ipsum",
       imagePath: "",
       isCorrect: false,
       explanation: "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-      question_id: 1
+      question_id: 1,
+      order: 4
     }
   ]
 
@@ -231,11 +229,11 @@ export class AvaliacaoAplicarComponent {
     multipleChoice: true,
     numberLines: 3,
     personId: 101,
-    header: this.headerQuestion,
+    header: "Enunciado",
     answerId: 2,
     difficultyLevel: 2,
     enable: true,
-    educationLevel: 3,
+    educationLevel: 'ENSINO_FUNDAMENTAL',
     accessLevel: 1,
     tagIds: [1, 2],
     alternatives: this.alternativesQuestion

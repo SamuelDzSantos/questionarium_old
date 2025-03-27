@@ -60,7 +60,7 @@
         <div *ngFor="let questao of questionExample; let i = index" class="question">
             Questão {{ i + 1 }}
             <div>
-                <span>Enunciado: {{ questao.header.content }}</span>
+                <span>Enunciado: {{ questao.header }}</span>
                 <span>Nível Escolar: {{questao.educationLevel}}  </span>
                 <span>Tags: {{questao.tagIds}}</span>
                 <span>{{ questao.accessLevel === 1 ? 'PÚBLICO' : 'PRIVADO' }}</span>

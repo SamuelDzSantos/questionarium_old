@@ -6,10 +6,10 @@ import { UserService } from '../../../services/user.service';
 import { QuestionService } from '../../../services/question-service/question-service.service';
 import { Alternative } from '../../../types/dto/Alternative';
 import { Question } from '../../../types/dto/Question';
-import { QuestionHeader } from '../../../types/dto/QuestionHeader';
 import { Observable } from 'rxjs';
 import { UserData } from '../../../types/dto/UserData';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { Tag } from '../../../types/dto/Tag';
 
 @Component({
   selector: 'app-create-question',
@@ -37,21 +37,19 @@ export class CreateQuestionComponent implements OnInit{
   
   questionForm: any;
 
+  enunciado: string = '';
+  header_image: string = '';
+
   niveis = [
-    { label: 'ENSINO_FUNDAMENTAL', value: 0 },
-    { label: 'ENSINO_MÉDIO', value: 1 },
-    { label: 'ENSINO_SUPERIOR', value: 2 }
+    { label: 'ENSINO FUNDAMENTAL', value: 0, name: 'ENSINO_FUNDAMENTAL'},
+    { label: 'ENSINO MÉDIO', value: 1, name: 'ENSINO_MÉDIO'},
+    { label: 'ENSINO SUPERIOR', value: 2, name: 'ENSINO_SUPERIOR' }
   ];
 
-  categorias = [
-    { label: 'MATEMÁTICA', value: 0 },
-    { label: 'PORTUGUÊS', value: 1 },
-    { label: 'FÍSICA', value: 2 }
-  ];
+  categorias : Tag[] = [];
 
-  selectedNivel: number | null = null;
-  selectedCategoria: number | null = null;
-  difficultyLevel: number | null = null;
+  selectedNivel: number | undefined = undefined;
+  selectedCategorias: number[] = [];
 
   discursiva: boolean = false;
   numberLines: number = 0;
@@ -59,15 +57,25 @@ export class CreateQuestionComponent implements OnInit{
 
   modalEnabled = false;
 
+  showCorrectAlternativeError: boolean = false;
+  showNoNivelSelected: boolean = false;
+
   ngOnInit(): void {
     this.questionForm = new FormBuilder().group({
       enunciado: ["", [Validators.required]],
-      alternativa: ["", [Validators.required]], explicacao: [""], isCorrectA: [0],
-      alternativaB: [""], explicacaoB: [""], isCorrectB: [0],
-      alternativaC: [""], explicacaoC: [""], isCorrectC: [0],
-      alternativaD: [""], explicacaoD: [""], isCorrectD: [0],
-      alternativaE: [""], explicacaoE: [""], isCorrectE: [0],
+      isCorrect: [null, [Validators.required]],
+      alternativa: ["", [Validators.required]], explicacao: [""],// isCorrectA: [0],
+      alternativaB: [""], explicacaoB: [""], // isCorrectB: [0],
+      alternativaC: [""], explicacaoC: [""], // isCorrectC: [0],
+      alternativaD: [""], explicacaoD: [""], // isCorrectD: [0],
+      alternativaE: [""], explicacaoE: [""], // isCorrectE: [0],
     })
+    this.questionService.getAllTags().subscribe(
+      (tags: Tag[]) => {
+        this.categorias = tags;
+      }, (error) => {
+        console.error('Error fetching tags:', error); }
+    );
     this.user$ = this.userService.getCurrentUser();
     this.user$.subscribe((user) => this.userId = user == null ? 0 : user.id);
     this.route.paramMap.subscribe(params => {
@@ -81,36 +89,40 @@ export class CreateQuestionComponent implements OnInit{
   loadQuestion(id: number): void {
     this.questionService.getQuestionById(id).subscribe((response) => {
       this.question = response;
-      this.selectedCategoria = response.tagIds![0];
-      this.selectedNivel = response.educationLevel;
+      this.selectedCategorias = response.tagIds!;
+      this.selectedNivel = this.niveis.find(nivel => nivel.name === response.educationLevel)?.value;
       this.discursiva = !response.multipleChoice;
-      this.access = response.accessLevel == 0 ? true : false;
-      this.difficultyLevel = response.difficultyLevel;
-  
-      const alternativesMap = new Map<string, Alternative>();
-      response.alternatives.forEach((alt) => {
-        alternativesMap.set(alt.option, alt);
-      });
-  
+      this.access = response.accessLevel == 1 ? true : false;
+      
+      
       this.questionForm.patchValue({
-        enunciado: response.header.content,
-        alternativa: alternativesMap.get('A')?.description || '',
-        explicacao: alternativesMap.get('A')?.explanation || '',
-        isCorrectA: alternativesMap.get('A')?.isCorrect ? 1 : 0,
-        alternativaB: alternativesMap.get('B')?.description || '',
-        explicacaoB: alternativesMap.get('B')?.explanation || '',
-        isCorrectB: alternativesMap.get('B')?.isCorrect ? 2 : 0,
-        alternativaC: alternativesMap.get('C')?.description || '',
-        explicacaoC: alternativesMap.get('C')?.explanation || '',
-        isCorrectC: alternativesMap.get('C')?.isCorrect ? 3 : 0,
-        alternativaD: alternativesMap.get('D')?.description || '',
-        explicacaoD: alternativesMap.get('D')?.explanation || '',
-        isCorrectD: alternativesMap.get('D')?.isCorrect ? 4 : 0,
-        alternativaE: alternativesMap.get('E')?.description || '',
-        explicacaoE: alternativesMap.get('E')?.explanation || '',
-        isCorrectE: alternativesMap.get('E')?.isCorrect ? 5 : 0,
+        enunciado: response.header,
+        alternativa: response.alternatives.find(alt => alt.order === 1)?.description || '',
+        explicacao: response.alternatives.find(alt => alt.order === 1)?.explanation || '',
+        isCorrectA: response.alternatives.find(alt => alt.order === 1)?.isCorrect ? 1 : 0,
+        alternativaB: response.alternatives.find(alt => alt.order === 2)?.description || '',
+        explicacaoB: response.alternatives.find(alt => alt.order === 2)?.explanation || '',
+        isCorrectB: response.alternatives.find(alt => alt.order === 2)?.isCorrect ? 2 : 0,
+        alternativaC: response.alternatives.find(alt => alt.order === 3)?.description || '',
+        explicacaoC: response.alternatives.find(alt => alt.order === 3)?.explanation || '',
+        isCorrectC: response.alternatives.find(alt => alt.order === 3)?.isCorrect ? 3 : 0,
+        alternativaD: response.alternatives.find(alt => alt.order === 4)?.description || '',
+        explicacaoD: response.alternatives.find(alt => alt.order === 4)?.explanation || '',
+        isCorrectD: response.alternatives.find(alt => alt.order === 4)?.isCorrect ? 4 : 0,
+        alternativaE: response.alternatives.find(alt => alt.order === 5)?.description || '',
+        explicacaoE: response.alternatives.find(alt => alt.order === 5)?.explanation || '',
+        isCorrectE: response.alternatives.find(alt => alt.order === 5)?.isCorrect ? 5 : 0,
       });
+      
+      const selectedCorrect = response.alternatives.find(alt => alt.isCorrect);
+      
+      if (selectedCorrect) {
+        this.questionForm.patchValue({
+          isCorrect: selectedCorrect.order,
+        });
+      }
     });
+
     this.cdr.detectChanges();
   }
 
@@ -125,13 +137,23 @@ export class CreateQuestionComponent implements OnInit{
   onNivelChange(event: Event): void {
     const selectElement = event.target as HTMLSelectElement;
     this.selectedNivel = Number(selectElement.value);
-    console.log("onNivelChange")
   }
 
-  onCategoriaChange(event: Event): void {
+  onCategoriaChange(event: Event): void { 
     const selectElement = event.target as HTMLSelectElement;
-    this.selectedNivel = Number(selectElement.value);
+  
+    const selectedValues = Array.from(selectElement.selectedOptions)
+      .map(option => {
+        const value = option.value.trim();
+        const match = value.match(/^(\d+)/);
+        const numValue = match ? Number(match[1]) : NaN;
+        return numValue;
+      })
+      .filter(value => !isNaN(value) && value !== -1);
+
+    this.selectedCategorias = selectedValues;
   }
+
 
   onDiscursivaChange(event: Event): void {
     const checkbox = event.target as HTMLInputElement;
@@ -144,51 +166,64 @@ export class CreateQuestionComponent implements OnInit{
   }
 
   onSubmit() {
+    
+    this.showCorrectAlternativeError = false;
+
+    if (this.questionForm.get('isCorrect')?.value === null) {
+      this.showCorrectAlternativeError = true;
+      return;
+    }
+
+    this.showNoNivelSelected = false;
+
+    if (this.selectedNivel == undefined) {
+      this.showNoNivelSelected = true;
+      return;
+    }
+
     const values = this.questionForm.value;
-  
+    
     const alternatives: Alternative[] = [
-      { id: this.question?.alternatives.find(a => a.option === 'A')?.id || null, option: 'A', description: values.alternativa!, imagePath: '', isCorrect: values.isCorrectA! === 1, explanation: values.explicacao!, question_id: this.question?.id || null },
-      { id: this.question?.alternatives.find(a => a.option === 'B')?.id || null, option: 'B', description: values.alternativaB!, imagePath: '', isCorrect: values.isCorrectB! === 2, explanation: values.explicacaoB!, question_id: this.question?.id || null },
-      { id: this.question?.alternatives.find(a => a.option === 'C')?.id || null, option: 'C', description: values.alternativaC!, imagePath: '', isCorrect: values.isCorrectC! === 3, explanation: values.explicacaoC!, question_id: this.question?.id || null },
-      { id: this.question?.alternatives.find(a => a.option === 'D')?.id || null, option: 'D', description: values.alternativaD!, imagePath: '', isCorrect: values.isCorrectD! === 4, explanation: values.explicacaoD!, question_id: this.question?.id || null },
-      { id: this.question?.alternatives.find(a => a.option === 'E')?.id || null, option: 'E', description: values.alternativaE!, imagePath: '', isCorrect: values.isCorrectE! === 5, explanation: values.explicacaoE!, question_id: this.question?.id || null }
+      { id: this.question?.alternatives[0].id  || null, description: values.alternativa! , imagePath: '', isCorrect: values.isCorrect! == 1, explanation: values.explicacao! , question_id: this.question?.id || null, order: 1},
+      { id: this.question?.alternatives[1]?.id || null, description: values.alternativaB!, imagePath: '', isCorrect: values.isCorrect! == 2, explanation: values.explicacaoB!, question_id: this.question?.id || null, order: 2},
+      { id: this.question?.alternatives[2]?.id || null, description: values.alternativaC!, imagePath: '', isCorrect: values.isCorrect! == 3, explanation: values.explicacaoC!, question_id: this.question?.id || null, order: 3},
+      { id: this.question?.alternatives[3]?.id || null, description: values.alternativaD!, imagePath: '', isCorrect: values.isCorrect! == 4, explanation: values.explicacaoD!, question_id: this.question?.id || null, order: 4},
+      { id: this.question?.alternatives[4]?.id || null, description: values.alternativaE!, imagePath: '', isCorrect: values.isCorrect! == 5, explanation: values.explicacaoE!, question_id: this.question?.id || null, order: 5}
     ];
-  
-    const header: QuestionHeader = {
-      id: this.question?.header.id || null,
-      content: values.enunciado!,
-      image_path: this.question?.header.image_path || ''
-    };
   
     const question: Question = {
       id: this.questionId ?? 0,
       multipleChoice: !this.discursiva,
       numberLines: this.numberLines,
       personId: this.userId,
-      header: header,
+      header: this.enunciado,
+      header_image: this.header_image,
       answerId: 0,
-      difficultyLevel: this.selectedNivel ?? 0,
+      difficultyLevel: 0,
       enable: true,
-      educationLevel: this.selectedNivel ?? 0,
-      accessLevel: this.selectedCategoria ?? 0,
-      tagIds: [this.selectedCategoria ?? 0],
+      // educationLevel: this.niveis.find(nivel => nivel.value === this.selectedNivel)?.name ?? 'ENSINO_FUNDAMENTAL',
+      educationLevel: this.niveis.find(nivel => nivel.value === this.selectedNivel)?.name ?? '',
+      accessLevel: this.access ? 1 : 0, //true == public, API 1 == publica
+      tagIds: this.selectedCategorias,
       alternatives: alternatives
     };
   
     if (this.questionId) {
       this.questionService.updateQuestion(this.questionId, question).subscribe(response => {
         console.log('Questão atualizada com sucesso:', response);
-        this.router.navigate(['/questions']);
-      });
+        this.router.navigate([`/questions`]);
+      }, error => {console.log(error)});
     } else {
+      console.log(question)
       this.questionService.createQuestion(question).subscribe(response => {
         console.log('Questão criada com sucesso:', response);
-        this.router.navigate(['/questions']);
+        this.router.navigate([`/questions`]);
       });
     }
   }
 
   deleteQuestion(): void {
+    if(!confirm("Deletar Questão?")) return;
     const id = this.questionId!;
     this.questionService.deleteQuestion(id).subscribe(
       () => {
@@ -201,6 +236,10 @@ export class CreateQuestionComponent implements OnInit{
     );
   }
   
+  getTagName(tagId: number): string {
+    const tag = this.categorias.find(c => c.id === tagId);
+    return tag ? tag.name : '';
+  }
 
   public mostrarModal() {
     this.modalEnabled = true;
@@ -209,4 +248,47 @@ export class CreateQuestionComponent implements OnInit{
   public fecharModal() {
     this.modalEnabled = false;
   }
+
+  public carregarQuestaoGerada(question: Question) {
+    console.log(question);
+
+    this.enunciado = question.header;
+
+    this.selectedNivel = this.niveis.find(nivel => nivel.name === question.educationLevel)?.value;
+
+    this.selectedCategorias = question.tagIds!;
+
+    this.discursiva = !question.multipleChoice;
+
+    this.access = question.accessLevel === 1;
+
+    this.questionForm.patchValue({
+        enunciado: question.header,
+        alternativa: question.alternatives.find(alt => alt.order === 1)?.description || '',
+        explicacao: question.alternatives.find(alt => alt.order === 1)?.explanation || '',
+        isCorrectA: question.alternatives.find(alt => alt.order === 1)?.isCorrect ? 1 : 0,
+        alternativaB: question.alternatives.find(alt => alt.order === 2)?.description || '',
+        explicacaoB: question.alternatives.find(alt => alt.order === 2)?.explanation || '',
+        isCorrectB: question.alternatives.find(alt => alt.order === 2)?.isCorrect ? 2 : 0,
+        alternativaC: question.alternatives.find(alt => alt.order === 3)?.description || '',
+        explicacaoC: question.alternatives.find(alt => alt.order === 3)?.explanation || '',
+        isCorrectC: question.alternatives.find(alt => alt.order === 3)?.isCorrect ? 3 : 0,
+        alternativaD: question.alternatives.find(alt => alt.order === 4)?.description || '',
+        explicacaoD: question.alternatives.find(alt => alt.order === 4)?.explanation || '',
+        isCorrectD: question.alternatives.find(alt => alt.order === 4)?.isCorrect ? 4 : 0,
+        alternativaE: question.alternatives.find(alt => alt.order === 5)?.description || '',
+        explicacaoE: question.alternatives.find(alt => alt.order === 5)?.explanation || '',
+        isCorrectE: question.alternatives.find(alt => alt.order === 5)?.isCorrect ? 5 : 0,
+    });
+
+    const selectedCorrect = question.alternatives.find(alt => alt.isCorrect);
+    if (selectedCorrect) {
+        this.questionForm.patchValue({
+            isCorrect: selectedCorrect.order,
+        });
+    }
+
+    this.cdr.detectChanges();
+}
+
 }

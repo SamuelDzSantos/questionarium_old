@@ -8,13 +8,13 @@ spring:
   rabbitmq:
     host: localhost
     port: 5672
-    username: guest
-    password: guest
+    username: postgres
+    password: postgres
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/quest_assessment_db
+    url: jdbc:postgresql://localhost:5432/questionarium
     username: postgres
-    password: admin
+    password: postgres
     driver-class-name: org.postgresql.Driver
 
   jpa:

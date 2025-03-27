@@ -40,6 +40,9 @@ public class Alternative {
     @JoinColumn(name = "question_id")
     private Question question;
 
+    @Column(name= "alternative_order", nullable = false)
+    private Integer order;
+
     //Lombok
     @Override
     public boolean equals(Object o) {

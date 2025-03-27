@@ -15,4 +15,5 @@ public class AlternativeDTO {
     private Boolean isCorrect;
     private String explanation;
     private Long question_id;
+    private Integer order;
 }

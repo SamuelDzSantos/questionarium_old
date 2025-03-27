@@ -5,22 +5,18 @@
       <button class="close-button" (click)="closeModal()">X</button>
     </div>
     <div class="modal-body">
+
       <div class="form-group">
-        <label for="categoria">Categoria:</label>
-        <select id="categoria" [(ngModel)]="selectedCategoria">
-          <option value="" disabled selected>Selecione uma opção</option>
-          <option *ngFor="let categoria of categorias" [value]="categoria.value">
-            {{ categoria.label }}
-          </option>
-        </select>
+        <label for="tema">Tema:</label>
+        <input type="text" id="tema" name="tema" [(ngModel)]="questionTheme"/>
       </div>
 
       <div class="form-group">
-        <label for="questionType">Tipo de Questão:</label>
-        <select id="questionType" [(ngModel)]="selectedCategoria">
+        <label for="categoria">Categoria:</label>
+        <select id="categoria" [(ngModel)]="selectedCategorias" multiple>
           <option value="" disabled selected>Selecione uma opção</option>
-          <option *ngFor="let type of questionTypes" [value]="type">
-            {{ type }}
+          <option *ngFor="let categoria of categorias" [value]="categoria.id">
+            {{ categoria.description }}
           </option>
         </select>
       </div>
@@ -35,23 +31,28 @@
         </select>
       </div>
 
-      <div class="form-group">
-        <label for="tipo">Discursiva: </label>
-        <input type="checkbox" id="tipo" name="tipo"/>
-      </div>
+      <div class="form-group checkbox-container">
+        <div class="checkbox-group">
+          <label for="tipo">Discursiva:</label>
+          <input type="checkbox" id="tipo" name="tipo" [(ngModel)]="discursiva"/>
+        </div>
+      
+        <div class="checkbox-group">
+          <label for="accessLevel">Pública:</label>
+          <input type="checkbox" id="accessLevel" name="accessLevel" [(ngModel)]="accessLevel"/>
+        </div>
+      </div>     
 
       <button (click)="generateQuestion()">Gerar</button>
 
       <div class="visualization">
         <label for="visualization">Visualização:</label>
-        <textarea id="visualization" rows="10" readonly>
-            {{ generatedQuestion }}
-          </textarea>
+        <textarea id="visualization" rows="10" readonly [(ngModel)]="generatedQuestion"></textarea>
       </div>
     </div>
     <div class="modal-footer">
       <button (click)="acceptQuestion()">Aceitar</button>
-      <button (click)="generateAnother()">Gerar Outra</button>
+      <button (click)="generateQuestion()">Gerar Outra</button>
       <button (click)="cancel()">Cancelar</button>
     </div>
   </div>
