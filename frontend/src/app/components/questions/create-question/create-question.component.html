@@ -70,7 +70,7 @@
       <div class="alternative" [class.selected]="questionForm.get('isCorrect')?.value === 2">
         <input type="radio" id="correctB" formControlName="isCorrect" [value]="2"/>
         <label for="alternativeB" style="margin-right: 5px;"> B)</label>
-        <textarea id="alternativeB" type="text" placeholder="Escreva a alternativa"
+        <textarea id="alternativeB" type="text" [placeholder]='this.discursiva ? "Escreva a resposta" : "Escreva a alternativa" '
           rows="1" formControlName="alternativaB"></textarea>
         <textarea id="explicacaoB" type="text" placeholder="Escreva a explicação"
           rows="1" formControlName="explicacaoB"></textarea>

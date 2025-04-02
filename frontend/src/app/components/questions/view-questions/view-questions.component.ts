@@ -62,7 +62,7 @@ export class ViewQuestionsComponent implements OnInit{
     this.question$ = this.questionService.filterQuestions(
       !this.discursiva,
       // this.userId,
-      1,
+      0,
       labelNivel?.value != -1 ? labelNivel?.value : undefined,
       this.access? 1 : 0,
       this.selectedCategorias,
@@ -72,6 +72,7 @@ export class ViewQuestionsComponent implements OnInit{
     this.question$.subscribe({
       next: (questions) => {
         this.questions = questions || [];
+        console.log(questions)
       },
       error: (err) => {
         console.error('Error fetching questions', err);

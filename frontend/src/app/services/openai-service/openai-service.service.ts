@@ -18,7 +18,7 @@ export class OpenAIService {
     const body = {
       model: 'gpt-3.5-turbo',
       messages: [{ role: 'user', content: prompt }],
-      max_tokens: 500,
+      max_tokens: 1000,
     };
     
     return this.http.post(this.apiUrl, body, {

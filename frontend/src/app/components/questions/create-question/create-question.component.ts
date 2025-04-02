@@ -267,6 +267,10 @@ export class CreateQuestionComponent implements OnInit{
         alternativa: question.alternatives.find(alt => alt.order === 1)?.description || '',
         explicacao: question.alternatives.find(alt => alt.order === 1)?.explanation || '',
         isCorrectA: question.alternatives.find(alt => alt.order === 1)?.isCorrect ? 1 : 0,
+    })
+    
+    if(!this.discursiva) {
+      this.questionForm.patchValue({      
         alternativaB: question.alternatives.find(alt => alt.order === 2)?.description || '',
         explicacaoB: question.alternatives.find(alt => alt.order === 2)?.explanation || '',
         isCorrectB: question.alternatives.find(alt => alt.order === 2)?.isCorrect ? 2 : 0,
@@ -279,7 +283,8 @@ export class CreateQuestionComponent implements OnInit{
         alternativaE: question.alternatives.find(alt => alt.order === 5)?.description || '',
         explicacaoE: question.alternatives.find(alt => alt.order === 5)?.explanation || '',
         isCorrectE: question.alternatives.find(alt => alt.order === 5)?.isCorrect ? 5 : 0,
-    });
+    })
+    };
 
     const selectedCorrect = question.alternatives.find(alt => alt.isCorrect);
     if (selectedCorrect) {

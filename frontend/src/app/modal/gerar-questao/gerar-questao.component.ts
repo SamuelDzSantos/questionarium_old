@@ -53,11 +53,13 @@ export class GerarQuestaoComponent implements OnInit {
     this.openAIService.generateText(prompt).subscribe((response) => {
       
       const content = response.choices[0].message.content;
+      console.log(content)
   
       try {
         const parsedQuestion = JSON.parse(content);
         this.question = parsedQuestion;
        
+        if(!this.discursiva){
         this.generatedQuestion = `${this.question?.header}
         A)${this.question?.alternatives[0].description}
         B)${this.question?.alternatives[1].description}
@@ -65,7 +67,13 @@ export class GerarQuestaoComponent implements OnInit {
         D)${this.question?.alternatives[3].description}
         E)${this.question?.alternatives[4].description}
         Resposta correta: ${this.orderToLetter()}
-        `;
+        `;  
+        }
+        else {
+          this.generatedQuestion = `${this.question?.header}`
+        }
+
+        
         
       } catch (error) {
         console.error("Error parsing JSON:", error);
@@ -113,13 +121,24 @@ export class GerarQuestaoComponent implements OnInit {
       com a(s) categoria(s) "${this.getSelectedTagsDescriptions()}"
       e tema "${this.questionTheme}". Nível de acesso: ${this.accessLevel}, sendo falso para 0 e true para 1
       ${this.discursiva ? 
-        `Forneça apenas o enunciado da questão em formato JSON com as variáveis acima e como o exemplo abaixo:
+        `Forneça apenas o enunciado da questão em formato JSON com as variáveis acima, 
+        a resposta certa estará dentro de um objeto alternativa no atributo description como no exemplo abaixo,
+        os nomes dos atributos do json tem que ser estritamente iguais ao exemplo
+        :
           {
-            "tagIds": $[1, 2], //pode estar vazio
+            "tagIds": [1, 2], //pode estar vazio
             "accessLevel": $this.accessLevel,
-            "educationLevel": $"ENSINO_FUNDAMENTAL",
-            "header": $"Seu enunciado gerado",
+            "educationLevel": "ENSINO_FUNDAMENTAL",
+            "header": "Seu enunciado gerado",
             "multipleChoice": false,
+            "alternatives": [
+            {
+              "id": null,
+              "description": "Resposta correta",
+              "explanation" : ''
+              "isCorrect": true,
+              "order": 1
+            }
           }`
         :
         `Inclua alternativas (A-E) de resposta, sendo apenas uma delas a correta. 
@@ -132,7 +151,7 @@ export class GerarQuestaoComponent implements OnInit {
         Retorne tudo no formato JSON como o exemplo a seguir:
         {
           "tagIds": [1, 2], //pode estar vazio
-          "accessLevel": $this.accessLevel,
+          "accessLevel": this.accessLevel,
           "educationLevel": "ENSINO_FUNDAMENTAL",
           "header": "Qual é a capital do Brasil?",
           "multipleChoice": true,

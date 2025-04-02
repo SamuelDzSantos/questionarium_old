@@ -54,6 +54,7 @@ export class QuestionService {
       const tagIdsStr = tagIds.join(',');
       params = params.set('tagIds', tagIdsStr);
     }
+    console.log(params)
 
     return this.http.get<Question[]>(`${this.baseUrl}`, { params });
   }

@@ -24,7 +24,7 @@ public class Alternative {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
-    @Column(name= "description")
+    @Column(name= "description", columnDefinition = "TEXT")
     private String description;
 
     @Column(name= "image_path")
