@@ -135,7 +135,7 @@ export class GerarQuestaoComponent implements OnInit {
             {
               "id": null,
               "description": "Resposta correta",
-              "explanation" : ''
+              "explanation" : "",
               "isCorrect": true,
               "order": 1
             }
