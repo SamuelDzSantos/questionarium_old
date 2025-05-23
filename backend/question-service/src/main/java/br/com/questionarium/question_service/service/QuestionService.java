@@ -91,6 +91,13 @@ public class QuestionService {
                 .collect(Collectors.toList());
     }
 
+    public List<QuestionDTO> getQuestionsByIds(List<Long> ids) {
+        List<Question> questions = questionRepository.findAllById(ids);
+        return questions.stream()
+                .map(questionMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
     public List<QuestionDTO> getFilteredQuestions(
             Long personId,
             Boolean multipleChoice,

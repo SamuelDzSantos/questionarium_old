@@ -67,7 +67,7 @@ public class Question {
     @Enumerated(EnumType.ORDINAL)
     private QuestionAccessLevel accessLevel;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "question_tags",
         joinColumns = @JoinColumn(name = "question_id"),

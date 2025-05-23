@@ -114,4 +114,24 @@ public class QuestionController {
         });
     }
 
+    @GetMapping("getbyids")
+    public Object testGetByIds() {
+        List<Long> list = List.of(1L, 2L);
+
+        CompletableFuture<Object> f = template.convertSendAndReceive("default-exchange",
+                "question.getbyids",
+                list)
+                .toCompletableFuture();
+
+                return Mono.fromFuture(f).map(response -> {
+            try {
+                System.out.println("******************");
+                System.out.println(response);
+                return response;
+            } catch (Exception e) {
+                return null;
+            }
+        });
+    }
+
 }
