@@ -119,6 +119,7 @@ textarea {
 .btn-generate {
   background-color: #002436;
   color: white;
+  margin-right: 5px;
 }
 
 .error-message {

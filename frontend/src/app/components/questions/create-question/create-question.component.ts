@@ -10,6 +10,7 @@ import { Observable } from 'rxjs';
 import { UserData } from '../../../types/dto/UserData';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Tag } from '../../../types/dto/Tag';
+import { OpenAIService } from '../../../services/openai-service/openai-service.service';
 
 @Component({
   selector: 'app-create-question',
@@ -25,7 +26,8 @@ export class CreateQuestionComponent implements OnInit{
     private questionService: QuestionService,
     private router: Router,
     private route: ActivatedRoute,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private openAiService: OpenAIService
   ) {}
 
   user$!: Observable<UserData | null>;
@@ -36,9 +38,11 @@ export class CreateQuestionComponent implements OnInit{
   question: Question | null = null;
   
   questionForm: any;
+  oldQuestionForm: any;
 
   enunciado: string = '';
   header_image: string = '';
+  corrigido: boolean = false;
 
   niveis = [
     { label: 'ENSINO FUNDAMENTAL', value: 0, name: 'ENSINO_FUNDAMENTAL'},
@@ -167,9 +171,13 @@ export class CreateQuestionComponent implements OnInit{
 
   onSubmit() {
     
+    if(this.discursiva){
+      this.questionForm.patchValue({isCorrect: 1})
+    }
+
     this.showCorrectAlternativeError = false;
 
-    if (this.questionForm.get('isCorrect')?.value === null) {
+    if (this.questionForm.get('isCorrect')?.value === null ) {
       this.showCorrectAlternativeError = true;
       return;
     }
@@ -295,5 +303,102 @@ export class CreateQuestionComponent implements OnInit{
 
     this.cdr.detectChanges();
 }
+
+  spellCheck() {
+      this.oldQuestionForm = this.questionForm.value;
+      this.enunciado = "Corrigindo texto ..."
+      const values = this.questionForm.value;
+      const prompt = this.getSpellCheckPrompt(values);
+      console.log(prompt)
+            
+      this.openAiService.generateText(prompt).subscribe((response) => {
+        
+        try {
+          this.corrigido = true;
+          const content = response.choices[0].message.content;
+          console.log(content)
+          const parsedResponse = JSON.parse(content);
+          console.log(parsedResponse)
+
+          this.questionForm.patchValue({
+            enunciado: parsedResponse.enunciado,
+            alternativa: parsedResponse.alternativa,
+            explicacao: parsedResponse.explicacao,
+          })
+
+          if(!this.discursiva) {
+            this.questionForm.patchValue({      
+              alternativaB: parsedResponse.alternativaB,
+              explicacaoB: parsedResponse.explicacaoB,
+              alternativaC: parsedResponse.alternativaC,
+              explicacaoC: parsedResponse.explicacaoC,
+              alternativaD: parsedResponse.alternativaD,
+              explicacaoD: parsedResponse.explicacaoD,
+              alternativaE: parsedResponse.alternativaE,
+              explicacaoE: parsedResponse.explicacaoE,
+            });
+          }
+
+        } catch (error) {
+          console.error("Error parsing JSON:", error);
+          alert("Erro ao corrigir textos.")
+        }
+      });
+  }
+
+  revertSpellCheck() {
+    this.corrigido = false;
+    const values = this.oldQuestionForm;
+    this.questionForm.patchValue({
+      enunciado: values.enunciado,
+      alternativa: values.alternativa,
+      explicacao: values.explicacao,
+    })
+
+    if(!this.discursiva) {
+      this.questionForm.patchValue({      
+        alternativaB: values.alternativaB,
+        explicacaoB: values.explicacaoB,
+        alternativaC: values.alternativaC,
+        explicacaoC: values.explicacaoC,
+        alternativaD: values.alternativaD,
+        explicacaoD: values.explicacaoD,
+        alternativaE: values.alternativaE,
+        explicacaoE: values.explicacaoE,
+      });
+    }
+  }
+
+  getSpellCheckPrompt(values : any) {
+
+    return `Realize a correção gramatical dos textos a seguir, sem perder informações ou contexto, 
+    mude o mínimo de palavras possível. Siga a norma culta da língua portuguesa.
+    Textos:
+    enunciado: ${values.enunciado}
+    alternativa: ${values.alternativa}
+    alternativaB: ${values.alternativaB}
+    alternativaC: ${values.alternativaC}
+    alternativaD: ${values.alternativaD}
+    alternativaE: ${values.alternativaE}
+    explicacao: ${values.explicacao}
+    explicacaoB: ${values.explicacaoB}
+    explicacaoC: ${values.explicacaoC}
+    explicacaoD: ${values.explicacaoD}
+    explicacaoE: ${values.explicacaoE}
+    Preciso que a resposta siga rigidamente a estrutura do JSON a seguir, se não tiver texto retorne vazio:
+    {
+      "enunciado":
+      "alternativa":
+      "alternativaB":
+      "alternativaC":
+      "alternativaD":
+      "alternativaE":
+      "explicacao":
+      "explicacaoB":
+      "explicacaoC":
+      "explicacaoD":
+      "explicacaoE":
+    }`;
+  }
 
 }

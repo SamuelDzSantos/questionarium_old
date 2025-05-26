@@ -113,9 +113,11 @@
     </div>
 
     <button type="button" class="btn-generate" (click)="generateQuestion()">Gerar Automaticamente</button>
+    <button type="button" class="btn-generate" [disabled]="!this.enunciado" (click)="spellCheck()">Correção Gramatical</button>
+    <button *ngIf="this.corrigido" type="button" class="btn-generate" (click)="revertSpellCheck()">Reverter Correção</button>
     <div class="actions">
       <button class="btn-save" type="submit" >Salvar</button>
-      <button class="btn-cancel" type="button"  (click)="deleteQuestion()">Excluir</button>
+      <button *ngIf="this.questionId" class="btn-cancel" type="button"  (click)="deleteQuestion()">Excluir</button>
       <button class="btn-cancel" type="button" style="background-color: gray;" (click)="cancel()">Voltar</button>
     </div>
   </form>
