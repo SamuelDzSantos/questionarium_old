@@ -18,6 +18,8 @@ import { CriarCabecalhoComponent } from './modal/criar-cabecalho/criar-cabecalho
 import { CadastroComponent } from './components/cadastro/cadastro.component';
 import { AvaliacaoAplicarComponent } from './components/avaliacao/avaliacao-aplicar/avaliacao-aplicar.component';
 import { AvaliacaoAplicadasComponent } from './components/avaliacao/avaliacao-aplicadas/avaliacao-aplicadas.component';
+import { ListarRelatoriosComponent } from './components/relatorios/listar-relatorios/listar-relatorios.component';
+import { VerRelatorioComponent } from './components/relatorios/ver-relatorio/ver-relatorio.component';
 
 export const routes: Routes = [
     {
@@ -52,6 +54,13 @@ export const routes: Routes = [
                     { path: "", component: ViewQuestionsComponent},
                     { path: "criar", component: CreateQuestionComponent },
                     { path: ":id", component: CreateQuestionComponent }
+                ]
+            },
+            {
+                path: "relatorios",
+                children: [
+                    { path: "", component: ListarRelatoriosComponent},
+                    { path: ":id", component: VerRelatorioComponent }
                 ]
             },
             { path: "sobre", component: SobreComponent },

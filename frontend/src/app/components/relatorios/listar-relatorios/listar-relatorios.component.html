@@ -1,0 +1,25 @@
+<div class="container">
+    <div class="header">
+        <h1>Relatórios</h1>
+    </div>
+    <div class="relatorio-table">
+        <table>
+            <tr>
+                <th>Código</th>
+                <th>Data</th>
+                <th>Turma</th>
+                <th>Disciplina</th>
+                <th></th>
+            </tr>
+            <tr *ngFor="let relatorio of relatorios">
+                <td>{{relatorio.id}}</td>
+                <td>{{relatorio.data}}</td>
+                <td>{{relatorio.turma}}</td>
+                <td>{{relatorio.disciplina}}</td>
+                <td>
+                    <button class="btn-view" (click)='viewRelatorio(relatorio.id!)'>Visualizar</button>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
