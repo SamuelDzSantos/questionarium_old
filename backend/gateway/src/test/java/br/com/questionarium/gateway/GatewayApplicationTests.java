@@ -46,10 +46,24 @@ class GatewayApplicationTests {
                 .uri("/users") // Endpoint testado
                 .contentType(MediaType.APPLICATION_JSON) // Define o tipo de conteúdo como JSON
                 .bodyValue(
-                        "{\"name\":\"Test User\",\"email\":\"testuser@example.com\",\"password\":\"123456\",\"roles\":[\"USER\"]}") 
-                        // Corpo da requisição
+                        "{\"name\":\"Test User\",\"email\":\"testuser@example.com\",\"password\":\"123456\",\"roles\":[\"USER\"]}")
+                // Corpo da requisição
                 .exchange() // Envia a requisição
                 .expectStatus().is2xxSuccessful(); // Verifica se a resposta tem status HTTP 2xx
     }
+
+    // @Test
+    // void testCorsForQuestionsRoute() {
+    //     // Testa se o CORS está configurado corretamente para a rota /questions
+
+    //     webTestClient.options()
+    //             .uri("/questions") // Endpoint testado
+    //             .header("Origin", "http://localhost:4200") // Origem do front-end
+    //             .header("Access-Control-Request-Method", "GET") // Método que o front-end pretende usar
+    //             .exchange()
+    //             .expectStatus().isOk() // Espera um 200 OK
+    //             .expectHeader().valueEquals("Access-Control-Allow-Origin", "http://localhost:4200") // Deve permitir a origem
+    //             .expectHeader().exists("Access-Control-Allow-Methods"); // Deve informar os métodos permitidos
+    // }
 
 }
