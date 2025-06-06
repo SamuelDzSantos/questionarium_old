@@ -6,6 +6,7 @@ import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWeb
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import org.junit.jupiter.api.Assertions;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 // Sobe a aplicação Gateway em uma porta aleatória, isolada do ambiente local
@@ -54,16 +55,65 @@ class GatewayApplicationTests {
 
     // @Test
     // void testCorsForQuestionsRoute() {
-    //     // Testa se o CORS está configurado corretamente para a rota /questions
+    // // Testa se o CORS está configurado corretamente para a rota /questions
 
-    //     webTestClient.options()
-    //             .uri("/questions") // Endpoint testado
-    //             .header("Origin", "http://localhost:4200") // Origem do front-end
-    //             .header("Access-Control-Request-Method", "GET") // Método que o front-end pretende usar
-    //             .exchange()
-    //             .expectStatus().isOk() // Espera um 200 OK
-    //             .expectHeader().valueEquals("Access-Control-Allow-Origin", "http://localhost:4200") // Deve permitir a origem
-    //             .expectHeader().exists("Access-Control-Allow-Methods"); // Deve informar os métodos permitidos
+    // webTestClient.options()
+    // .uri("/questions") // Endpoint testado
+    // .header("Origin", "http://localhost:4200") // Origem do front-end
+    // .header("Access-Control-Request-Method", "GET") // Método que o front-end
+    // pretende usar
+    // .exchange()
+    // .expectStatus().isOk() // Espera um 200 OK
+    // .expectHeader().valueEquals("Access-Control-Allow-Origin",
+    // "http://localhost:4200") // Deve permitir a origem
+    // .expectHeader().exists("Access-Control-Allow-Methods"); // Deve informar os
+    // métodos permitidos
     // }
+
+    @Test
+    void testProtectedRouteWithoutToken() {
+        // Tenta acessar rota protegida (/questions) SEM token
+        // Espera resposta 401 Unauthorized
+
+        webTestClient.get()
+                .uri("/questions") // rota protegida
+                .exchange()
+                .expectStatus().isUnauthorized(); // deve retornar 401
+    }
+
+    @Test
+    void testUserServiceFallbackWhenDown() {
+        // Teste de fallback do Circuit Breaker para o User Service
+        // IMPORTANTE: parar o User Service antes de rodar este teste!
+        // Espera resposta personalizada de fallback
+
+        webTestClient.post()
+                .uri("/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(
+                        "{\"name\":\"Test User\",\"email\":\"fallbacktest@example.com\",\"password\":\"123456\",\"roles\":[\"USER\"]}")
+                .exchange()
+                .expectStatus().isOk() // fallback geralmente responde 200 com msg customizada
+                .expectBody(String.class)
+                .value(body -> {
+                    System.out.println("Resposta fallback: " + body);
+                    Assertions.assertTrue(body.contains("temporariamente"), "Esperava mensagem de fallback");
+                });
+    }
+
+    @Test
+    void testOpenRouteWithoutToken() {
+        // Testa que rota /users é pública (não exige token)
+        // Deve responder com sucesso (201 Created ou 200 OK, dependendo do User
+        // Service)
+
+        webTestClient.post()
+                .uri("/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(
+                        "{\"name\":\"Public User\",\"email\":\"publicuser@example.com\",\"password\":\"123456\",\"roles\":[\"USER\"]}")
+                .exchange()
+                .expectStatus().is2xxSuccessful();
+    }
 
 }
