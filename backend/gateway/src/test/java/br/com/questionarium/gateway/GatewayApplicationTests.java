@@ -35,4 +35,21 @@ class GatewayApplicationTests {
                 .expectStatus().is2xxSuccessful(); // Verifica se a resposta tem status HTTP 2xx (ou poderia ser
                                                    // .isUnauthorized())
     }
+
+    @Test
+    void testUserRoute() {
+        // Testa se a rota /users está corretamente roteada pelo Gateway para o User
+        // Service
+        // Envia uma requisição POST para criar um usuário
+
+        webTestClient.post()
+                .uri("/users") // Endpoint testado
+                .contentType(MediaType.APPLICATION_JSON) // Define o tipo de conteúdo como JSON
+                .bodyValue(
+                        "{\"name\":\"Test User\",\"email\":\"testuser@example.com\",\"password\":\"123456\",\"roles\":[\"USER\"]}") 
+                        // Corpo da requisição
+                .exchange() // Envia a requisição
+                .expectStatus().is2xxSuccessful(); // Verifica se a resposta tem status HTTP 2xx
+    }
+
 }
