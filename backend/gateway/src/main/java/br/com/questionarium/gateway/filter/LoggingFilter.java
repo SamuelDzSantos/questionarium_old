@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
-@Component // Torna este filtro um bean global (aplicado em todas as requisições)
+@Component
 public class LoggingFilter implements GlobalFilter, Ordered {
 
     @Override
