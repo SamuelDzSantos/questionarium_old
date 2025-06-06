@@ -1,4 +1,4 @@
-C:\Users\Alexandre\Documents\UFPR\TCC\Projeto\questionarium\backend\email-service\src\main\java\dev\questionarium\consumers\EmailConsumer.java
-C:\Users\Alexandre\Documents\UFPR\TCC\Projeto\questionarium\backend\email-service\src\main\java\dev\questionarium\EmailApplication.java
-C:\Users\Alexandre\Documents\UFPR\TCC\Projeto\questionarium\backend\email-service\src\main\java\dev\questionarium\EmailService.java
-C:\Users\Alexandre\Documents\UFPR\TCC\Projeto\questionarium\backend\email-service\src\main\java\dev\questionarium\RabbitMQConfig.java
+C:\Users\Alexandre\Documents\UFPR\TCC\Projeto\2025\questionarium_old_analise\backend\email-service\src\main\java\br\com\questionarium\email_service\config\RabbitMQConfig.java
+C:\Users\Alexandre\Documents\UFPR\TCC\Projeto\2025\questionarium_old_analise\backend\email-service\src\main\java\br\com\questionarium\email_service\consumers\EmailConsumer.java
+C:\Users\Alexandre\Documents\UFPR\TCC\Projeto\2025\questionarium_old_analise\backend\email-service\src\main\java\br\com\questionarium\email_service\EmailApplication.java
+C:\Users\Alexandre\Documents\UFPR\TCC\Projeto\2025\questionarium_old_analise\backend\email-service\src\main\java\br\com\questionarium\email_service\services\EmailService.java

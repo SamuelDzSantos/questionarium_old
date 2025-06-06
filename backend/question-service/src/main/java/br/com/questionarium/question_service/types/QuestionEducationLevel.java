@@ -2,15 +2,15 @@ package br.com.questionarium.question_service.types;
 
 public enum QuestionEducationLevel {
 
-    ENSINO_FUNDAMENTAL (0),
-    ENSINO_MÉDIO (1),
-    ENSINO_SUPERIOR (2);
+    ENSINO_FUNDAMENTAL(0),
+    ENSINO_MEDIO(1),
+    ENSINO_SUPERIOR(2);
 
     private final int value;
 
     QuestionEducationLevel(int value) {
-            this.value = value;
-        }
+        this.value = value;
+    }
 
     public int getValue() {
         return value;

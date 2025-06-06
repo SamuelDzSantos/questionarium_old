@@ -1,0 +1,28 @@
+server:
+  port: 14003    # Ajustado para corresponder à porta definida para o Email Service
+
+spring:
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: admin
+    password: admin
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: samueldzsantos@gmail.com
+    password: ddojqjxlkgaaggdo       # remover espaços no password
+    default-encoding: UTF-8
+    properties:
+      mail:
+        mime:
+          charset: UTF-8            # usar UTF-8 em vez de “UTF”
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+          connectiontimeout: 10000
+          timeout: 10000
+          writetimeout: 10000

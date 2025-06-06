@@ -1,40 +1,96 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="
+           http://maven.apache.org/POM/4.0.0
+           http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
+    <!-- Herdando do POM pai que centraliza versões e módulos -->
     <parent>
-        <groupId>dev.questionarium</groupId>
+        <groupId>br.com.questionarium</groupId>
         <artifactId>questionarium</artifactId>
         <version>1.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <groupId>dev.questionarium</groupId>
+    <groupId>br.com.questionarium</groupId>
     <artifactId>email-service</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+    <name>email-service</name>
+    <description>Microservice para envio de e-mail</description>
 
     <properties>
+        <!-- Já herdado do parent, mas reforçamos aqui -->
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
+
+        <!-- Não é estritamente necessário definir esta propriedade,
+             pois o Spring Boot BOM já traz a versão compatível de spring-amqp.
+             Você pode manter ou remover, dependendo de preferência. -->
         <spring.rabbit.version>3.1.6</spring.rabbit.version>
     </properties>
 
     <dependencies>
+        <!-- 1) RabbitMQ (para receber mensagens via @RabbitListener) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-amqp</artifactId>
         </dependency>
 
+        <!-- 2) HTTP/Web (caso queira expor endpoints REST) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
+
+        <!-- 3) E-mail (JavaMail) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-mail</artifactId>
         </dependency>
 
+        <!-- 4) DTOs / classes compartilhadas (módulo shared) -->
+        <dependency>
+            <groupId>br.com.questionarium</groupId>
+            <artifactId>shared</artifactId>
+            <!-- Não é preciso repetir a versão, pois ela vem do dependencyManagement do parent -->
+        </dependency>
 
+        <!-- 5) Lombok (opcional: anotação @Data, @Builder, etc.) -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- 6) Testes (JUnit, MockMvc, etc.) -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
+    <build>
+        <plugins>
+            <!-- Plugin do Spring Boot para empacotar a aplicação -->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+
+            <!-- Plugin do compilador (repetido apenas para garantia) -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>17</source>
+                    <target>17</target>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

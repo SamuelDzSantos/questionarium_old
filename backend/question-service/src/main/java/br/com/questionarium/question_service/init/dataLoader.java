@@ -64,7 +64,7 @@ public class dataLoader implements ApplicationRunner {
             questionService.createQuestion(QuestionDTO.builder()
             .multipleChoice(true)
             .numberLines(66)
-            .educationLevel(QuestionEducationLevel.ENSINO_MÉDIO)
+            .educationLevel(QuestionEducationLevel.ENSINO_MEDIO)
             .personId(0L)
             .header("Com base na teoria proposta por Smith (2023), a compreensão dos fatores que influenciam a decisão A envolve considerar múltiplos elementos contextuais. Como a aplicação dessa teoria pode ser expandida para o cenário B?\"")
             .answerId(0L)

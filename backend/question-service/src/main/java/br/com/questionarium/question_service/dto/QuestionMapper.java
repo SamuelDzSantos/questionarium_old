@@ -15,21 +15,22 @@ import br.com.questionarium.question_service.model.Tag;
 @Mapper(componentModel = "spring")
 public interface QuestionMapper {
 
-    @Mapping(target = "alternatives", source = "alternatives")
     @Mapping(source = "tags", target = "tagIds", qualifiedByName = "mapTagsToIds")
+    @Mapping(source = "alternatives", target = "alternatives")
     QuestionDTO toDTO(Question question);
 
     @Mapping(source = "tagIds", target = "tags", qualifiedByName = "mapIdsToTags")
-    @Mapping(target = "alternatives", source = "alternatives")
+    @Mapping(source = "alternatives", target = "alternatives")
     Question toEntity(QuestionDTO questionDTO);
 
-    @Mapping(target = "question", source = "question_id", qualifiedByName = "mapQuestionIdToQuestion")
+    @Mapping(target = "question", source = "questionId", qualifiedByName = "mapQuestionIdToQuestion")
     Alternative toEntity(AlternativeDTO alternativeDTO);
 
-    @Mapping(target = "question_id", source = "question.id")
+    @Mapping(target = "questionId", source = "question.id")
     AlternativeDTO toDTO(Alternative alternative);
 
     // Custom mapping methods
+
     @Named("mapQuestionIdToQuestion")
     default Question mapQuestionIdToQuestion(Long questionId) {
         if (questionId == null) {
@@ -42,12 +43,16 @@ public interface QuestionMapper {
 
     @Named("mapTagsToIds")
     default Set<Long> mapTagsToIds(Set<Tag> tags) {
-        return tags != null ? tags.stream().map(Tag::getId).collect(Collectors.toSet()) : new HashSet<>();
+        return tags != null
+                ? tags.stream().map(Tag::getId).collect(Collectors.toSet())
+                : new HashSet<>();
     }
 
     @Named("mapIdsToTags")
     default Set<Tag> mapIdsToTags(Set<Long> tagIds) {
-        if (tagIds == null) return new HashSet<>();
+        if (tagIds == null) {
+            return new HashSet<>();
+        }
         return tagIds.stream().map(id -> {
             Tag tag = new Tag();
             tag.setId(id);
@@ -57,12 +62,16 @@ public interface QuestionMapper {
 
     @Named("mapAlternativesToIds")
     default Set<Long> mapAlternativesToIds(Set<Alternative> alternatives) {
-        return alternatives != null ? alternatives.stream().map(Alternative::getId).collect(Collectors.toSet()) : new HashSet<>();
+        return alternatives != null
+                ? alternatives.stream().map(Alternative::getId).collect(Collectors.toSet())
+                : new HashSet<>();
     }
 
     @Named("mapIdsToAlternatives")
     default Set<Alternative> mapIdsToAlternatives(Set<Long> alternativesIds) {
-        if (alternativesIds == null) return new HashSet<>();
+        if (alternativesIds == null) {
+            return new HashSet<>();
+        }
         return alternativesIds.stream().map(id -> {
             Alternative alternative = new Alternative();
             alternative.setId(id);

@@ -18,14 +18,14 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Tag {
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
-    
-    @Column(name= "name")
+
+    @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name= "description")
+    @Column(name = "description")
     private String description;
-
 }

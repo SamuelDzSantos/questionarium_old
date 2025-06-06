@@ -1,0 +1,26 @@
+{
+  "multipleChoice": true,
+  "numberLines": 5,
+  "educationLevel": "ENSINO_SUPERIOR",
+  "header": "Qual o resultado de 2+2?",
+  "headerImage": null,
+  "enable": true,
+  "accessLevel": "PUBLIC",
+  "tagIds": [1, 2],
+  "alternatives": [
+    {
+      "description": "3",
+      "imagePath": null,
+      "isCorrect": false,
+      "explanation": "Errado porque 2+2 é 4",
+      "alternativeOrder": 1
+    },
+    {
+      "description": "4",
+      "imagePath": null,
+      "isCorrect": true,
+      "explanation": "Porque 2+2 = 4",
+      "alternativeOrder": 2
+    }
+  ]
+}

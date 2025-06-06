@@ -1,5 +1,6 @@
 package br.com.questionarium.question_service.model;
 
+import java.time.LocalDateTime;
 import java.util.Set;
 
 import org.hibernate.annotations.ColumnDefault;
@@ -19,6 +20,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -44,8 +47,8 @@ public class Question {
     @Column(nullable = false)
     private Integer numberLines;
 
-    @Column()
     @Enumerated(EnumType.ORDINAL)
+    @Column()
     private QuestionEducationLevel educationLevel;
 
     @Column(name = "person_id", nullable = false)
@@ -55,7 +58,7 @@ public class Question {
     private String header;
 
     @Column(name = "header_image", nullable = true)
-    private String header_image;
+    private String headerImage;
 
     @Column(name = "answer_id", nullable = false)
     private Long answerId;
@@ -63,28 +66,42 @@ public class Question {
     @Column(nullable = false)
     private boolean enable;
 
-    @Column(name = "access_type")
     @Enumerated(EnumType.ORDINAL)
+    @Column(name = "access_type")
     private QuestionAccessLevel accessLevel;
 
     @ManyToMany
-    @JoinTable(
-        name = "question_tags",
-        joinColumns = @JoinColumn(name = "question_id"),
-        inverseJoinColumns = @JoinColumn(name = "tag_id")
-    )
+    @JoinTable(name = "question_tags", joinColumns = @JoinColumn(name = "question_id"), inverseJoinColumns = @JoinColumn(name = "tag_id"))
     private Set<Tag> tags;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "question_id")
-    
     private Set<Alternative> alternatives;
 
-    //Lombok
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime creationDateTime;
+
+    @Column(nullable = false)
+    private LocalDateTime updateDateTime;
+
+    @PrePersist
+    protected void onCreate() {
+        this.creationDateTime = LocalDateTime.now();
+        this.updateDateTime = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.updateDateTime = LocalDateTime.now();
+    }
+
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+
         Question question = (Question) o;
         return id != null && id.equals(question.id);
     }
@@ -93,5 +110,4 @@ public class Question {
     public int hashCode() {
         return getClass().hashCode();
     }
-
 }

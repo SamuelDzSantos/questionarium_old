@@ -3,33 +3,47 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>dev.questionarium</groupId>
+
+	<groupId>br.com.questionarium</groupId>
 	<artifactId>questionarium</artifactId>
 	<version>1.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
+	<name>questionarium</name>
 
 	<properties>
-		<project.build.sourceEncoding>UTF-08</project.build.sourceEncoding>
+		<!-- Corrigido para UTF-8 -->
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
+		<!-- Java 17 -->
 		<maven.compiler.source>17</maven.compiler.source>
 		<maven.compiler.target>17</maven.compiler.target>
-		<spring.boot.dependency.version>3.3.5</spring.boot.dependency.version>
-		<spring.boot.maven.plugin.version>3.3.5</spring.boot.maven.plugin.version>
+
+		<!-- Spring Boot em 3.3.8 (alinha BOM e plugin) -->
+		<spring.boot.dependency.version>3.3.8</spring.boot.dependency.version>
+		<spring.boot.maven.plugin.version>3.3.8</spring.boot.maven.plugin.version>
+
+		<!-- Spring Cloud BOM permanece -->
 		<spring.cloud.dependencies.version>2023.0.2</spring.cloud.dependencies.version>
+
+		<!-- Lombok -->
 		<lombok.version>1.18.34</lombok.version>
 	</properties>
 
 	<modules>
+		<module>gateway</module>
+		<module>auth</module>
 		<module>shared</module>
 		<module>user-service</module>
-		<module>gateway</module>
 		<module>email-service</module>
-
+		<module>question-service</module>
+		<!-- 
+        <module>assessment-service</module>
+        -->
 	</modules>
-	<name>questionarium</name>
 
 	<dependencyManagement>
 		<dependencies>
+			<!-- Importa o BOM do Spring Boot 3.5.0 -->
 			<dependency>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-dependencies</artifactId>
@@ -38,6 +52,7 @@
 				<scope>import</scope>
 			</dependency>
 
+			<!-- Spring Cloud BOM -->
 			<dependency>
 				<groupId>org.springframework.cloud</groupId>
 				<artifactId>spring-cloud-dependencies</artifactId>
@@ -45,44 +60,46 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
+
+			<!-- Módulo shared local -->
+			<dependency>
+				<groupId>br.com.questionarium</groupId>
+				<artifactId>shared</artifactId>
+				<version>1.0-SNAPSHOT</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
 	<dependencies>
+		<!-- Lombok como provided -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<version>${lombok.version}</version>
 			<scope>provided</scope>
 		</dependency>
-
-		<dependency>
-			<groupId>dev.questionarium</groupId>
-			<artifactId>shared</artifactId>
-			<version>1.0-SNAPSHOT</version>
-		</dependency>
-
 	</dependencies>
 
 	<build>
 		<pluginManagement>
 			<plugins>
+				<!-- Plugin do Spring Boot 3.5.0 -->
 				<plugin>
 					<groupId>org.springframework.boot</groupId>
 					<artifactId>spring-boot-maven-plugin</artifactId>
 					<version>${spring.boot.maven.plugin.version}</version>
 				</plugin>
+
+				<!-- Compiler plugin (UTF-8 já no parent) -->
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
 					<configuration>
-						<parameters>true</parameters>
 						<encoding>UTF-8</encoding>
+						<parameters>true</parameters>
 					</configuration>
-
 				</plugin>
 			</plugins>
 		</pluginManagement>
 	</build>
-
 </project>
