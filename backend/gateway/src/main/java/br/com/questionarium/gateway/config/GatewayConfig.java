@@ -12,15 +12,25 @@ public class GatewayConfig {
         public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
                 return builder.routes()
                                 // 1) Qualquer rota /auth/** é encaminhada para AuthService (porta 14001)
+                                // com um Circuit Breaker configurado para fallback
                                 .route("auth", r -> r.path("/auth/**")
+                                                .filters(f -> f.circuitBreaker(cb -> cb
+                                                                .setName("authCircuitBreaker")
+                                                                .setFallbackUri("forward:/fallback/auth")))
                                                 .uri("http://localhost:14001"))
 
-                                // 2) Qualquer rota /users/** é encaminhada para UserService (porta 14002)
+                                // User Service
                                 .route("user-service", r -> r.path("/users/**")
-                                .uri("http://localhost:14002"))
+                                                .filters(f -> f.circuitBreaker(cb -> cb
+                                                                .setName("userCircuitBreaker")
+                                                                .setFallbackUri("forward:/fallback/users")))
+                                                .uri("http://localhost:14002"))
 
-                                // 3) Qualquer rota /questions/** é encaminhada para QuestionService (porta 14004)
+                                // Question Service
                                 .route("question-service", r -> r.path("/questions/**")
+                                                .filters(f -> f.circuitBreaker(cb -> cb
+                                                                .setName("questionCircuitBreaker")
+                                                                .setFallbackUri("forward:/fallback/questions")))
                                                 .uri("http://localhost:14004"))
 
                                 .build();

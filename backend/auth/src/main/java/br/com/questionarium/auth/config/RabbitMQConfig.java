@@ -12,9 +12,8 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitMQConfig {
 
-
-        public static final String USER_EXCHANGE       = "user-exchange";
-    public static final String AUTH_QUEUE          = "auth-queue";
+    public static final String USER_EXCHANGE = "user-exchange";
+    public static final String AUTH_QUEUE = "auth-queue";
     public static final String USER_CREATED_ROUTING = "user.created";
 
     // 1) Declara a fila "auth-queue"
