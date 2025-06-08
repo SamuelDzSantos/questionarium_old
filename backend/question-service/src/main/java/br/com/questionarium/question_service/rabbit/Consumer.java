@@ -14,10 +14,10 @@ import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.questionarium.question_service.dto.AnswerKeyDTO;
+import br.com.questionarium.question_service.dto.AnswerKeyRequestDTO;
 import br.com.questionarium.question_service.service.QuestionService;
 
 @Service
@@ -52,13 +52,13 @@ public class Consumer {
                 String body = new String(message.getBody(), StandardCharsets.UTF_8);
                 logger.debug("Corpo da mensagem (JSON): {}", body);
 
-                // 2) Desserializa como List<Long>
-                List<Long> ids = objectMapper.readValue(body, new TypeReference<>() {
-                });
-                logger.info("IDs de questões recebidos para resposta de chave: {}", ids);
+                // 2) Desserializa como AnswerKeyRequestDTO
+                AnswerKeyRequestDTO request = objectMapper.readValue(body, AnswerKeyRequestDTO.class);
+                logger.info("Request recebido: {}", request);
 
                 // 3) Pega as chaves de resposta
-                List<AnswerKeyDTO> answerKeys = questionService.getAnswerKeys(ids);
+                List<AnswerKeyDTO> answerKeys = questionService.getAnswerKeys(request.getQuestionIds(),
+                        request.getUserId());
                 logger.info("Answer keys geradas: {}", answerKeys);
                 return answerKeys;
             } else {
@@ -66,12 +66,10 @@ public class Consumer {
                 return Collections.emptyList();
             }
         } catch (JsonProcessingException e) {
-            logger.error("Falha ao desserializar corpo da mensagem para List<Long>", e);
-            // Não reenqueue: descarta a mensagem
+            logger.error("Falha ao desserializar corpo da mensagem", e);
             throw new AmqpRejectAndDontRequeueException("Erro de parsing JSON", e);
         } catch (Exception e) {
             logger.error("Erro ao processar mensagem com routing key '{}'", key, e);
-            // Rejeita e evita reenvio automático
             throw new AmqpRejectAndDontRequeueException("Erro ao processar mensagem", e);
         }
     }

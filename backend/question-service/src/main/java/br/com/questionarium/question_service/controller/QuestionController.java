@@ -79,46 +79,88 @@ public class QuestionController {
 
     @GetMapping("/{id}")
     public ResponseEntity<QuestionDTO> getQuestionById(@PathVariable Long id) {
-        logger.info("GET /questions/{} – buscando questão por ID", id);
-        return questionService.getQuestionById(id)
+        Long userId = jwtUtils.getCurrentUserId();
+        logger.info("GET /questions/{} – buscando questão por ID para userId={}", id, userId);
+
+        return questionService.getQuestionByIdForUser(id, userId)
                 .map(q -> {
-                    logger.info("Questão {} encontrada", id);
+                    logger.info("Questão {} encontrada para userId={}", id, userId);
                     return ResponseEntity.ok(q);
                 })
                 .orElseGet(() -> {
-                    logger.warn("Questão {} não encontrada", id);
+                    logger.warn("Questão {} não encontrada ou não pertence a userId={}", id, userId);
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+                });
+    }
+
+    @GetMapping("/admin/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<QuestionDTO> getQuestionByIdAdmin(@PathVariable Long id) {
+        logger.info("GET /questions/admin/{} – buscando questão por ID (ADMIN)", id);
+
+        return questionService.getQuestionById(id)
+                .map(q -> {
+                    logger.info("Questão {} encontrada (ADMIN)", id);
+                    return ResponseEntity.ok(q);
+                })
+                .orElseGet(() -> {
+                    logger.warn("Questão {} não encontrada (ADMIN)", id);
                     return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
                 });
     }
 
     @GetMapping("/answer-key")
     public ResponseEntity<List<AnswerKeyDTO>> getAnswerKeys(@RequestParam List<Long> questionIds) {
-        logger.info("GET /questions/answer-key – buscando answer keys para IDs={}", questionIds);
-        List<AnswerKeyDTO> list = questionService.getAnswerKeys(questionIds);
+        Long userId = jwtUtils.getCurrentUserId();
+        logger.info("GET /questions/answer-key – buscando answer keys para IDs={} e userId={}", questionIds, userId);
+
+        List<AnswerKeyDTO> list = questionService.getAnswerKeys(questionIds, userId);
+
         if (list.isEmpty()) {
-            logger.warn("Nenhuma answer key encontrada para IDs={}", questionIds);
+            logger.warn("Nenhuma answer key encontrada ou não autorizada para IDs={} e userId={}", questionIds, userId);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
+
         logger.info("Answer keys retornadas: {}", list);
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<QuestionDTO> updateQuestion(
-            @PathVariable Long id,
-            @RequestBody QuestionDTO questionDTO) {
+    public ResponseEntity<QuestionDTO> updateQuestion(@PathVariable Long id, @RequestBody QuestionDTO questionDTO) {
         Long userId = jwtUtils.getCurrentUserId();
         logger.info("PUT /questions/{} – atualizando questão para userId={}", id, userId);
 
-        // Sobrescreve userId no DTO para evitar adulteração
         questionDTO.setUserId(userId);
 
         try {
-            QuestionDTO updatedQuestion = questionService.updateQuestion(id, questionDTO);
+            QuestionDTO updatedQuestion = questionService.updateQuestion(id, questionDTO, userId);
             logger.info("Questão {} atualizada com sucesso", id);
             return new ResponseEntity<>(updatedQuestion, HttpStatus.OK);
         } catch (EntityNotFoundException e) {
-            logger.warn("Falha ao atualizar: questão {} não encontrada", id);
+            logger.warn("Falha ao atualizar: questão {} não encontrada ou sem permissão", id);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } catch (IllegalArgumentException e) {
+            logger.error("Falha ao atualizar questão {}: {}", id, e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        } catch (Exception e) {
+            logger.error("Erro interno ao atualizar questão {}", id, e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
+    @PutMapping("/admin/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<QuestionDTO> updateQuestionAdmin(@PathVariable Long id,
+            @RequestBody QuestionDTO questionDTO) {
+        logger.info("PUT /questions/admin/{} – atualizando questão como ADMIN", id);
+
+        try {
+            // ADMIN pode atualizar qualquer uma → NÃO passa userId para validar
+            QuestionDTO updatedQuestion = questionService.updateQuestionAsAdmin(id, questionDTO);
+            logger.info("Questão {} atualizada com sucesso (ADMIN)", id);
+            return new ResponseEntity<>(updatedQuestion, HttpStatus.OK);
+        } catch (EntityNotFoundException e) {
+            logger.warn("Falha ao atualizar (ADMIN): questão {} não encontrada", id);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         } catch (IllegalArgumentException e) {
             logger.error("Falha ao atualizar questão {}: {}", id, e.getMessage());

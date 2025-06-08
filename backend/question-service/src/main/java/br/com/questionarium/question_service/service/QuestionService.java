@@ -63,12 +63,12 @@ public class QuestionService {
                 .filter(AlternativeDTO::getIsCorrect)
                 .toList();
         if (correctAlternatives.isEmpty()) {
-            logger.error("Nenhuma alternativa correta fornecida");
-            throw new IllegalArgumentException("No correct alternative provided.");
+            logger.error("Nenhuma alternativa correta fornecida.");
+            throw new IllegalArgumentException("Nenhuma alternativa correta fornecida.");
         }
         if (correctAlternatives.size() > 1) {
             logger.error("Mais de uma alternativa correta fornecida");
-            throw new IllegalArgumentException("More than one correct alternative provided.");
+            throw new IllegalArgumentException("Mais de uma alternativa correta fornecida.");
         }
 
         // Mapear DTO para entidade
@@ -88,7 +88,7 @@ public class QuestionService {
         Alternative correctAlternative = savedQuestion.getAlternatives().stream()
                 .filter(Alternative::getIsCorrect)
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("No correct alternative provided"));
+                .orElseThrow(() -> new IllegalArgumentException("Nenhuma alternativa correta fornecida."));
 
         // Atualizar answerId e re-salvar
         savedQuestion.setAnswerId(correctAlternative.getId());
@@ -152,47 +152,168 @@ public class QuestionService {
                 .map(questionMapper::toDTO)
                 .collect(Collectors.toList());
 
-        logger.info("Foram encontradas {} questões após filtragem", result.size());
+        logger.info("Foram encontradas {} questões após filtragem.", result.size());
         return result;
     }
 
     public Optional<QuestionDTO> getQuestionById(Long id) {
-        logger.info("Buscando questão por ID {}", id);
+        logger.info("Buscando questão por ID {}.", id);
         Optional<QuestionDTO> result = questionRepository.findById(id)
                 .map(questionMapper::toDTO);
         if (result.isPresent()) {
-            logger.info("Questão {} encontrada", id);
+            logger.info("Questão {} encontrada.", id);
         } else {
-            logger.warn("Questão {} não encontrada", id);
+            logger.warn("Questão {} não encontrada.", id);
         }
         return result;
     }
 
+    public Optional<QuestionDTO> getQuestionByIdForUser(Long id, Long userId) {
+        logger.info("Buscando questão por ID {} para userId={}.", id, userId);
+
+        return questionRepository.findById(id)
+                .filter(question -> question.getUserId().equals(userId)
+                        || QuestionAccessLevel.PUBLIC.equals(question.getAccessLevel()))
+                .map(questionMapper::toDTO)
+                .map(dto -> {
+                    logger.info("Questão {} acessível para userId={}, retornando.", id, userId);
+                    return dto;
+                })
+                .or(() -> {
+                    logger.warn("Questão {} não acessível para userId={}. Não pertence ao usuário ou não é PÚBLICA.", id,
+                            userId);
+                    return Optional.empty();
+                });
+    }
+
     @Transactional
-    public List<AnswerKeyDTO> getAnswerKeys(List<Long> questionsIds) {
-        logger.info("Buscando answer keys para questões {}", questionsIds);
+    public List<AnswerKeyDTO> getAnswerKeys(List<Long> questionsIds, Long userId) {
+        logger.info("Buscando gabaritos para questões {} para userId={}.", questionsIds, userId);
+
         List<AnswerKeyDTO> pairs = new ArrayList<>();
+
         for (Long id : questionsIds) {
-            Optional<QuestionDTO> dto = questionRepository.findById(id)
-                    .map(questionMapper::toDTO);
-            if (dto.isPresent()) {
-                pairs.add(new AnswerKeyDTO(dto.get().getId(), dto.get().getAnswerId()));
-            } else {
-                logger.warn("Questão {} não encontrada ao buscar answer key", id);
-            }
+            questionRepository.findById(id).ifPresentOrElse(question -> {
+                boolean isOwner = question.getUserId().equals(userId);
+                boolean isPublic = QuestionAccessLevel.PUBLIC.equals(question.getAccessLevel());
+
+                if (isOwner || isPublic) {
+                    pairs.add(new AnswerKeyDTO(question.getId(), question.getAnswerId()));
+                    logger.info("Gabarito adicionada para questão {} (userId={}, PUBLIC={})", id, isOwner, isPublic);
+                } else {
+                    logger.warn("Usuário {} não tem permissão para acessar gabarito da questão {}.", userId, id);
+                }
+            }, () -> {
+                logger.warn("Questão {} não encontrada ao buscar gabarito.", id);
+            });
         }
-        logger.info("Answer keys retornados: {}", pairs);
+
+        logger.info("Gabarito retornado: {}.", pairs);
         return pairs;
     }
 
     @Transactional
-    public QuestionDTO updateQuestion(Long id, QuestionDTO questionDTO) {
-        logger.info("Atualizando questão {} com dados {}", id, questionDTO);
+    public QuestionDTO updateQuestion(Long id, QuestionDTO questionDTO, Long userId) {
+        logger.info("Atualizando questão {} com dados {} para userId={}.", id, questionDTO, userId);
 
         Question question = questionRepository.findById(id)
                 .orElseThrow(() -> {
-                    logger.error("Questão {} não encontrada para atualizar", id);
-                    return new EntityNotFoundException("Question not found with ID " + id);
+                    logger.error("Questão {} não encontrada para atualizar.", id);
+                    return new EntityNotFoundException("Pergunta não encontrada com ID " + id);
+                });
+
+        // 🔥 Validação de segurança — só dono pode atualizar!
+        if (!question.getUserId().equals(userId)) {
+            logger.warn("Usuário {} não tem permissão para atualizar questão {}.", userId, id);
+            throw new EntityNotFoundException("Você não tem permissão para atualizar esta pergunta.");
+        }
+
+        question.setMultipleChoice(questionDTO.isMultipleChoice());
+        question.setNumberLines(questionDTO.getNumberLines());
+        question.setUserId(questionDTO.getUserId());
+        question.setHeader(questionDTO.getHeader());
+        question.setHeaderImage(questionDTO.getHeaderImage());
+        question.setEnable(questionDTO.isEnable());
+        question.setAccessLevel(questionDTO.getAccessLevel());
+        question.setEducationLevel(questionDTO.getEducationLevel());
+
+        QuestionServiceHelper.setTags(questionDTO, question, tagRepository);
+
+        // Processar alternativas existentes e novas
+        Set<Alternative> updatedAlternatives = new HashSet<>();
+        List<AlternativeDTO> correctAlternatives = questionDTO.getAlternatives().stream()
+                .filter(AlternativeDTO::getIsCorrect)
+                .collect(Collectors.toList());
+
+        if (correctAlternatives.isEmpty()) {
+            logger.error("Nenhuma alternativa correta fornecida ao atualizar questão {}.", id);
+            throw new IllegalArgumentException("Nenhuma alternativa correta fornecida.");
+        }
+        if (correctAlternatives.size() > 1) {
+            logger.error("Mais de uma alternativa correta fornecida ao atualizar questão {}.", id);
+            throw new IllegalArgumentException("Mais de uma alternativa correta fornecida.");
+        }
+
+        for (AlternativeDTO alternativeDTO : questionDTO.getAlternatives()) {
+            if (alternativeDTO.getId() != null) {
+                Alternative existingAlternative = alternativeRepository.findById(alternativeDTO.getId())
+                        .orElseThrow(() -> {
+                            logger.error("Alternative {} não encontrada ao atualizar questão {}.",
+                                    alternativeDTO.getId(), id);
+                            return new IllegalArgumentException("Alternativa não encontrada.");
+                        });
+                existingAlternative.setDescription(alternativeDTO.getDescription());
+                existingAlternative.setExplanation(alternativeDTO.getExplanation());
+                existingAlternative.setImagePath(alternativeDTO.getImagePath());
+                existingAlternative.setIsCorrect(alternativeDTO.getIsCorrect());
+                updatedAlternatives.add(alternativeRepository.save(existingAlternative));
+                logger.info("Alternativa {} atualizada para questão {}.", existingAlternative.getId(), id);
+            } else {
+                Alternative newAlternative = Alternative.builder()
+                        .description(alternativeDTO.getDescription())
+                        .imagePath(alternativeDTO.getImagePath())
+                        .isCorrect(alternativeDTO.getIsCorrect())
+                        .question(question)
+                        .build();
+                Alternative savedAlt = alternativeRepository.save(newAlternative);
+                updatedAlternatives.add(savedAlt);
+                logger.info("Nova alternative {} criada para questão {}.", savedAlt.getId(), id);
+            }
+        }
+
+        // Definir answerId se houver alternativa correta
+        Alternative correctAlternativeEntity = updatedAlternatives.stream()
+                .filter(Alternative::getIsCorrect)
+                .findFirst()
+                .orElseThrow(() -> {
+                    logger.error("Nenhuma alternativa correta encontrada após atualizar questão {}.", id);
+                    return new IllegalArgumentException("Nenhuma alternativa correta fornecida.");
+                });
+        question.setAnswerId(correctAlternativeEntity.getId());
+        questionRepository.save(question);
+        logger.info("Id de resposta {} definido para questão {}.", correctAlternativeEntity.getId(), id);
+
+        questionRepository.flush();
+        entityManager.refresh(question);
+
+        Question updatedQuestion = questionRepository.findById(id)
+                .orElseThrow(() -> {
+                    logger.error("Questão {} não encontrada após atualização.", id);
+                    return new EntityNotFoundException("Pergunta não encontrada com ID " + id);
+                });
+        QuestionDTO resultDTO = questionMapper.toDTO(updatedQuestion);
+        logger.info("Questão {} atualizada com sucesso: {}.", id, resultDTO);
+        return resultDTO;
+    }
+
+    @Transactional
+    public QuestionDTO updateQuestionAsAdmin(Long id, QuestionDTO questionDTO) {
+        logger.info("Atualizando questão {} como ADMIN.", id);
+
+        Question question = questionRepository.findById(id)
+                .orElseThrow(() -> {
+                    logger.error("Questão {} não encontrada para atualizar (ADMIN).", id);
+                    return new EntityNotFoundException("Questao não encontrada com ID." + id);
                 });
 
         question.setMultipleChoice(questionDTO.isMultipleChoice());
@@ -213,28 +334,28 @@ public class QuestionService {
                 .collect(Collectors.toList());
 
         if (correctAlternatives.isEmpty()) {
-            logger.error("Nenhuma alternativa correta fornecida ao atualizar questão {}", id);
-            throw new IllegalArgumentException("No correct alternative provided.");
+            logger.error("Nenhuma alternativa correta fornecida ao atualizar questão {}.", id);
+            throw new IllegalArgumentException("Nenhuma alternativa correta fornecida.");
         }
         if (correctAlternatives.size() > 1) {
-            logger.error("Mais de uma alternativa correta fornecida ao atualizar questão {}", id);
-            throw new IllegalArgumentException("More than one correct alternative provided.");
+            logger.error("Mais de uma alternativa correta fornecida ao atualizar questão {}.", id);
+            throw new IllegalArgumentException("Mais de uma alternativa correta fornecida.");
         }
 
         for (AlternativeDTO alternativeDTO : questionDTO.getAlternatives()) {
             if (alternativeDTO.getId() != null) {
                 Alternative existingAlternative = alternativeRepository.findById(alternativeDTO.getId())
                         .orElseThrow(() -> {
-                            logger.error("Alternative {} não encontrada ao atualizar questão {}",
+                            logger.error("Alternative {} não encontrada ao atualizar questão {}.",
                                     alternativeDTO.getId(), id);
-                            return new IllegalArgumentException("Alternative not found");
+                            return new IllegalArgumentException("Alternativa não encontrada.");
                         });
                 existingAlternative.setDescription(alternativeDTO.getDescription());
                 existingAlternative.setExplanation(alternativeDTO.getExplanation());
                 existingAlternative.setImagePath(alternativeDTO.getImagePath());
                 existingAlternative.setIsCorrect(alternativeDTO.getIsCorrect());
                 updatedAlternatives.add(alternativeRepository.save(existingAlternative));
-                logger.info("Alternative {} atualizada para questão {}", existingAlternative.getId(), id);
+                logger.info("Alternativa {} atualizada para questão {}.", existingAlternative.getId(), id);
             } else {
                 Alternative newAlternative = Alternative.builder()
                         .description(alternativeDTO.getDescription())
@@ -244,7 +365,7 @@ public class QuestionService {
                         .build();
                 Alternative savedAlt = alternativeRepository.save(newAlternative);
                 updatedAlternatives.add(savedAlt);
-                logger.info("Nova alternative {} criada para questão {}", savedAlt.getId(), id);
+                logger.info("Nova alternative {} criada para questão {}.", savedAlt.getId(), id);
             }
         }
 
@@ -253,24 +374,26 @@ public class QuestionService {
                 .filter(Alternative::getIsCorrect)
                 .findFirst()
                 .orElseThrow(() -> {
-                    logger.error("Nenhuma alternativa correta encontrada após atualizar questão {}", id);
-                    return new IllegalArgumentException("No correct alternative provided.");
+                    logger.error("Nenhuma alternativa correta encontrada após atualizar questão {}.", id);
+                    return new IllegalArgumentException("Nenhuma alternativa correta fornecida.");
                 });
         question.setAnswerId(correctAlternativeEntity.getId());
         questionRepository.save(question);
-        logger.info("AnswerId {} definido para questão {}", correctAlternativeEntity.getId(), id);
+        logger.info("Id de resposta {} definido para questão {}.", correctAlternativeEntity.getId(), id);
 
         questionRepository.flush();
         entityManager.refresh(question);
 
         Question updatedQuestion = questionRepository.findById(id)
                 .orElseThrow(() -> {
-                    logger.error("Questão {} não encontrada após atualização", id);
-                    return new EntityNotFoundException("Question not found with ID " + id);
+                    logger.error("Questão {} não encontrada após atualização.", id);
+                    return new EntityNotFoundException("Questão não encontrada com ID." + id);
                 });
         QuestionDTO resultDTO = questionMapper.toDTO(updatedQuestion);
         logger.info("Questão {} atualizada com sucesso: {}", id, resultDTO);
+
         return resultDTO;
+
     }
 
     public void deleteQuestion(Long id) {
@@ -284,7 +407,7 @@ public class QuestionService {
                 })
                 .orElseThrow(() -> {
                     logger.error("Questão {} não encontrada para exclusão", id);
-                    return new RuntimeException("Question not found with ID " + id);
+                    return new RuntimeException("Questão não encontrada com ID." + id);
                 });
     }
 }
