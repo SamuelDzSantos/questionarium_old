@@ -88,6 +88,15 @@
 			<scope>test</scope>
 		</dependency>
 
+		<!-- 11) Dependência do Spring Cloud para resolver versões -->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-dependencies</artifactId>
+			<version>2022.0.5</version> <!-- Ou a versão que combina com seu Spring Boot -->
+			<type>pom</type>
+			<scope>import</scope>
+		</dependency>
+
 	</dependencies>
 
 	<build>

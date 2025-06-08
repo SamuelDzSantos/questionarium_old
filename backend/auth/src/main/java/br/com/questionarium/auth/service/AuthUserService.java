@@ -1,10 +1,13 @@
 package br.com.questionarium.auth.service;
 
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
 
 import br.com.questionarium.auth.interfaces.CreatedUserAuthDTO;
 import br.com.questionarium.auth.interfaces.LoginFormDTO;
@@ -23,6 +26,7 @@ public class AuthUserService {
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtils jwtUtils;
+    private final UserServiceClient userServiceClient;
 
     public void register(CreatedUserAuthDTO userData) {
         try {
@@ -43,25 +47,40 @@ public class AuthUserService {
         log.info("Tentativa de login para usuário: {}", loginForm.getLogin());
         try {
             AuthUser user = userRepository.findByLogin(loginForm.getLogin())
-                    .orElseThrow(() -> new RuntimeException("Usuário não encontrado: " + loginForm.getLogin()));
+                    .orElseThrow(
+                            () -> new UsernameNotFoundException("Usuário não encontrado: " + loginForm.getLogin()));
 
             var authToken = new UsernamePasswordAuthenticationToken(
                     loginForm.getLogin(),
                     loginForm.getPassword());
             authenticationManager.authenticate(authToken);
 
-            String userId = user.getId();
+            String mongoUserId = user.getId();
             String username = user.getLogin();
             Role role = user.getRole();
 
-            String token = jwtUtils.generateToken(userId, username, role);
+            Long userIdPostgres = userServiceClient.getUserIdByEmail(username);
+
+            String token = jwtUtils.generateToken(
+                    mongoUserId,
+                    userIdPostgres,
+                    username,
+                    role);
+
             log.info("Login bem-sucedido para usuário: {}", username);
             return token;
-        } catch (AuthenticationException ex) {
+
+        } catch (UsernameNotFoundException ex) {
             log.error("Falha na autenticação para usuário: {}", loginForm.getLogin(), ex);
+            throw new BadCredentialsException("Credenciais inválidas para usuário: " + loginForm.getLogin());
+        } catch (AuthenticationException ex) {
+            log.error("Usuário não encontrado: {}", loginForm.getLogin(), ex);
+            throw ex; // Será tratado pelo GlobalExceptionHandler
+        } catch (RestClientException ex) {
+            log.error("Erro de comunicação com UserService para usuário: {}", loginForm.getLogin(), ex);
             throw ex;
         } catch (RuntimeException ex) {
-            log.error("Erro durante login para usuário: {}", loginForm.getLogin(), ex);
+            log.error("Erro inesperado durante login para usuário: {}", loginForm.getLogin(), ex);
             throw ex;
         }
     }

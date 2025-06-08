@@ -18,36 +18,37 @@ public class JwtUtils {
 
     private final JwtEncoder jwtEncoder;
 
+    @Value("${jwt.expiration}")
+    private String expiration;
+
     /**
-     * @param userId  agora é String, pois o ID do AuthUser é gerado pelo Mongo (ObjectId)
-     * @param email   ou login do usuário
-     * @param role    papel do usuário (USER, ADMIN)
+     * @param mongoUserId    ID do AuthUser (String, vindo do MongoDB)
+     * @param userIdPostgres ID do User do serviço User (Long, do PostgreSQL)
+     * @param email          e-mail ou login
+     * @param role           papel do usuário (USER, ADMIN)
      */
-    public String generateToken(String userId, String email, Role role) {
+    public String generateToken(String mongoUserId, Long userIdPostgres, String email, Role role) {
         Date now = new Date();
 
-        // 'expiration' vem em segundos (por exemplo, "86400" = 1 dia)
+        // 'expiration' vem em segundos
         long expSeconds = Long.parseLong(expiration);
-        // converte para milissegundos
         long expMillis = expSeconds * 1000L;
         Date exp = new Date(now.getTime() + expMillis);
 
         JwtClaimsSet claims = JwtClaimsSet.builder()
-            .issuer("questionarium-auth")
-            .subject(userId)
-            .issuedAt(now.toInstant())
-            .expiresAt(exp.toInstant())
-            .claim("email", email)
-            .claim("role", role.getAsString())
-            .build();
+                .subject(mongoUserId)
+                .claim("role", role.name())
+                .claim("userId", userIdPostgres) // ✅ nome correto do claim!
+                .issuer("questionarium-auth")
+                .issuedAt(now.toInstant())
+                .expiresAt(exp.toInstant())
+                .claim("email", email)
+                .build();
 
         JwsHeader jwsHeader = JwsHeader.with(() -> "HS256").build();
 
         return jwtEncoder
-            .encode(JwtEncoderParameters.from(jwsHeader, claims))
-            .getTokenValue();
+                .encode(JwtEncoderParameters.from(jwsHeader, claims))
+                .getTokenValue();
     }
-
-    @Value("${jwt.expiration}")
-    private String expiration;
 }

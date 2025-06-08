@@ -56,7 +56,7 @@ public class QuestionService {
 
     @Transactional
     public QuestionDTO createQuestion(QuestionDTO questionDTO) {
-        logger.info("Criando nova questão para usuário {}", questionDTO.getPersonId());
+        logger.info("Criando nova questão para usuário {}", questionDTO.getUserId());
 
         // Validar alternativas corretas
         List<AlternativeDTO> correctAlternatives = questionDTO.getAlternatives().stream()
@@ -78,25 +78,21 @@ public class QuestionService {
         QuestionServiceHelper.setTags(questionDTO, question, tagRepository);
 
         // Vincular cada alternativa à questão
-        question.getAlternatives().forEach(alternative -> alternative.setQuestion(question));
+        question.getAlternatives().forEach(alt -> alt.setQuestion(question));
 
-        // Salvar questão inicialmente para gerar IDs das alternativas
+        // Salvar questão SEM o answerId (temporariamente null)
+        question.setAnswerId(null); // Garantido
         Question savedQuestion = questionRepository.save(question);
-        logger.info("Questão salva com ID {}", savedQuestion.getId());
 
-        // Definir resposta correta
+        // AGORA, obter o ID correto
         Alternative correctAlternative = savedQuestion.getAlternatives().stream()
                 .filter(Alternative::getIsCorrect)
                 .findFirst()
-                .orElseThrow(() -> {
-                    logger.error("Nenhuma alternativa correta encontrada após salvar");
-                    return new IllegalArgumentException("No correct alternative provided");
-                });
+                .orElseThrow(() -> new IllegalArgumentException("No correct alternative provided"));
 
+        // Atualizar answerId e re-salvar
         savedQuestion.setAnswerId(correctAlternative.getId());
         savedQuestion = questionRepository.save(savedQuestion);
-        logger.info("AnswerId definido para questão {}: alternativa correta {}",
-                savedQuestion.getId(), correctAlternative.getId());
 
         QuestionDTO resultDTO = questionMapper.toDTO(savedQuestion);
         logger.info("Questão criada com sucesso: {}", resultDTO);
@@ -114,20 +110,20 @@ public class QuestionService {
     }
 
     public List<QuestionDTO> getFilteredQuestions(
-            Long personId,
+            Long userId,
             Boolean multipleChoice,
             List<Long> tagIds,
             Integer accessLevel,
             Integer educationLevel,
             String header) {
         logger.info(
-                "Buscando questões filtradas: personId={}, multipleChoice={}, tagIds={}, accessLevel={}, educationLevel={}, header={}",
-                personId, multipleChoice, tagIds, accessLevel, educationLevel, header);
+                "Buscando questões filtradas: userId={}, multipleChoice={}, tagIds={}, accessLevel={}, educationLevel={}, header={}",
+                userId, multipleChoice, tagIds, accessLevel, educationLevel, header);
 
         Specification<Question> spec = Specification.where((root, query, cb) -> cb.equal(root.get("enable"), true));
 
-        if (personId != null) {
-            spec = spec.and((root, query, cb) -> cb.equal(root.get("personId"), personId));
+        if (userId != null) {
+            spec = spec.and((root, query, cb) -> cb.equal(root.get("userId"), userId));
         }
         if (multipleChoice != null) {
             spec = spec.and((root, query, cb) -> cb.equal(root.get("multipleChoice"), multipleChoice));
@@ -201,7 +197,7 @@ public class QuestionService {
 
         question.setMultipleChoice(questionDTO.isMultipleChoice());
         question.setNumberLines(questionDTO.getNumberLines());
-        question.setPersonId(questionDTO.getPersonId());
+        question.setUserId(questionDTO.getUserId());
         question.setHeader(questionDTO.getHeader());
         question.setHeaderImage(questionDTO.getHeaderImage());
         question.setEnable(questionDTO.isEnable());

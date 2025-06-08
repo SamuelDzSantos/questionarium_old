@@ -33,7 +33,7 @@ public class EmailService {
             logger.info("E-mail enviado com sucesso para {}", email.getEmailTo());
         } catch (Exception e) {
             logger.error("Falha ao enviar e-mail para {}", email.getEmailTo(), e);
-            // Opcional: rethrowar exceção customizada ou implementar lógica de retry
+            throw new RuntimeException("Erro ao enviar e-mail", e); // rethrow
         }
     }
 }

@@ -8,12 +8,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.AsyncRabbitTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import br.com.questionarium.question_service.dto.AnswerKeyDTO;
 import br.com.questionarium.question_service.dto.QuestionDTO;
+import br.com.questionarium.question_service.security.JwtUtils;
 import br.com.questionarium.question_service.service.QuestionService;
 import jakarta.persistence.EntityNotFoundException;
 import reactor.core.publisher.Mono;
@@ -26,22 +26,22 @@ public class QuestionController {
 
     private final QuestionService questionService;
     private final AsyncRabbitTemplate asyncRabbitTemplate;
+    private final JwtUtils jwtUtils;
 
     public QuestionController(QuestionService questionService,
-            AsyncRabbitTemplate asyncRabbitTemplate) {
+            AsyncRabbitTemplate asyncRabbitTemplate,
+            JwtUtils jwtUtils) {
         this.questionService = questionService;
         this.asyncRabbitTemplate = asyncRabbitTemplate;
+        this.jwtUtils = jwtUtils;
     }
 
     @PostMapping
-    public ResponseEntity<QuestionDTO> createQuestion(
-            @RequestBody QuestionDTO questionDTO,
-            @AuthenticationPrincipal Jwt jwt) {
-        Long userId = Long.valueOf(jwt.getSubject());
+    public ResponseEntity<QuestionDTO> createQuestion(@RequestBody QuestionDTO questionDTO) {
+        Long userId = jwtUtils.getCurrentUserId();
         logger.info("POST /questions – criando questão para userId={}", userId);
 
-        // Ignora o personId que veio no DTO e sobrescreve com o ID do token
-        questionDTO.setPersonId(userId);
+        questionDTO.setUserId(userId);
 
         QuestionDTO createdQuestion = questionService.createQuestion(questionDTO);
         logger.info("Questão criada com ID={} para userId={}", createdQuestion.getId(), userId);
@@ -49,8 +49,9 @@ public class QuestionController {
     }
 
     @GetMapping("/all")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<QuestionDTO>> getAllQuestions() {
-        logger.info("GET /questions/all – buscando todas as questões");
+        logger.info("GET /questions/all – buscando todas as questões (ADMIN)");
         List<QuestionDTO> questions = questionService.getAllQuestions();
         logger.info("Retornadas {} questões", questions.size());
         return new ResponseEntity<>(questions, HttpStatus.OK);
@@ -58,19 +59,20 @@ public class QuestionController {
 
     @GetMapping
     public ResponseEntity<List<QuestionDTO>> getFilteredQuestions(
-            @RequestParam(required = false) Long personId,
             @RequestParam(required = false) Boolean multipleChoice,
             @RequestParam(required = false) List<Long> tagIds,
             @RequestParam(required = false) Integer accessLevel,
             @RequestParam(required = false) Integer educationLevel,
             @RequestParam(required = false) String header) {
 
+        Long userId = jwtUtils.getCurrentUserId();
+
         logger.info(
-                "GET /questions – filtros: personId={}, multipleChoice={}, tagIds={}, accessLevel={}, educationLevel={}, header={}",
-                personId, multipleChoice, tagIds, accessLevel, educationLevel, header);
+                "GET /questions – filtros: userId={}, multipleChoice={}, tagIds={}, accessLevel={}, educationLevel={}, header={}",
+                userId, multipleChoice, tagIds, accessLevel, educationLevel, header);
 
         List<QuestionDTO> questions = questionService.getFilteredQuestions(
-                personId, multipleChoice, tagIds, accessLevel, educationLevel, header);
+                userId, multipleChoice, tagIds, accessLevel, educationLevel, header);
         logger.info("Retornadas {} questões filtradas", questions.size());
         return new ResponseEntity<>(questions, HttpStatus.OK);
     }
@@ -104,13 +106,12 @@ public class QuestionController {
     @PutMapping("/{id}")
     public ResponseEntity<QuestionDTO> updateQuestion(
             @PathVariable Long id,
-            @RequestBody QuestionDTO questionDTO,
-            @AuthenticationPrincipal Jwt jwt) {
-        Long userId = Long.valueOf(jwt.getSubject());
+            @RequestBody QuestionDTO questionDTO) {
+        Long userId = jwtUtils.getCurrentUserId();
         logger.info("PUT /questions/{} – atualizando questão para userId={}", id, userId);
 
-        // Sobrescreve personId no DTO para evitar adulteração
-        questionDTO.setPersonId(userId);
+        // Sobrescreve userId no DTO para evitar adulteração
+        questionDTO.setUserId(userId);
 
         try {
             QuestionDTO updatedQuestion = questionService.updateQuestion(id, questionDTO);

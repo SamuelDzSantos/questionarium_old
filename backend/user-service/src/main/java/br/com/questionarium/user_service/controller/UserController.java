@@ -55,6 +55,13 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
+    @GetMapping("/email")
+    public ResponseEntity<UserResponse> getUserByEmail(@RequestParam String email) {
+        logger.info("GET /users/email – buscando usuário por e-mail {}", email);
+        UserResponse user = userService.getUserByEmail(email);
+        return ResponseEntity.ok(user);
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<UserResponse> updateUser(
             @PathVariable Long id,

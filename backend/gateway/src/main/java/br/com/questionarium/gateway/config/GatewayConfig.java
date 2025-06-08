@@ -27,7 +27,7 @@ public class GatewayConfig {
                                                 .uri("http://localhost:14002"))
 
                                 // Question Service
-                                .route("question-service", r -> r.path("/questions/**")
+                                .route("question-service", r -> r.path("/questions", "/questions/**")
                                                 .filters(f -> f.circuitBreaker(cb -> cb
                                                                 .setName("questionCircuitBreaker")
                                                                 .setFallbackUri("forward:/fallback/questions")))

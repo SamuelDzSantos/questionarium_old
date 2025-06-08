@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import br.com.questionarium.question_service.dto.TagDTO;
+import br.com.questionarium.question_service.exception.TagNotFoundException;
 import br.com.questionarium.question_service.model.Tag;
 import br.com.questionarium.question_service.repository.TagRepository;
 
@@ -52,7 +53,7 @@ public class TagService {
             return new TagDTO(tag.getId(), tag.getName(), tag.getDescription());
         } else {
             logger.error("Tag não encontrada com ID {}", id);
-            throw new RuntimeException("Tag not found with ID " + id);
+            throw new TagNotFoundException(id);
         }
     }
 
@@ -69,7 +70,7 @@ public class TagService {
             return tagDTO;
         } else {
             logger.error("Tag não encontrada para atualizar com ID {}", id);
-            throw new RuntimeException("Tag not found with ID " + id);
+            throw new TagNotFoundException(id);
         }
     }
 
@@ -80,7 +81,7 @@ public class TagService {
             logger.info("Tag {} excluída com sucesso", id);
         } else {
             logger.error("Tag não encontrada para exclusão com ID {}", id);
-            throw new RuntimeException("Tag not found with ID " + id);
+            throw new TagNotFoundException(id);
         }
     }
 }

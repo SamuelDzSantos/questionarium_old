@@ -37,7 +37,7 @@ import lombok.NoArgsConstructor;
 public class Question {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
@@ -51,8 +51,8 @@ public class Question {
     @Column()
     private QuestionEducationLevel educationLevel;
 
-    @Column(name = "person_id", nullable = false)
-    private Long personId;
+    @Column(name = "user_id", nullable = false)
+    private Long userId;
 
     @Column(name = "header", nullable = false)
     private String header;
@@ -60,7 +60,7 @@ public class Question {
     @Column(name = "header_image", nullable = true)
     private String headerImage;
 
-    @Column(name = "answer_id", nullable = false)
+    @Column(name = "answer_id", nullable = true)
     private Long answerId;
 
     @Column(nullable = false)

@@ -22,7 +22,7 @@ import lombok.NoArgsConstructor;
 public class Alternative {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "description", columnDefinition = "TEXT")

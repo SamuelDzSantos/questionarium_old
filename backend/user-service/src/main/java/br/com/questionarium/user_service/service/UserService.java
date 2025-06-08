@@ -9,8 +9,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionSynchronizationAdapter;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
+import org.springframework.transaction.support.TransactionSynchronization;
 
 import br.com.questionarium.entities.Email;
 import br.com.questionarium.entities.UserCreatedEvent;
@@ -35,15 +35,16 @@ public class UserService {
     private final VerificationTokenRepository tokenRepository;
     private final RabbitTemplate rabbitTemplate;
 
-    // Se preferir externalizar via application.properties, use @Value("${app.base-url}") aqui
-    private static final String BASE_URL = "http://localhost:14002"; 
+    // Se preferir externalizar via application.properties, use
+    // @Value("${app.base-url}") aqui
+    private static final String BASE_URL = "http://localhost:14002";
     private static final String USER_EXCHANGE = "user-exchange";
     private static final String ROUTING_KEY_CREATED = "user.created";
     private static final String ROUTING_KEY_EMAIL = "user.email";
 
     public UserService(UserRepository userRepository,
-                       VerificationTokenRepository tokenRepository,
-                       RabbitTemplate rabbitTemplate) {
+            VerificationTokenRepository tokenRepository,
+            RabbitTemplate rabbitTemplate) {
         this.userRepository = userRepository;
         this.tokenRepository = tokenRepository;
         this.rabbitTemplate = rabbitTemplate;
@@ -75,7 +76,7 @@ public class UserService {
         logger.info("VerificationToken gerado para usuário ID {}: {}", savedUser.getId(), token.getToken());
 
         // 4) Publicação de eventos só após commit bem-sucedido
-        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronizationAdapter() {
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
             @Override
             public void afterCommit() {
                 // 4-a) Publica evento de usuário criado para o AuthService
@@ -86,8 +87,12 @@ public class UserService {
                         savedUser.getEmail(),
                         request.getPassword(),
                         role);
-                rabbitTemplate.convertAndSend(USER_EXCHANGE, ROUTING_KEY_CREATED, event);
-                logger.info("UserCreatedEvent publicado para usuário ID {}", savedUser.getId());
+                try {
+                    rabbitTemplate.convertAndSend(USER_EXCHANGE, ROUTING_KEY_CREATED, event);
+                    logger.info("UserCreatedEvent publicado para usuário ID {}", savedUser.getId());
+                } catch (Exception e) {
+                    logger.error("Erro ao publicar UserCreatedEvent para usuário ID {}", savedUser.getId(), e);
+                }
 
                 // 4-b) Monta e publica o objeto Email para o EmailService
                 String confirmLink = BASE_URL + "/users/confirm?token=" + token.getToken();
@@ -99,8 +104,12 @@ public class UserService {
                         + "Este link expira em 24 horas.";
 
                 Email emailMessage = new Email(subject, body, savedUser.getEmail());
-                rabbitTemplate.convertAndSend(USER_EXCHANGE, ROUTING_KEY_EMAIL, emailMessage);
-                logger.info("Email de confirmação enviado para {}", savedUser.getEmail());
+                try {
+                    rabbitTemplate.convertAndSend(USER_EXCHANGE, ROUTING_KEY_EMAIL, emailMessage);
+                    logger.info("Email de confirmação enviado para {}", savedUser.getEmail());
+                } catch (Exception e) {
+                    logger.error("Erro ao enviar email de confirmação para {}", savedUser.getEmail(), e);
+                }
             }
         });
 
@@ -147,7 +156,8 @@ public class UserService {
     }
 
     /**
-     * Retorna um usuário ativo (active=true) pelo ID, ou lança UserNotFoundException.
+     * Retorna um usuário ativo (active=true) pelo ID, ou lança
+     * UserNotFoundException.
      */
     @Transactional(readOnly = true)
     public UserResponse getUserById(Long id) {
@@ -157,7 +167,7 @@ public class UserService {
     }
 
     /**
-     * Atualiza nome e roles de um usuário ativo. 
+     * Atualiza nome e roles de um usuário ativo.
      * Se não encontrar, lança UserNotFoundException.
      * Retorna UserResponse atualizado.
      */
@@ -200,4 +210,21 @@ public class UserService {
                 user.getCreationDateTime(),
                 user.getUpdateDateTime());
     }
+
+    @Transactional(readOnly = true)
+    public UserResponse getUserByEmail(String email) {
+        User user = userRepository.findByEmailAndActiveTrue(email)
+                .orElseThrow(() -> new UserNotFoundException("Usuário não encontrado com e-mail: " + email));
+        return mapToResponse(user);
+    }
+
+    @Transactional
+    public void activateUser(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(userId));
+        user.setActive(true);
+        userRepository.save(user);
+        logger.info("Usuário ID {} ativado manualmente.", userId);
+    }
+
 }

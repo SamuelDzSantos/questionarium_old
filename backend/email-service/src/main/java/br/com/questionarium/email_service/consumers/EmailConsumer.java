@@ -26,7 +26,7 @@ public class EmailConsumer {
             logger.info("Processamento concluído para e-mail {}", email.getEmailTo());
         } catch (Exception e) {
             logger.error("Erro ao processar evento de e-mail para {}", email.getEmailTo(), e);
+            throw e; // para permitir retry ou DLQ
         }
     }
-
 }

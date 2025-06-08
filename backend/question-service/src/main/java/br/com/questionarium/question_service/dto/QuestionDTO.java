@@ -17,7 +17,7 @@ public class QuestionDTO {
     private Long id;
     private boolean multipleChoice;
     private Integer numberLines;
-    private Long personId;
+    private Long userId;
     private String header;
     private String headerImage;
     private Long answerId;
