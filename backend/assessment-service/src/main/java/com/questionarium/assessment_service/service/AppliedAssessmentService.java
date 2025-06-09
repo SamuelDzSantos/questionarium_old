@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import org.springframework.security.core.context.SecurityContextHolder;
+
 import com.questionarium.assessment_service.client.QuestionClient;
 import com.questionarium.assessment_service.dto.AnswerKeyDTO;
 import com.questionarium.assessment_service.exception.BusinessException;
