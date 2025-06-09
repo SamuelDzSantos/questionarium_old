@@ -180,7 +180,8 @@ public class QuestionService {
                     return dto;
                 })
                 .or(() -> {
-                    logger.warn("Questão {} não acessível para userId={}. Não pertence ao usuário ou não é PÚBLICA.", id,
+                    logger.warn("Questão {} não acessível para userId={}. Não pertence ao usuário ou não é PÚBLICA.",
+                            id,
                             userId);
                     return Optional.empty();
                 });
@@ -396,20 +397,43 @@ public class QuestionService {
 
     }
 
-    public void deleteQuestion(Long id) {
-        logger.info("Desativando (soft delete) questão {}", id);
-        questionRepository.findById(id)
-                .map(question -> {
-                    question.setEnable(false);
-                    Question updatedQuestion = questionRepository.save(question);
-                    logger.info("Questão {} marcada como inativa", updatedQuestion.getId());
-                    return updatedQuestion;
-                })
+    @Transactional
+    public void deleteQuestion(Long id, Long userId) {
+        logger.info("Tentando deletar (soft delete) questão {} para userId={}", id, userId);
+
+        Question question = questionRepository.findById(id)
                 .orElseThrow(() -> {
                     logger.error("Questão {} não encontrada para exclusão", id);
-                    return new RuntimeException("Questão não encontrada com ID." + id);
+                    throw new EntityNotFoundException("Questão não encontrada com o ID " + id);
                 });
+
+        if (!question.getUserId().equals(userId)) {
+            logger.warn("Usuário {} não tem permissão para deletar a questão {}", userId, id);
+            throw new EntityNotFoundException("Você não tem permissão para deletar esta questão.");
+        }
+
+        question.setEnable(false);
+        questionRepository.save(question);
+
+        logger.info("Questão {} foi desativada com sucesso pelo usuário {}", id, userId);
     }
+
+    @Transactional
+    public void deleteQuestionAsAdmin(Long id) {
+        logger.info("Tentando deletar (soft delete) questão {} como ADMIN", id);
+
+        Question question = questionRepository.findById(id)
+                .orElseThrow(() -> {
+                    logger.error("Questão {} não encontrada para exclusão (ADMIN)", id);
+                    throw new EntityNotFoundException("Questão não encontrada com o ID " + id);
+                });
+
+        question.setEnable(false);
+        questionRepository.save(question);
+
+        logger.info("Questão {} foi desativada com sucesso (ADMIN)", id);
+    }
+
 }
 
 class QuestionServiceHelper {

@@ -173,14 +173,35 @@ public class QuestionController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteQuestion(@PathVariable Long id) {
-        logger.info("DELETE /questions/{} – inativando questão", id);
+        Long userId = jwtUtils.getCurrentUserId();
+        logger.info("DELETE /questions/{} – tentativa de deletar questão para userId={}", id, userId);
+
         try {
-            questionService.deleteQuestion(id);
-            logger.info("Questão {} inativada com sucesso", id);
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        } catch (RuntimeException e) {
-            logger.warn("Falha ao inativar: questão {} não encontrada", id);
+            questionService.deleteQuestion(id, userId);
+            return ResponseEntity.noContent().build();
+        } catch (EntityNotFoundException e) {
+            logger.warn("Falha ao deletar: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } catch (Exception e) {
+            logger.error("Erro interno ao tentar deletar questão {}", id, e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @DeleteMapping("/admin/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> deleteQuestionAsAdmin(@PathVariable Long id) {
+        logger.info("DELETE /questions/admin/{} – tentativa de deletar questão como ADMIN", id);
+
+        try {
+            questionService.deleteQuestionAsAdmin(id);
+            return ResponseEntity.noContent().build();
+        } catch (EntityNotFoundException e) {
+            logger.warn("Falha ao deletar (ADMIN): {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } catch (Exception e) {
+            logger.error("Erro interno ao tentar deletar questão {} (ADMIN)", id, e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
