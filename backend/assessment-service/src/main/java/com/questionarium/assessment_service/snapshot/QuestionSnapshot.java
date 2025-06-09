@@ -1,21 +1,26 @@
 package com.questionarium.assessment_service.snapshot;
 
-import java.util.List;
-
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Embeddable
+import java.util.List;
+
+@Entity
+@Table(name = "question_snapshots")
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class QuestionSnapshot {
 
-    @Column(name = "question_id")
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "original_question_id")
+    @NotNull
+    private Long originalQuestionId; // ID da questão original
 
     @Column(name = "multiple_choice")
     @NotNull
@@ -53,16 +58,19 @@ public class QuestionSnapshot {
     private String accessLevel;
 
     @ElementCollection
-    @CollectionTable(name = "student_assessment_question_snapshot_tags", joinColumns = @JoinColumn(name = "student_assessment_id"))
+    @CollectionTable(name = "question_snapshot_tags", joinColumns = @JoinColumn(name = "question_snapshot_id"))
     @Column(name = "tag")
     private List<String> tags;
 
-    @ElementCollection
-    @CollectionTable(name = "student_assessment_question_snapshot_alternatives", joinColumns = @JoinColumn(name = "student_assessment_id"))
+    @OneToMany(mappedBy = "questionSnapshot", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @OrderColumn(name = "position")
     private List<AlternativeSnapshot> alternatives;
 
     @Column(name = "weight")
     @NotNull
     private Double weight;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "record_assessment_id")
+    private com.questionarium.assessment_service.model.RecordAssessment recordAssessment; // FK para RecordAssessment
 }

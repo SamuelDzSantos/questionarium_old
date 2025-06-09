@@ -1,19 +1,23 @@
 package com.questionarium.assessment_service.snapshot;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Embeddable;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Embeddable
+@Entity
+@Table(name = "alternative_snapshots")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class AlternativeSnapshot {
-    @Column(name = "alternative_id")
-    private Long id;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id; // ID próprio do snapshot
+
+    @Column(name = "original_alternative_id")
+    private Long originalAlternativeId; // ID da alternativa original
 
     @Column(name = "description", columnDefinition = "TEXT")
     @NotNull
@@ -32,4 +36,8 @@ public class AlternativeSnapshot {
     @Column(name = "alternative_order")
     @NotNull
     private Integer order;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "question_snapshot_id")
+    private QuestionSnapshot questionSnapshot; // FK para QuestionSnapshot
 }

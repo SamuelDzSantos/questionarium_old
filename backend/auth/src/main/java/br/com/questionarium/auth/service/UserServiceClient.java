@@ -22,8 +22,10 @@ public class UserServiceClient {
         try {
             ResponseEntity<UserDTO> response = restTemplate.getForEntity(url, UserDTO.class);
 
-            if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
-                Long userId = response.getBody().getId();
+            UserDTO user = response.getBody();
+
+            if (response.getStatusCode().is2xxSuccessful() && user != null) {
+                Long userId = user.getId();
                 log.info("UserService retornou userId={}", userId);
                 return userId;
             } else {
@@ -34,4 +36,5 @@ public class UserServiceClient {
             throw ex; // Será tratado pelo GlobalExceptionHandler
         }
     }
+
 }

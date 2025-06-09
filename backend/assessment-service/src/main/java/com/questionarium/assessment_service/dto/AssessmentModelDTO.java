@@ -1,5 +1,6 @@
 package com.questionarium.assessment_service.dto;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import jakarta.validation.constraints.NotNull;
@@ -13,11 +14,9 @@ import lombok.NoArgsConstructor;
 public class AssessmentModelDTO {
     private Long id;
     private String description;
-
     @NotNull
     private Long userId;
 
-    // HEADER
     private String institution;
     private String department;
     private String course;
@@ -28,4 +27,7 @@ public class AssessmentModelDTO {
 
     @NotNull
     private List<QuestionWeightDTO> questions;
+
+    private LocalDateTime creationDateTime;
+    private LocalDateTime updateDateTime;
 }

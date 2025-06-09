@@ -45,8 +45,7 @@ public class RecordAssessment {
     private List<Long> questionOrder;
 
     /** “Foto” completa de cada questão */
-    @ElementCollection
-    @CollectionTable(name = "record_assessment_question_snapshots", joinColumns = @JoinColumn(name = "record_assessment_id"))
+    @OneToMany(mappedBy = "recordAssessment", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @OrderColumn(name = "position")
     private List<QuestionSnapshot> questionSnapshots;
 

@@ -1,4 +1,4 @@
 br\com\questionarium\email_service\config\RabbitMQConfig.class
+br\com\questionarium\email_service\consumers\EmailConsumer.class
 br\com\questionarium\email_service\EmailApplication.class
 br\com\questionarium\email_service\services\EmailService.class
-br\com\questionarium\email_service\consumers\EmailConsumer.class
