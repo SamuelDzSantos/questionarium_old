@@ -172,6 +172,7 @@ public class QuestionService {
         logger.info("Buscando questão por ID {} para userId={}.", id, userId);
 
         return questionRepository.findById(id)
+                .filter(question -> question.isEnable())
                 .filter(question -> question.getUserId().equals(userId)
                         || QuestionAccessLevel.PUBLIC.equals(question.getAccessLevel()))
                 .map(questionMapper::toDTO)
