@@ -18,8 +18,10 @@ import com.questionarium.assessment_service.snapshot.AlternativeSnapshot;
 import com.questionarium.assessment_service.snapshot.QuestionSnapshot;
 
 import jakarta.persistence.EntityNotFoundException;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Slf4j
 @Transactional
 public class AppliedAssessmentService {
 
@@ -39,33 +41,30 @@ public class AppliedAssessmentService {
         /** Lista todas as AppliedAssessment ativas */
         @Transactional(readOnly = true)
         public List<AppliedAssessment> findAllActive() {
+                log.info("Buscando todas as avaliações aplicadas ativas");
                 return appliedRepo.findByActiveTrue();
         }
 
         /** Busca uma AppliedAssessment ativa por id ou lança 404 */
         @Transactional(readOnly = true)
         public AppliedAssessment findById(Long id) {
+                log.info("Buscando AppliedAssessment com id {}", id);
                 return appliedRepo.findById(id)
                                 .filter(AppliedAssessment::getActive)
                                 .orElseThrow(() -> new EntityNotFoundException(
-                                                "AppliedAssessment não encontrada ou inativa: " + id));
+                                                "Avaliação aplicada não encontrada ou inativa: " + id));
         }
 
         /** Lista todas as AppliedAssessment ativas de um usuário */
         @Transactional(readOnly = true)
         public List<AppliedAssessment> findByUser(Long userId) {
+                log.info("Buscando avaliações aplicadas ativas do usuário {}", userId);
                 return appliedRepo.findByUserIdAndActiveTrue(userId);
         }
 
         /**
-         * Aplica um template de AssessmentModel, “congelando” todos os dados das
-         * questões
+         * Aplica um template de AssessmentModel, congelando todos os dados das questões
          * e gerando o gabarito.
-         *
-         * @param modelId          ID do template (AssessmentModel)
-         * @param applicationDate  Data de aplicação (null → hoje)
-         * @param quantity         Quantas vezes aplicar
-         * @param shuffleQuestions Se deve embaralhar a ordem
          */
         public AppliedAssessment applyAssessment(
                         Long modelId,
@@ -73,15 +72,17 @@ public class AppliedAssessmentService {
                         Integer quantity,
                         Boolean shuffleQuestions) {
 
+                log.info("Iniciando aplicação da avaliação do modelo {}, quantidade {}, data {}, embaralhar {}",
+                                modelId, quantity, applicationDate, shuffleQuestions);
+
                 // 1) Carrega o template
                 AssessmentModel model = modelRepo.findById(modelId)
                                 .orElseThrow(() -> new EntityNotFoundException(
-                                                "AssessmentModel não encontrado: " + modelId));
+                                                "Modelo de avaliação não encontrado: " + modelId));
 
-                // 2) Para cada QuestionWeight do template, monta um QuestionSnapshot completo
+                // 2) Monta QuestionSnapshots
                 List<QuestionSnapshot> snapshots = model.getQuestions().stream()
                                 .map(qw -> {
-                                        // busca dados da questão e das alternativas
                                         var qDto = questionClient.getQuestion(qw.getQuestionId());
                                         var alts = questionClient.getAlternatives(qw.getQuestionId());
 
@@ -99,7 +100,6 @@ public class AppliedAssessmentService {
                                         snap.setTags(qDto.getTags());
                                         snap.setWeight(qw.getWeight());
 
-                                        // popula alternativas
                                         List<AlternativeSnapshot> altSnaps = alts.stream()
                                                         .map(a -> {
                                                                 AlternativeSnapshot as = new AlternativeSnapshot();
@@ -123,7 +123,7 @@ public class AppliedAssessmentService {
                         Collections.shuffle(snapshots);
                 }
 
-                // 4) Busca os gabaritos (AnswerKeyDTO) e monta a string "[A,B,C,…]"
+                // 4) Monta gabarito
                 List<Long> ids = snapshots.stream()
                                 .map(QuestionSnapshot::getId)
                                 .collect(Collectors.toList());
@@ -132,13 +132,11 @@ public class AppliedAssessmentService {
                                 .map(AnswerKeyDTO::getAnswerKey)
                                 .collect(Collectors.joining(",", "[", "]"));
 
-                // 5) Monta a entidade AppliedAssessment com todos os dados
+                // 5) Monta entidade
                 AppliedAssessment applied = new AppliedAssessment();
                 applied.setDescription(model.getDescription());
                 applied.setQuestionSnapshots(snapshots);
-                applied.setTotalScore(
-                                snapshots.stream().mapToDouble(QuestionSnapshot::getWeight).sum());
-                // datas de criação/atualização serão ajustadas pelos @PrePersist/@PreUpdate
+                applied.setTotalScore(snapshots.stream().mapToDouble(QuestionSnapshot::getWeight).sum());
                 applied.setUserId(model.getUserId());
                 applied.setInstitution(model.getInstitution());
                 applied.setDepartment(model.getDepartment());
@@ -147,32 +145,28 @@ public class AppliedAssessmentService {
                 applied.setProfessor(model.getProfessor());
                 applied.setInstructions(model.getInstructions());
                 applied.setImage(model.getImage());
-                applied.setApplicationDate(
-                                applicationDate != null ? applicationDate : LocalDate.now());
+                applied.setApplicationDate(applicationDate != null ? applicationDate : LocalDate.now());
                 applied.setQuantity(quantity);
                 applied.setShuffleQuestions(shuffleQuestions);
                 applied.setActive(true);
                 applied.setCorrectAnswerKey(correctKey);
 
-                // 6) Persiste e retorna
-                return appliedRepo.save(applied);
+                // 6) Persiste
+                AppliedAssessment saved = appliedRepo.save(applied);
+                log.info("Avaliação aplicada {} salva com sucesso", saved.getId());
+                return saved;
         }
 
-        /**
-         * Soft-delete de uma avaliação aplicada: marca como inactive.
-         *
-         * @param id ID da AppliedAssessment
-         * @throws EntityNotFoundException se não existir ou já estiver inativa
-         */
+        /** Soft-delete de uma avaliação aplicada: marca como inativa */
         public void softDelete(Long id) {
+                log.info("Iniciando soft-delete da AppliedAssessment com id {}", id);
                 AppliedAssessment applied = appliedRepo.findById(id)
                                 .filter(AppliedAssessment::getActive)
                                 .orElseThrow(() -> new EntityNotFoundException(
-                                                "AppliedAssessment não encontrada ou já inativa: " + id));
+                                                "Avaliação aplicada não encontrada ou já inativa: " + id));
 
                 applied.setActive(false);
-                // o @PreUpdate vai ajustar updateDateTime
                 appliedRepo.save(applied);
+                log.info("Avaliação aplicada {} marcada como inativa", id);
         }
-
 }

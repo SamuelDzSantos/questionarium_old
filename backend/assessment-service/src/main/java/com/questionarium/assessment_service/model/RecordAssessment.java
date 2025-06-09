@@ -34,7 +34,6 @@ public class RecordAssessment {
     private Integer instanceIndex;
 
     /** “Apelido” ou nome que identifica o estudante */
-    @NotNull
     @Column(name = "student_name", nullable = true)
     private String studentName;
 

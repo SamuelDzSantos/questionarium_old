@@ -2,7 +2,6 @@ package com.questionarium.assessment_service.model;
 
 import java.time.LocalDateTime;
 
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import jakarta.persistence.*;
@@ -38,7 +37,6 @@ public class AssessmentHeader {
 
     private String image;
 
-    @CreatedDate
     @Column(updatable = false)
     @NotNull
     private LocalDateTime creationDateTime;
@@ -46,4 +44,16 @@ public class AssessmentHeader {
     @LastModifiedDate
     private LocalDateTime updateDateTime;
 
+    @PrePersist
+    protected void onPrePersist() {
+        LocalDateTime now = LocalDateTime.now();
+        if (creationDateTime == null) {
+            creationDateTime = now;
+        }
+    }
+
+    @PreUpdate
+    protected void onPreUpdate() {
+        updateDateTime = LocalDateTime.now();
+    }
 }

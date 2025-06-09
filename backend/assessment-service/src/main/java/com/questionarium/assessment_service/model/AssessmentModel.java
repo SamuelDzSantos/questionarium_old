@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import jakarta.persistence.*;
@@ -26,7 +25,6 @@ public class AssessmentModel {
     @OrderColumn(name = "position")
     private List<QuestionWeight> questions = new ArrayList<>();
 
-    @CreatedDate
     @Column(updatable = false)
     @NotNull
     private LocalDateTime creationDateTime;
@@ -52,4 +50,16 @@ public class AssessmentModel {
 
     private String image;
 
+    @PrePersist
+    protected void onPrePersist() {
+        LocalDateTime now = LocalDateTime.now();
+        if (creationDateTime == null) {
+            creationDateTime = now;
+        }
+    }
+
+    @PreUpdate
+    protected void onPreUpdate() {
+        updateDateTime = LocalDateTime.now();
+    }
 }
