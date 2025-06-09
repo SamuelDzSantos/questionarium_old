@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.questionarium.assessment_service.client.QuestionClient;
 import com.questionarium.assessment_service.dto.AnswerKeyDTO;
+import com.questionarium.assessment_service.exception.BusinessException;
 import com.questionarium.assessment_service.model.AppliedAssessment;
 import com.questionarium.assessment_service.model.AssessmentModel;
 import com.questionarium.assessment_service.repository.AppliedAssessmentRepository;
@@ -72,6 +73,10 @@ public class AppliedAssessmentService {
                         Integer quantity,
                         Boolean shuffleQuestions) {
 
+                if (quantity == null || quantity <= 0) {
+                        throw new BusinessException("A quantidade de aplicações deve ser um número positivo");
+                }
+
                 log.info("Iniciando aplicação da avaliação do modelo {}, quantidade {}, data {}, embaralhar {}",
                                 modelId, quantity, applicationDate, shuffleQuestions);
 
@@ -84,7 +89,15 @@ public class AppliedAssessmentService {
                 List<QuestionSnapshot> snapshots = model.getQuestions().stream()
                                 .map(qw -> {
                                         var qDto = questionClient.getQuestion(qw.getQuestionId());
+                                        if (qDto == null) {
+                                                throw new BusinessException("Questão não encontrada para o ID: "
+                                                                + qw.getQuestionId());
+                                        }
                                         var alts = questionClient.getAlternatives(qw.getQuestionId());
+                                        if (alts == null || alts.isEmpty()) {
+                                                throw new BusinessException("A questão " + qw.getQuestionId()
+                                                                + " não possui alternativas cadastradas");
+                                        }
 
                                         QuestionSnapshot snap = new QuestionSnapshot();
                                         snap.setId(qDto.getId());
@@ -128,6 +141,9 @@ public class AppliedAssessmentService {
                                 .map(QuestionSnapshot::getId)
                                 .collect(Collectors.toList());
                 List<AnswerKeyDTO> keys = questionClient.getAnswerKeys(ids);
+                if (keys == null || keys.isEmpty()) {
+                        throw new BusinessException("Não foi possível obter os gabaritos das questões");
+                }
                 String correctKey = keys.stream()
                                 .map(AnswerKeyDTO::getAnswerKey)
                                 .collect(Collectors.joining(",", "[", "]"));
@@ -162,8 +178,8 @@ public class AppliedAssessmentService {
                 log.info("Iniciando soft-delete da AppliedAssessment com id {}", id);
                 AppliedAssessment applied = appliedRepo.findById(id)
                                 .filter(AppliedAssessment::getActive)
-                                .orElseThrow(() -> new EntityNotFoundException(
-                                                "Avaliação aplicada não encontrada ou já inativa: " + id));
+                                .orElseThrow(() -> new BusinessException(
+                                                "Avaliação aplicada não encontrada ou já está inativa: " + id));
 
                 applied.setActive(false);
                 appliedRepo.save(applied);
