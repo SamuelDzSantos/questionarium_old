@@ -5,15 +5,15 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.4.6</version>
-		<relativePath /> <!-- lookup parent from repository -->
+		<groupId>br.com.questionarium</groupId>
+		<artifactId>questionarium</artifactId>
+		<version>1.0-SNAPSHOT</version>
+		<relativePath>../..</relativePath>
 	</parent>
 
-	<groupId>com.questionarium</groupId>
+	<groupId>br.com.questionarium</groupId>
 	<artifactId>assessment-service</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0-SNAPSHOT</version>
 	<name>assessment-service</name>
 	<description>Assessment microservice for evaluations and questions</description>
 
@@ -47,7 +47,7 @@
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<optional>true</optional>
+			<scope>provided</scope>
 		</dependency>
 
 		<!-- Test -->
@@ -80,6 +80,11 @@
 			<artifactId>spring-rabbit-test</artifactId>
 		</dependency>
 
+		<!-- shared module -->
+		<dependency>
+			<groupId>br.com.questionarium</groupId>
+			<artifactId>shared</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -93,7 +98,12 @@
 						<path>
 							<groupId>org.projectlombok</groupId>
 							<artifactId>lombok</artifactId>
-							<version>1.18.30</version>
+							<version>${lombok.version}</version>
+						</path>
+						<path>
+							<groupId>org.mapstruct</groupId>
+							<artifactId>mapstruct-processor</artifactId>
+							<version>1.5.3.Final</version>
 						</path>
 					</annotationProcessorPaths>
 				</configuration>
