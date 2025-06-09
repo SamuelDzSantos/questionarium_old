@@ -187,6 +187,19 @@ public class RecordAssessmentService {
         log.info("RecordAssessment {} marcado como inativo pelo ADMIN", id);
     }
 
+    /**
+     * Consulta pública de RecordAssessment por ID (qualquer um com o ID pode
+     * acessar)
+     */
+    @Transactional(readOnly = true)
+    public RecordAssessment publicFindById(Long id) {
+        log.info("Consulta pública da RecordAssessment com id {}", id);
+
+        return repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Registro de avaliação não encontrado: " + id));
+    }
+
     /** Clone de snapshot */
     private QuestionSnapshot cloneSnapshot(QuestionSnapshot src) {
         QuestionSnapshot dst = new QuestionSnapshot();
