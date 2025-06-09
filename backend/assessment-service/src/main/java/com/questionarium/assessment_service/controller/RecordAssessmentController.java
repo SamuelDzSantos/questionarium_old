@@ -4,38 +4,34 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.questionarium.assessment_service.dto.CreateRecordAssessmentRequestDTO;
 import com.questionarium.assessment_service.dto.RecordAssessmentDTO;
 import com.questionarium.assessment_service.mapper.RecordAssessmentMapper;
+import com.questionarium.assessment_service.mapper.RecordAssessmentPublicMapper;
 import com.questionarium.assessment_service.service.RecordAssessmentService;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/record-assessments")
+@RequiredArgsConstructor
+@Slf4j
 public class RecordAssessmentController {
 
     private final RecordAssessmentService service;
     private final RecordAssessmentMapper mapper;
-
-    public RecordAssessmentController(
-            RecordAssessmentService service,
-            RecordAssessmentMapper mapper) {
-        this.service = service;
-        this.mapper = mapper;
-    }
+    private final RecordAssessmentPublicMapper publicMapper;
 
     @PostMapping
     public ResponseEntity<List<RecordAssessmentDTO>> createBatch(
             @RequestBody @Valid CreateRecordAssessmentRequestDTO dto) {
+
+        log.info("Requisição para criar RecordAssessments em lote para AppliedAssessment {}",
+                dto.getAppliedAssessmentId());
 
         var records = service.createFromAppliedAssessment(
                 dto.getAppliedAssessmentId(),
@@ -48,18 +44,42 @@ public class RecordAssessmentController {
 
     @GetMapping("/{id}")
     public ResponseEntity<RecordAssessmentDTO> getOne(@PathVariable Long id) {
+        log.info("Requisição para buscar RecordAssessment {}", id);
+
         var rec = service.findById(id);
         return ResponseEntity.ok(mapper.toDto(rec));
     }
 
     @GetMapping
     public ResponseEntity<List<RecordAssessmentDTO>> listAll() {
+        log.info("Requisição para listar todas as RecordAssessments ativas");
+
         return ResponseEntity.ok(mapper.toDto(service.findAllActive()));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
+        log.info("Requisição para soft-delete de RecordAssessment {}", id);
+
         service.softDelete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    /** Admin soft-delete */
+    @DeleteMapping("/admin/{id}")
+    public ResponseEntity<Void> adminDelete(@PathVariable Long id) {
+        log.info("ADMIN: Requisição para soft-delete de RecordAssessment {}", id);
+
+        service.adminSoftDelete(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    /** Consulta pública da RecordAssessment (mobile/futuro uso externo) */
+    @GetMapping("/public/{id}")
+    public ResponseEntity<?> publicGet(@PathVariable Long id) {
+        log.info("Consulta pública para RecordAssessment {}", id);
+
+        var rec = service.publicFindById(id);
+        return ResponseEntity.ok(publicMapper.toDto(rec));
     }
 }
