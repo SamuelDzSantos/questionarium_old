@@ -77,6 +77,25 @@ public class QuestionController {
         return new ResponseEntity<>(questions, HttpStatus.OK);
     }
 
+    @GetMapping("/admin/filter")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<QuestionDTO>> getFilteredQuestionsAsAdmin(
+            @RequestParam(required = false) Long userId,
+            @RequestParam(required = false) Boolean multipleChoice,
+            @RequestParam(required = false) List<Long> tagIds,
+            @RequestParam(required = false) Integer accessLevel,
+            @RequestParam(required = false) Integer educationLevel,
+            @RequestParam(required = false) String header) {
+
+        logger.info("GET /questions/admin/filter – buscando questões com filtro (ADMIN)");
+
+        List<QuestionDTO> questions = questionService.getFilteredQuestionsAsAdmin(
+                userId, multipleChoice, tagIds, accessLevel, educationLevel, header);
+
+        logger.info("Retornadas {} questões filtradas (ADMIN).", questions.size());
+        return new ResponseEntity<>(questions, HttpStatus.OK);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<QuestionDTO> getQuestionById(@PathVariable Long id) {
         Long userId = jwtUtils.getCurrentUserId();

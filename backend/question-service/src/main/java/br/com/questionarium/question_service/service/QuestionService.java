@@ -156,6 +156,54 @@ public class QuestionService {
         return result;
     }
 
+    public List<QuestionDTO> getFilteredQuestionsAsAdmin(
+            Long userId,
+            Boolean multipleChoice,
+            List<Long> tagIds,
+            Integer accessLevel,
+            Integer educationLevel,
+            String header) {
+
+        logger.info(
+                "Buscando questões filtradas (ADMIN): userId={}, multipleChoice={}, tagIds={}, accessLevel={}, educationLevel={}, header={}",
+                userId, multipleChoice, tagIds, accessLevel, educationLevel, header);
+
+        Specification<Question> spec = Specification.where(null); // ADMIN → não filtra enable
+
+        if (userId != null) {
+            spec = spec.and((root, query, cb) -> cb.equal(root.get("userId"), userId));
+        }
+        if (multipleChoice != null) {
+            spec = spec.and((root, query, cb) -> cb.equal(root.get("multipleChoice"), multipleChoice));
+        }
+        if (header != null) {
+            spec = spec
+                    .and((root, query, cb) -> cb.like(cb.lower(root.get("header")), "%" + header.toLowerCase() + "%"));
+        }
+        if (tagIds != null && !tagIds.isEmpty()) {
+            spec = spec.and((root, query, cb) -> {
+                Join<Question, Tag> tagJoin = root.join("tags");
+                return tagJoin.get("id").in(tagIds);
+            });
+        }
+        if (accessLevel != null) {
+            QuestionAccessLevel accessLevelEnum = QuestionAccessLevel.values()[accessLevel];
+            spec = spec.and((root, query, cb) -> cb.equal(root.get("accessLevel"), accessLevelEnum));
+        }
+        if (educationLevel != null) {
+            QuestionEducationLevel educationLevelEnum = QuestionEducationLevel.values()[educationLevel];
+            spec = spec.and((root, query, cb) -> cb.equal(root.get("educationLevel"), educationLevelEnum));
+        }
+
+        List<Question> questions = questionRepository.findAll(spec);
+        List<QuestionDTO> result = questions.stream()
+                .map(questionMapper::toDTO)
+                .collect(Collectors.toList());
+
+        logger.info("Foram encontradas {} questões após filtragem (ADMIN).", result.size());
+        return result;
+    }
+
     public Optional<QuestionDTO> getQuestionById(Long id) {
         logger.info("Buscando questão por ID {}.", id);
         Optional<QuestionDTO> result = questionRepository.findById(id)
