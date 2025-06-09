@@ -1,5 +1,12 @@
-{"properties": [{
-  "name": "spring.security.oauth2.resourceserver.jwt.secret",
-  "type": "java.lang.String",
-  "description": "A description for 'spring.security.oauth2.resourceserver.jwt.secret'"
-}]}
+{"properties": [
+  {
+    "name": "key.secret",
+    "type": "java.lang.String",
+    "description": "A description for 'key.secret'"
+  },
+  {
+    "name": "spring.security.oauth2.resourceserver.jwt.secret",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.security.oauth2.resourceserver.jwt.secret'"
+  }
+]}

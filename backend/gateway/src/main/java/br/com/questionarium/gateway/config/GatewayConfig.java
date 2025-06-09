@@ -11,8 +11,7 @@ public class GatewayConfig {
         @Bean
         public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
                 return builder.routes()
-                                // 1) Qualquer rota /auth/** é encaminhada para AuthService (porta 14001)
-                                // com um Circuit Breaker configurado para fallback
+                                // Auth Service
                                 .route("auth", r -> r.path("/auth/**")
                                                 .filters(f -> f.circuitBreaker(cb -> cb
                                                                 .setName("authCircuitBreaker")
@@ -32,6 +31,13 @@ public class GatewayConfig {
                                                                 .setName("questionCircuitBreaker")
                                                                 .setFallbackUri("forward:/fallback/questions")))
                                                 .uri("http://localhost:14004"))
+
+                                // Assessment Service <<< NOVO
+                                .route("assessment-service", r -> r.path("/assessment", "/assessment/**")
+                                                .filters(f -> f.circuitBreaker(cb -> cb
+                                                                .setName("assessmentCircuitBreaker")
+                                                                .setFallbackUri("forward:/fallback/assessment")))
+                                                .uri("http://localhost:14005"))
 
                                 .build();
         }

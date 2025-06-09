@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.questionarium.assessment_service.model.AssessmentHeader;
+import com.questionarium.assessment_service.security.JwtUtils;
 import com.questionarium.assessment_service.service.AssessmentHeaderService;
 
 import lombok.RequiredArgsConstructor;
@@ -18,11 +19,16 @@ import lombok.extern.slf4j.Slf4j;
 public class AssessmentHeaderController {
 
     private final AssessmentHeaderService assessmentHeaderService;
+    private final JwtUtils jwtUtils;
 
     /** Cria header */
     @PostMapping
     public ResponseEntity<AssessmentHeader> createHeader(@RequestBody AssessmentHeader header) {
-        log.info("Requisição para criar novo AssessmentHeader");
+        Long userId = jwtUtils.getCurrentUserId();
+        log.info("POST /header – criando AssessmentHeader para userId={}", userId);
+
+        header.setUserId(userId); // força a ser o usuário do token
+
         AssessmentHeader createdHeader = assessmentHeaderService.createHeader(header);
         return ResponseEntity.ok(createdHeader);
     }
