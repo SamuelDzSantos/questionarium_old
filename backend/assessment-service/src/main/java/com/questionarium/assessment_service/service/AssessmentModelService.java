@@ -1,65 +1,88 @@
 package com.questionarium.assessment_service.service;
 
 import java.util.List;
-import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.questionarium.assessment_service.exception.BusinessException;
 import com.questionarium.assessment_service.model.AssessmentModel;
 import com.questionarium.assessment_service.repository.AssessmentModelRepository;
 
-import jakarta.transaction.Transactional;
+import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Slf4j
+@Transactional
+@RequiredArgsConstructor
 public class AssessmentModelService {
-    @Autowired
-    private AssessmentModelRepository assessmentModelRepository;
 
-    // CRIA AVALIACAO
+    private final AssessmentModelRepository assessmentModelRepository;
+
+    /** Cria um novo modelo de avaliação */
     public AssessmentModel createAssessment(AssessmentModel assessment) {
+        log.info("Criando novo AssessmentModel para usuário {}", assessment.getUserId());
         return assessmentModelRepository.save(assessment);
     }
 
-    // BUSCA AVALIACAO POR ID
-    public Optional<AssessmentModel> getAssessmentById(Long id) {
-        return assessmentModelRepository.findById(id);
+    /** Busca um modelo por ID ou lança 404 */
+    @Transactional(readOnly = true)
+    public AssessmentModel getAssessmentById(Long id) {
+        log.info("Buscando AssessmentModel com id {}", id);
+        return assessmentModelRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Modelo de avaliação não encontrado: " + id));
     }
 
-    // BUSCA TODAS AS AVALIACOES - NIVEL ADMIN
+    /** Busca todos os modelos (admin) */
+    @Transactional(readOnly = true)
     public List<AssessmentModel> getAllAssessments() {
+        log.info("Buscando todos os AssessmentModels");
         return assessmentModelRepository.findAll();
     }
 
-    // BUSCA AVALIACOES POR ID DO USUARIO
+    /** Busca modelos por userId */
+    @Transactional(readOnly = true)
     public List<AssessmentModel> getAssessmentsByUserId(Long userId) {
+        log.info("Buscando AssessmentModels do usuário {}", userId);
         return assessmentModelRepository.findByUserId(userId);
     }
 
-    // ATUALIZA AVALIACAO
-    @Transactional
-    public Optional<AssessmentModel> updateAssessment(Long id, AssessmentModel updatedAssessment) {
-        return assessmentModelRepository.findById(id).map(existing -> {
-            existing.setDescription(updatedAssessment.getDescription());
-            existing.setQuestions(updatedAssessment.getQuestions());
-            existing.setUserId(updatedAssessment.getUserId());
-            existing.setInstitution(updatedAssessment.getInstitution());
-            existing.setDepartment(updatedAssessment.getDepartment());
-            existing.setCourse(updatedAssessment.getCourse());
-            existing.setClassroom(updatedAssessment.getClassroom());
-            existing.setProfessor(updatedAssessment.getProfessor());
-            existing.setInstructions(updatedAssessment.getInstructions());
-            existing.setImage(updatedAssessment.getImage());
-            return assessmentModelRepository.save(existing);
-        });
+    /** Atualiza um modelo existente */
+    public AssessmentModel updateAssessment(Long id, AssessmentModel updatedAssessment) {
+        log.info("Atualizando AssessmentModel com id {}", id);
+
+        AssessmentModel existing = assessmentModelRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Modelo de avaliação não encontrado para atualização: " + id));
+
+        existing.setDescription(updatedAssessment.getDescription());
+        existing.setQuestions(updatedAssessment.getQuestions());
+        existing.setUserId(updatedAssessment.getUserId());
+        existing.setInstitution(updatedAssessment.getInstitution());
+        existing.setDepartment(updatedAssessment.getDepartment());
+        existing.setCourse(updatedAssessment.getCourse());
+        existing.setClassroom(updatedAssessment.getClassroom());
+        existing.setProfessor(updatedAssessment.getProfessor());
+        existing.setInstructions(updatedAssessment.getInstructions());
+        existing.setImage(updatedAssessment.getImage());
+
+        AssessmentModel saved = assessmentModelRepository.save(existing);
+        log.info("AssessmentModel {} atualizado com sucesso", saved.getId());
+        return saved;
     }
 
-    // DELETA AVALIACAO
-    public boolean deleteAssessment(Long id) {
-        if (assessmentModelRepository.existsById(id)) {
-            assessmentModelRepository.deleteById(id);
-            return true;
+    /** Deleta um modelo */
+    public void deleteAssessment(Long id) {
+        log.info("Deletando AssessmentModel com id {}", id);
+
+        if (!assessmentModelRepository.existsById(id)) {
+            throw new BusinessException("Modelo de avaliação não encontrado para exclusão: " + id);
         }
-        return false;
+
+        assessmentModelRepository.deleteById(id);
+        log.info("AssessmentModel {} deletado com sucesso", id);
     }
 }

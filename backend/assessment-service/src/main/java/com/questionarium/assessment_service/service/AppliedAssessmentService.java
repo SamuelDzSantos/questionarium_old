@@ -19,54 +19,75 @@ import com.questionarium.assessment_service.snapshot.AlternativeSnapshot;
 import com.questionarium.assessment_service.snapshot.QuestionSnapshot;
 
 import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
 @Transactional
+@RequiredArgsConstructor
 public class AppliedAssessmentService {
 
         private final AppliedAssessmentRepository appliedRepo;
         private final AssessmentModelRepository modelRepo;
         private final QuestionClient questionClient;
 
-        public AppliedAssessmentService(
-                        AppliedAssessmentRepository appliedRepo,
-                        AssessmentModelRepository modelRepo,
-                        QuestionClient questionClient) {
-                this.appliedRepo = appliedRepo;
-                this.modelRepo = modelRepo;
-                this.questionClient = questionClient;
-        }
-
-        /** Lista todas as AppliedAssessment ativas */
+        /** Lista todas as AppliedAssessment ativas (admin ou user só vê as dele) */
         @Transactional(readOnly = true)
         public List<AppliedAssessment> findAllActive() {
-                log.info("Buscando todas as avaliações aplicadas ativas");
-                return appliedRepo.findByActiveTrue();
+                if (isAdmin()) {
+                        log.info("ADMIN: buscando todas as avaliações aplicadas ativas");
+                        return appliedRepo.findByActiveTrue();
+                } else {
+                        Long currentUserId = getCurrentUserId();
+                        log.info("USER: buscando avaliações aplicadas ativas do usuário {}", currentUserId);
+                        return appliedRepo.findByUserIdAndActiveTrue(currentUserId);
+                }
         }
 
-        /** Busca uma AppliedAssessment ativa por id ou lança 404 */
+        /** Busca uma AppliedAssessment por id com controle de acesso */
         @Transactional(readOnly = true)
         public AppliedAssessment findById(Long id) {
                 log.info("Buscando AppliedAssessment com id {}", id);
-                return appliedRepo.findById(id)
-                                .filter(AppliedAssessment::getActive)
+
+                AppliedAssessment applied = appliedRepo.findById(id)
                                 .orElseThrow(() -> new EntityNotFoundException(
-                                                "Avaliação aplicada não encontrada ou inativa: " + id));
+                                                "Avaliação aplicada não encontrada: " + id));
+
+                if (isAdmin()) {
+                        log.info("ADMIN: acesso permitido à avaliação {}", id);
+                        return applied;
+                } else {
+                        Long currentUserId = getCurrentUserId();
+                        if (!applied.getUserId().equals(currentUserId)) {
+                                throw new BusinessException("Você não tem permissão para acessar esta avaliação");
+                        }
+                        if (!applied.getActive()) {
+                                throw new BusinessException("Esta avaliação está inativa e não pode ser acessada");
+                        }
+                        log.info("USER: acesso permitido à avaliação {}", id);
+                        return applied;
+                }
         }
 
-        /** Lista todas as AppliedAssessment ativas de um usuário */
+        /** Lista avaliações aplicadas do usuário (somente ativas) */
         @Transactional(readOnly = true)
         public List<AppliedAssessment> findByUser(Long userId) {
-                log.info("Buscando avaliações aplicadas ativas do usuário {}", userId);
-                return appliedRepo.findByUserIdAndActiveTrue(userId);
+                if (isAdmin()) {
+                        log.info("ADMIN: buscando avaliações aplicadas do usuário {}", userId);
+                        return appliedRepo.findByUserId(userId);
+                } else {
+                        Long currentUserId = getCurrentUserId();
+                        if (!currentUserId.equals(userId)) {
+                                throw new BusinessException(
+                                                "Você não tem permissão para acessar avaliações de outro usuário");
+                        }
+                        log.info("USER: buscando avaliações aplicadas ativas do usuário {}", currentUserId);
+                        return appliedRepo.findByUserIdAndActiveTrue(currentUserId);
+                }
         }
 
-        /**
-         * Aplica um template de AssessmentModel, congelando todos os dados das questões
-         * e gerando o gabarito.
-         */
+        /** Aplica um template de AssessmentModel */
         public AppliedAssessment applyAssessment(
                         Long modelId,
                         LocalDate applicationDate,
@@ -80,12 +101,10 @@ public class AppliedAssessmentService {
                 log.info("Iniciando aplicação da avaliação do modelo {}, quantidade {}, data {}, embaralhar {}",
                                 modelId, quantity, applicationDate, shuffleQuestions);
 
-                // 1) Carrega o template
                 AssessmentModel model = modelRepo.findById(modelId)
                                 .orElseThrow(() -> new EntityNotFoundException(
                                                 "Modelo de avaliação não encontrado: " + modelId));
 
-                // 2) Monta QuestionSnapshots
                 List<QuestionSnapshot> snapshots = model.getQuestions().stream()
                                 .map(qw -> {
                                         var qDto = questionClient.getQuestion(qw.getQuestionId());
@@ -93,6 +112,7 @@ public class AppliedAssessmentService {
                                                 throw new BusinessException("Questão não encontrada para o ID: "
                                                                 + qw.getQuestionId());
                                         }
+
                                         var alts = questionClient.getAlternatives(qw.getQuestionId());
                                         if (alts == null || alts.isEmpty()) {
                                                 throw new BusinessException("A questão " + qw.getQuestionId()
@@ -131,12 +151,10 @@ public class AppliedAssessmentService {
                                 })
                                 .collect(Collectors.toList());
 
-                // 3) Embaralha se solicitado
                 if (Boolean.TRUE.equals(shuffleQuestions)) {
                         Collections.shuffle(snapshots);
                 }
 
-                // 4) Monta gabarito
                 List<Long> ids = snapshots.stream()
                                 .map(QuestionSnapshot::getId)
                                 .collect(Collectors.toList());
@@ -148,7 +166,6 @@ public class AppliedAssessmentService {
                                 .map(AnswerKeyDTO::getAnswerKey)
                                 .collect(Collectors.joining(",", "[", "]"));
 
-                // 5) Monta entidade
                 AppliedAssessment applied = new AppliedAssessment();
                 applied.setDescription(model.getDescription());
                 applied.setQuestionSnapshots(snapshots);
@@ -167,22 +184,52 @@ public class AppliedAssessmentService {
                 applied.setActive(true);
                 applied.setCorrectAnswerKey(correctKey);
 
-                // 6) Persiste
                 AppliedAssessment saved = appliedRepo.save(applied);
                 log.info("Avaliação aplicada {} salva com sucesso", saved.getId());
                 return saved;
         }
 
-        /** Soft-delete de uma avaliação aplicada: marca como inativa */
+        /** Soft-delete com controle de acesso */
         public void softDelete(Long id) {
                 log.info("Iniciando soft-delete da AppliedAssessment com id {}", id);
+
                 AppliedAssessment applied = appliedRepo.findById(id)
-                                .filter(AppliedAssessment::getActive)
-                                .orElseThrow(() -> new BusinessException(
-                                                "Avaliação aplicada não encontrada ou já está inativa: " + id));
+                                .orElseThrow(() -> new EntityNotFoundException(
+                                                "Avaliação aplicada não encontrada: " + id));
+
+                if (isAdmin()) {
+                        log.info("ADMIN: soft-delete autorizado para avaliação {}", id);
+                } else {
+                        Long currentUserId = getCurrentUserId();
+                        if (!applied.getUserId().equals(currentUserId)) {
+                                throw new BusinessException("Você não tem permissão para excluir esta avaliação");
+                        }
+                        if (!applied.getActive()) {
+                                throw new BusinessException("Esta avaliação já está inativa");
+                        }
+                        log.info("USER: soft-delete autorizado para avaliação {}", id);
+                }
 
                 applied.setActive(false);
                 appliedRepo.save(applied);
                 log.info("Avaliação aplicada {} marcada como inativa", id);
+        }
+
+        /**
+         * Helper: retorna ID do usuário atual (assumindo que você extrai no
+         * SecurityContext)
+         */
+        private Long getCurrentUserId() {
+                // Simulação: você precisará implementar com seu JWT ou UserDetails
+                // Exemplo com string do JWT:
+                // return
+                // Long.valueOf(SecurityContextHolder.getContext().getAuthentication().getName());
+                throw new UnsupportedOperationException("Implementar método getCurrentUserId()");
+        }
+
+        /** Helper: verifica se o usuário atual é ADMIN */
+        private boolean isAdmin() {
+                return SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
+                                .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
         }
 }
