@@ -2,8 +2,6 @@ package com.questionarium.assessment_service.model;
 
 import java.time.LocalDateTime;
 
-import org.springframework.data.annotation.LastModifiedDate;
-
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -40,8 +38,8 @@ public class AssessmentHeader {
     @Column(updatable = false)
     @NotNull
     private LocalDateTime creationDateTime;
-
-    @LastModifiedDate
+    
+    @NotNull
     private LocalDateTime updateDateTime;
 
     @PrePersist
@@ -49,6 +47,7 @@ public class AssessmentHeader {
         LocalDateTime now = LocalDateTime.now();
         if (creationDateTime == null) {
             creationDateTime = now;
+            updateDateTime = now;
         }
     }
 

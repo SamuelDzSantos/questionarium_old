@@ -4,8 +4,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.data.annotation.LastModifiedDate;
-
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -28,8 +26,8 @@ public class AssessmentModel {
     @Column(updatable = false)
     @NotNull
     private LocalDateTime creationDateTime;
-
-    @LastModifiedDate
+        
+    @NotNull
     private LocalDateTime updateDateTime;
 
     @NotNull
@@ -55,6 +53,7 @@ public class AssessmentModel {
         LocalDateTime now = LocalDateTime.now();
         if (creationDateTime == null) {
             creationDateTime = now;
+            updateDateTime = now;
         }
     }
 

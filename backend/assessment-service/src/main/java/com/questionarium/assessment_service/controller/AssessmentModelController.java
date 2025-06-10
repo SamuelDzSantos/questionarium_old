@@ -8,8 +8,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.questionarium.assessment_service.dto.AssessmentModelDTO;
+import com.questionarium.assessment_service.dto.CreateAssessmentModelRequestDTO;
 import com.questionarium.assessment_service.mapper.AssessmentModelMapper;
 import com.questionarium.assessment_service.model.AssessmentModel;
+import com.questionarium.assessment_service.security.JwtUtils;
 import com.questionarium.assessment_service.service.AssessmentModelService;
 
 import jakarta.validation.Valid;
@@ -24,19 +26,26 @@ public class AssessmentModelController {
 
     private final AssessmentModelService service;
     private final AssessmentModelMapper mapper;
+    private final JwtUtils jwtUtils;
 
-    /** Cria um novo modelo */
+    /** Cria um novo modelo para o usuário logado */
     @PostMapping
-    public ResponseEntity<AssessmentModelDTO> createAssessment(@RequestBody @Valid AssessmentModelDTO dto) {
-        log.info("Requisição para criar novo AssessmentModel");
-        AssessmentModel saved = service.createAssessment(mapper.toEntity(dto));
+    public ResponseEntity<AssessmentModelDTO> createAssessment(
+            @RequestBody @Valid CreateAssessmentModelRequestDTO dto) {
+        Long userId = jwtUtils.getCurrentUserId();
+        log.info("POST /assessment – criando AssessmentModel para userId={}", userId);
+
+        AssessmentModel entity = mapper.toEntity(dto);
+        entity.setUserId(userId);
+
+        AssessmentModel saved = service.createAssessment(entity);
         return new ResponseEntity<>(mapper.toDto(saved), HttpStatus.CREATED);
     }
 
     /** Busca um modelo por ID */
     @GetMapping("/{id}")
     public ResponseEntity<AssessmentModelDTO> getAssessmentById(@PathVariable Long id) {
-        log.info("Requisição para buscar AssessmentModel com id {}", id);
+        log.info("GET /assessment/{} – buscando modelo", id);
         AssessmentModel model = service.getAssessmentById(id);
         return ResponseEntity.ok(mapper.toDto(model));
     }
@@ -44,20 +53,19 @@ public class AssessmentModelController {
     /** Busca todos os modelos (admin) */
     @GetMapping
     public ResponseEntity<List<AssessmentModelDTO>> getAllAssessments() {
-        log.info("Requisição para buscar todos os AssessmentModels");
-        List<AssessmentModelDTO> dtos = service.getAllAssessments()
-                .stream()
+        log.info("GET /assessment – buscando todos os modelos");
+        List<AssessmentModelDTO> dtos = service.getAllAssessments().stream()
                 .map(mapper::toDto)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(dtos);
     }
 
-    /** Busca modelos por userId */
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<List<AssessmentModelDTO>> getAssessmentsByUserId(@PathVariable Long userId) {
-        log.info("Requisição para buscar AssessmentModels do usuário {}", userId);
-        List<AssessmentModelDTO> dtos = service.getAssessmentsByUserId(userId)
-                .stream()
+    /** Busca modelos do usuário logado */
+    @GetMapping("/user")
+    public ResponseEntity<List<AssessmentModelDTO>> getAssessmentsByUser() {
+        Long userId = jwtUtils.getCurrentUserId();
+        log.info("GET /assessment/user – buscando modelos de userId={}", userId);
+        List<AssessmentModelDTO> dtos = service.getAssessmentsByUserId(userId).stream()
                 .map(mapper::toDto)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(dtos);
@@ -67,21 +75,22 @@ public class AssessmentModelController {
     @PutMapping("/{id}")
     public ResponseEntity<AssessmentModelDTO> updateAssessment(
             @PathVariable Long id,
-            @RequestBody @Valid AssessmentModelDTO dto) {
+            @RequestBody @Valid CreateAssessmentModelRequestDTO dto) {
+        Long userId = jwtUtils.getCurrentUserId();
+        log.info("PUT /assessment/{} – atualizando modelo para userId={}", id, userId);
 
-        log.info("Requisição para atualizar AssessmentModel com id {}", id);
+        AssessmentModel entity = mapper.toEntity(dto);
+        entity.setId(id);
+        entity.setUserId(userId);
 
-        AssessmentModel toUpdate = mapper.toEntity(dto);
-        toUpdate.setId(id);
-
-        AssessmentModel updated = service.updateAssessment(id, toUpdate);
+        AssessmentModel updated = service.updateAssessment(id, entity);
         return ResponseEntity.ok(mapper.toDto(updated));
     }
 
     /** Deleta um modelo */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteAssessment(@PathVariable Long id) {
-        log.info("Requisição para deletar AssessmentModel com id {}", id);
+        log.info("DELETE /assessment/{} – deletando modelo", id);
         service.deleteAssessment(id);
         return ResponseEntity.noContent().build();
     }

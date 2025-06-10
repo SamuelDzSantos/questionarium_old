@@ -33,5 +33,5 @@ public class AppliedAssessmentDTO {
     private String correctAnswerKey;
 
     /** A “foto” completa das questões */
-    private List<QuestionSnapshotDTO> questionSnapshots;
+    private List<QuestionDTO> questionSnapshots;
 }

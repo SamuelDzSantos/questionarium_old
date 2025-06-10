@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.questionarium.assessment_service.exception.BusinessException;
 import com.questionarium.assessment_service.model.AssessmentHeader;
@@ -21,9 +22,11 @@ public class AssessmentHeaderService {
 
     private final AssessmentHeaderRepository assessmentHeaderRepository;
 
-    /** Cria um novo header */
+    /** Cria um novo header, atribuindo o userId do token */
     public AssessmentHeader createHeader(AssessmentHeader header) {
-        log.info("Criando novo AssessmentHeader para usuário {}", header.getUserId());
+        Long currentUserId = getCurrentUserId();
+        header.setUserId(currentUserId);
+        log.info("Criando novo AssessmentHeader para usuário {}", currentUserId);
         return assessmentHeaderRepository.save(header);
     }
 
@@ -31,55 +34,87 @@ public class AssessmentHeaderService {
     @Transactional(readOnly = true)
     public AssessmentHeader getHeaderById(Long id) {
         log.info("Buscando AssessmentHeader com id {}", id);
-        return assessmentHeaderRepository.findById(id)
+        AssessmentHeader header = assessmentHeaderRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Header de avaliação não encontrado: " + id));
+        // valida acesso do usuário
+        if (!isAdmin() && !header.getUserId().equals(getCurrentUserId())) {
+            throw new BusinessException("Você não tem permissão para acessar este header");
+        }
+        return header;
     }
 
-    /** Busca headers por userId */
+    /** Busca headers do usuário logado */
     @Transactional(readOnly = true)
-    public List<AssessmentHeader> getHeadersByUserId(Long userId) {
-        log.info("Buscando AssessmentHeaders do usuário {}", userId);
-        return assessmentHeaderRepository.findByUserId(userId);
+    public List<AssessmentHeader> getHeadersByUser() {
+        Long currentUserId = getCurrentUserId();
+        log.info("Buscando AssessmentHeaders do usuário {}", currentUserId);
+        return assessmentHeaderRepository.findByUserId(currentUserId);
     }
 
-    /** Busca todos os headers */
+    /** Busca todos os headers (somente admin) */
     @Transactional(readOnly = true)
     public List<AssessmentHeader> getAllHeaders() {
-        log.info("Buscando todos os AssessmentHeaders");
+        if (!isAdmin()) {
+            throw new BusinessException("Somente administradores podem listar todos os headers");
+        }
+        log.info("ADMIN: buscando todos os AssessmentHeaders");
         return assessmentHeaderRepository.findAll();
     }
 
     /** Atualiza um header existente */
     public AssessmentHeader updateHeader(Long id, AssessmentHeader updatedHeader) {
+        Long currentUserId = getCurrentUserId();
         log.info("Atualizando AssessmentHeader com id {}", id);
 
-        AssessmentHeader existingHeader = assessmentHeaderRepository.findById(id)
+        AssessmentHeader existing = assessmentHeaderRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Header de avaliação não encontrado para atualização: " + id));
 
-        existingHeader.setInstitution(updatedHeader.getInstitution());
-        existingHeader.setDepartment(updatedHeader.getDepartment());
-        existingHeader.setCourse(updatedHeader.getCourse());
-        existingHeader.setClassroom(updatedHeader.getClassroom());
-        existingHeader.setProfessor(updatedHeader.getProfessor());
-        existingHeader.setInstructions(updatedHeader.getInstructions());
-        existingHeader.setImage(updatedHeader.getImage());
+        if (!isAdmin() && !existing.getUserId().equals(currentUserId)) {
+            throw new BusinessException("Você não tem permissão para atualizar este header");
+        }
 
-        AssessmentHeader saved = assessmentHeaderRepository.save(existingHeader);
+        existing.setInstitution(updatedHeader.getInstitution());
+        existing.setDepartment(updatedHeader.getDepartment());
+        existing.setCourse(updatedHeader.getCourse());
+        existing.setClassroom(updatedHeader.getClassroom());
+        existing.setProfessor(updatedHeader.getProfessor());
+        existing.setInstructions(updatedHeader.getInstructions());
+        existing.setImage(updatedHeader.getImage());
+
+        AssessmentHeader saved = assessmentHeaderRepository.save(existing);
         log.info("AssessmentHeader {} atualizado com sucesso", saved.getId());
         return saved;
     }
 
     /** Deleta um header */
     public void deleteHeader(Long id) {
+        Long currentUserId = getCurrentUserId();
         log.info("Deletando AssessmentHeader com id {}", id);
 
-        if (!assessmentHeaderRepository.existsById(id)) {
-            throw new BusinessException("Header de avaliação não encontrado para exclusão: " + id);
+        AssessmentHeader existing = assessmentHeaderRepository.findById(id)
+                .orElseThrow(() -> new BusinessException(
+                        "Header de avaliação não encontrado para exclusão: " + id));
+
+        if (!isAdmin() && !existing.getUserId().equals(currentUserId)) {
+            throw new BusinessException("Você não tem permissão para excluir este header");
         }
 
         assessmentHeaderRepository.deleteById(id);
         log.info("AssessmentHeader {} deletado com sucesso", id);
+    }
+
+    /** Extrai o ID do usuário do JWT */
+    private Long getCurrentUserId() {
+        return Long.valueOf(SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getName()); // ajusta conforme seu token contém o userId como subject/name
+    }
+
+    /** Verifica se o usuário atual tem ROLE_ADMIN */
+    private boolean isAdmin() {
+        return SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
     }
 }

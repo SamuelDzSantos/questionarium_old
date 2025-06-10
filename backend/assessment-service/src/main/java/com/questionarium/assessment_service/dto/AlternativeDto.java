@@ -7,11 +7,11 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AlternativeDto {
+public class AlternativeDTO {
     private Long id;
     private String description;
     private String imagePath;
     private Boolean isCorrect;
     private String explanation;
-    private Integer order;
+    private Integer alternativePosition;
 }

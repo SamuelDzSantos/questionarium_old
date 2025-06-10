@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.data.annotation.LastModifiedDate;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.questionarium.assessment_service.snapshot.QuestionSnapshot;
@@ -48,7 +47,7 @@ public class AppliedAssessment {
     private LocalDateTime creationDateTime;
 
     // DATA/HORA DA ÚLTIMA ATUALIZAÇÃO
-    @LastModifiedDate
+    @NotNull
     private LocalDateTime updateDateTime;
 
     @NotNull
@@ -90,6 +89,7 @@ public class AppliedAssessment {
         LocalDateTime now = LocalDateTime.now();
         if (creationDateTime == null) {
             creationDateTime = now;
+            updateDateTime = now;
         }
     }
 

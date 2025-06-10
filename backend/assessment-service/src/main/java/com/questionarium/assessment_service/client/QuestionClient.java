@@ -2,14 +2,14 @@ package com.questionarium.assessment_service.client;
 
 import java.util.List;
 
-import com.questionarium.assessment_service.dto.AlternativeDto;
+import com.questionarium.assessment_service.dto.AlternativeDTO;
 import com.questionarium.assessment_service.dto.AnswerKeyDTO;
-import com.questionarium.assessment_service.dto.QuestionDto;
+import com.questionarium.assessment_service.dto.QuestionDTO;
 
 public interface QuestionClient {
-    QuestionDto getQuestion(Long questionId);
+    QuestionDTO getQuestion(Long questionId);
 
-    List<AlternativeDto> getAlternatives(Long questionId);
+    List<AlternativeDTO> getAlternatives(Long questionId);
 
     List<AnswerKeyDTO> getAnswerKeys(List<Long> questionIds);
 }

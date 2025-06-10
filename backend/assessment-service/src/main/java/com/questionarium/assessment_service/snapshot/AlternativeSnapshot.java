@@ -6,6 +6,8 @@ import lombok.*;
 
 @Entity
 @Table(name = "alternative_snapshots")
+@EqualsAndHashCode(exclude = { "questionSnapshot" })
+@ToString(exclude = { "questionSnapshot" })
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -33,11 +35,12 @@ public class AlternativeSnapshot {
     @Column(name = "explanation", columnDefinition = "TEXT")
     private String explanation;
 
-    @Column(name = "alternative_order")
+    @Column(name = "alternative_position")
     @NotNull
-    private Integer order;
+    private Integer position;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "question_snapshot_id")
-    private QuestionSnapshot questionSnapshot; // FK para QuestionSnapshot
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "question_snapshot_id", nullable = false)
+    private QuestionSnapshot questionSnapshot;
+
 }

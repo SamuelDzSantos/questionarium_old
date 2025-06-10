@@ -4,10 +4,13 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "question_snapshots")
+@EqualsAndHashCode(exclude = {"alternatives", "recordAssessment"})
+@ToString(exclude = {"alternatives"})
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -57,14 +60,15 @@ public class QuestionSnapshot {
     @NotNull
     private String accessLevel;
 
+    @Builder.Default
     @ElementCollection
     @CollectionTable(name = "question_snapshot_tags", joinColumns = @JoinColumn(name = "question_snapshot_id"))
     @Column(name = "tag")
-    private List<String> tags;
+    private List<String> tags = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "questionSnapshot", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    @OrderColumn(name = "position")
-    private List<AlternativeSnapshot> alternatives;
+    private List<AlternativeSnapshot> alternatives = new ArrayList<>();
 
     @Column(name = "weight")
     @NotNull

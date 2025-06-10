@@ -84,8 +84,8 @@ public class RecordAssessmentService {
     public RecordAssessment findById(Long id) {
         RecordAssessment rec = repository.findById(id)
                 .filter(RecordAssessment::getActive)
-                .orElseThrow(
-                        () -> new EntityNotFoundException("Registro de avaliação não encontrado ou inativo: " + id));
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Registro de avaliação não encontrado ou inativo: " + id));
 
         if (isAdmin()) {
             log.info("ADMIN: acesso permitido à RecordAssessment {}", id);
@@ -113,9 +113,7 @@ public class RecordAssessmentService {
         }
     }
 
-    /**
-     * Busca todas de um usuário (ADMIN → todas, USER → apenas as próprias ativas)
-     */
+    /** Busca por usuário (ADMIN → todas, USER → apenas as próprias ativas) */
     @Transactional(readOnly = true)
     public List<RecordAssessment> findByUser(Long userId) {
         if (isAdmin()) {
@@ -160,8 +158,8 @@ public class RecordAssessmentService {
     public void softDelete(Long id) {
         RecordAssessment rec = repository.findById(id)
                 .filter(RecordAssessment::getActive)
-                .orElseThrow(
-                        () -> new EntityNotFoundException("Registro de avaliação não encontrado ou inativo: " + id));
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Registro de avaliação não encontrado ou inativo: " + id));
 
         if (isAdmin()) {
             throw new BusinessException("Soft-delete de registros deve ser feito com método de admin específico");
@@ -194,7 +192,6 @@ public class RecordAssessmentService {
     @Transactional(readOnly = true)
     public RecordAssessment publicFindById(Long id) {
         log.info("Consulta pública da RecordAssessment com id {}", id);
-
         return repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Registro de avaliação não encontrado: " + id));
@@ -224,7 +221,8 @@ public class RecordAssessmentService {
                     as.setImagePath(a.getImagePath());
                     as.setIsCorrect(a.getIsCorrect());
                     as.setExplanation(a.getExplanation());
-                    as.setOrder(a.getOrder());
+                    as.setPosition(a.getPosition());
+                    as.setQuestionSnapshot(dst);
                     return as;
                 })
                 .collect(Collectors.toList());

@@ -14,7 +14,7 @@ public class RecordAssessmentDTO {
     private Integer instanceIndex;
     private String studentName;
     private List<Long> questionOrder;
-    private List<QuestionSnapshotDTO> questionSnapshots;
+    private List<QuestionDTO> questionSnapshots;
     private Double totalScore;
     private Double obtainedScore;
     private String correctAnswerKey;

@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.questionarium.assessment_service.client.QuestionClient;
@@ -34,7 +33,6 @@ public class AppliedAssessmentService {
         private final AssessmentModelRepository modelRepo;
         private final QuestionClient questionClient;
 
-        /** Lista todas as AppliedAssessment ativas (admin ou user só vê as dele) */
         @Transactional(readOnly = true)
         public List<AppliedAssessment> findAllActive() {
                 if (isAdmin()) {
@@ -47,7 +45,6 @@ public class AppliedAssessmentService {
                 }
         }
 
-        /** Busca uma AppliedAssessment por id com controle de acesso */
         @Transactional(readOnly = true)
         public AppliedAssessment findById(Long id) {
                 log.info("Buscando AppliedAssessment com id {}", id);
@@ -72,7 +69,6 @@ public class AppliedAssessmentService {
                 }
         }
 
-        /** Lista avaliações aplicadas do usuário (somente ativas) */
         @Transactional(readOnly = true)
         public List<AppliedAssessment> findByUser(Long userId) {
                 if (isAdmin()) {
@@ -89,7 +85,6 @@ public class AppliedAssessmentService {
                 }
         }
 
-        /** Aplica um template de AssessmentModel */
         public AppliedAssessment applyAssessment(
                         Long modelId,
                         LocalDate applicationDate,
@@ -122,11 +117,10 @@ public class AppliedAssessmentService {
                                         }
 
                                         QuestionSnapshot snap = new QuestionSnapshot();
-                                        snap.setId(qDto.getId());
+                                        snap.setOriginalQuestionId(qDto.getId());
                                         snap.setMultipleChoice(qDto.getMultipleChoice());
                                         snap.setNumberLines(qDto.getNumberLines());
                                         snap.setEducationLevel(qDto.getEducationLevel());
-                                        snap.setPersonId(qDto.getPersonId());
                                         snap.setHeader(qDto.getHeader());
                                         snap.setHeaderImage(qDto.getHeaderImage());
                                         snap.setAnswerId(qDto.getAnswerId());
@@ -138,12 +132,13 @@ public class AppliedAssessmentService {
                                         List<AlternativeSnapshot> altSnaps = alts.stream()
                                                         .map(a -> {
                                                                 AlternativeSnapshot as = new AlternativeSnapshot();
-                                                                as.setId(a.getId());
+                                                                as.setOriginalAlternativeId(a.getId());
                                                                 as.setDescription(a.getDescription());
                                                                 as.setImagePath(a.getImagePath());
                                                                 as.setIsCorrect(a.getIsCorrect());
                                                                 as.setExplanation(a.getExplanation());
-                                                                as.setOrder(a.getOrder());
+                                                                as.setPosition(a.getAlternativePosition());
+                                                                as.setQuestionSnapshot(snap);
                                                                 return as;
                                                         })
                                                         .collect(Collectors.toList());
@@ -158,7 +153,7 @@ public class AppliedAssessmentService {
                 }
 
                 List<Long> ids = snapshots.stream()
-                                .map(QuestionSnapshot::getId)
+                                .map(QuestionSnapshot::getOriginalQuestionId)
                                 .collect(Collectors.toList());
                 List<AnswerKeyDTO> keys = questionClient.getAnswerKeys(ids);
                 if (keys == null || keys.isEmpty()) {
@@ -171,7 +166,8 @@ public class AppliedAssessmentService {
                 AppliedAssessment applied = new AppliedAssessment();
                 applied.setDescription(model.getDescription());
                 applied.setQuestionSnapshots(snapshots);
-                applied.setTotalScore(snapshots.stream().mapToDouble(QuestionSnapshot::getWeight).sum());
+                applied.setTotalScore(snapshots.stream()
+                                .mapToDouble(QuestionSnapshot::getWeight).sum());
                 applied.setUserId(model.getUserId());
                 applied.setInstitution(model.getInstitution());
                 applied.setDepartment(model.getDepartment());
@@ -180,7 +176,8 @@ public class AppliedAssessmentService {
                 applied.setProfessor(model.getProfessor());
                 applied.setInstructions(model.getInstructions());
                 applied.setImage(model.getImage());
-                applied.setApplicationDate(applicationDate != null ? applicationDate : LocalDate.now());
+                applied.setApplicationDate(
+                                applicationDate != null ? applicationDate : LocalDate.now());
                 applied.setQuantity(quantity);
                 applied.setShuffleQuestions(shuffleQuestions);
                 applied.setActive(true);
@@ -191,7 +188,6 @@ public class AppliedAssessmentService {
                 return saved;
         }
 
-        /** Soft-delete com controle de acesso */
         public void softDelete(Long id) {
                 log.info("Iniciando soft-delete da AppliedAssessment com id {}", id);
 
@@ -217,19 +213,10 @@ public class AppliedAssessmentService {
                 log.info("Avaliação aplicada {} marcada como inativa", id);
         }
 
-        /**
-         * Helper: retorna ID do usuário atual (assumindo que você extrai no
-         * SecurityContext)
-         */
         private Long getCurrentUserId() {
-                // Simulação: você precisará implementar com seu JWT ou UserDetails
-                // Exemplo com string do JWT:
-                // return
-                // Long.valueOf(SecurityContextHolder.getContext().getAuthentication().getName());
                 throw new UnsupportedOperationException("Implementar método getCurrentUserId()");
         }
 
-        /** Helper: verifica se o usuário atual é ADMIN */
         private boolean isAdmin() {
                 return SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
                                 .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));

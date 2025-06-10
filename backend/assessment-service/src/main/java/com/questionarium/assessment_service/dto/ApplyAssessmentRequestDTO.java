@@ -12,14 +12,12 @@ public class ApplyAssessmentRequestDTO {
     @NotNull
     private Long modelId;
 
-    /** Quantas vezes vai aplicar essa avaliação agora */
     @NotNull
     private Integer quantity;
 
-    /** Data em que está aplicando (pode ser hoje se null) */
+    @NotNull
     private LocalDate applicationDate;
 
-    /** Se deve embaralhar as questões */
     @NotNull
     private Boolean shuffleQuestions;
 }

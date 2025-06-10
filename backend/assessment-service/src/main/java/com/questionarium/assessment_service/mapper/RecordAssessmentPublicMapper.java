@@ -5,7 +5,7 @@ import org.mapstruct.Mapper;
 import com.questionarium.assessment_service.dto.RecordAssessmentPublicDTO;
 import com.questionarium.assessment_service.model.RecordAssessment;
 
-@Mapper(componentModel = "spring", uses = { AppliedAssessmentMapper.class })
+@Mapper(componentModel = "spring", uses = { AppliedAssessmentMapper.class, QuestionSnapshotMapper.class })
 public interface RecordAssessmentPublicMapper {
 
     RecordAssessmentPublicDTO toDto(RecordAssessment entity);
