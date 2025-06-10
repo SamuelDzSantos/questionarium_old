@@ -63,22 +63,21 @@ public class QuestionService {
                 .filter(AlternativeDTO::getIsCorrect)
                 .toList();
         if (correctAlternatives.isEmpty()) {
-            logger.error("Nenhuma alternativa correta fornecida.");
+            logger.error("Nenhuma alternativa correta fornecida ao atualizar questão {}.");
             throw new IllegalArgumentException("Nenhuma alternativa correta fornecida.");
         }
-        if (correctAlternatives.size() > 1) {
-            logger.error("Mais de uma alternativa correta fornecida");
-            throw new IllegalArgumentException("Mais de uma alternativa correta fornecida.");
-        }
 
+        if (!questionDTO.isMultipleChoice() && correctAlternatives.size() > 1) {
+            logger.error(
+                    "Mais de uma alternativa correta fornecida ao atualizar questão {} (questão NÃO é de múltipla escolha).");
+            throw new IllegalArgumentException(
+                    "Mais de uma alternativa correta fornecida para questão não múltipla escolha.");
+        }
         // Mapear DTO para entidade
         Question question = questionMapper.toEntity(questionDTO);
 
         // Associar tags
         QuestionServiceHelper.setTags(questionDTO, question, tagRepository);
-
-        // Vincular cada alternativa à questão
-        question.getAlternatives().forEach(alt -> alt.setQuestion(question));
 
         // Salvar questão SEM o answerId (temporariamente null)
         question.setAnswerId(null); // Garantido
@@ -272,15 +271,15 @@ public class QuestionService {
                     return new EntityNotFoundException("Pergunta não encontrada com ID " + id);
                 });
 
-        // 🔥 Validação de segurança — só dono pode atualizar!
+        // Validação de segurança
         if (!question.getUserId().equals(userId)) {
             logger.warn("Usuário {} não tem permissão para atualizar questão {}.", userId, id);
             throw new EntityNotFoundException("Você não tem permissão para atualizar esta pergunta.");
         }
 
+        // Atualizar campos da questão
         question.setMultipleChoice(questionDTO.isMultipleChoice());
         question.setNumberLines(questionDTO.getNumberLines());
-        question.setUserId(questionDTO.getUserId());
         question.setHeader(questionDTO.getHeader());
         question.setHeaderImage(questionDTO.getHeaderImage());
         question.setEnable(questionDTO.isEnable());
@@ -289,69 +288,45 @@ public class QuestionService {
 
         QuestionServiceHelper.setTags(questionDTO, question, tagRepository);
 
-        // Processar alternativas existentes e novas
-        Set<Alternative> updatedAlternatives = new HashSet<>();
-        List<AlternativeDTO> correctAlternatives = questionDTO.getAlternatives().stream()
-                .filter(AlternativeDTO::getIsCorrect)
-                .collect(Collectors.toList());
+        // Limpar alternativas antigas (orphanRemoval cuida da exclusão)
+        question.getAlternatives().clear();
 
-        if (correctAlternatives.isEmpty()) {
+        // Criar novas alternativas e vincular
+        Set<Alternative> novasAlternativas = questionDTO.getAlternatives().stream()
+                .map(altDTO -> Alternative.builder()
+                        .description(altDTO.getDescription())
+                        .imagePath(altDTO.getImagePath())
+                        .explanation(altDTO.getExplanation())
+                        .isCorrect(altDTO.getIsCorrect())
+                        .alternativeOrder(altDTO.getAlternativeOrder())
+                        .build())
+                .collect(Collectors.toSet());
+
+        question.getAlternatives().addAll(novasAlternativas);
+
+        // Validar alternativas corretas
+        List<Alternative> corretas = novasAlternativas.stream()
+                .filter(Alternative::getIsCorrect)
+                .toList();
+
+        if (corretas.isEmpty()) {
             logger.error("Nenhuma alternativa correta fornecida ao atualizar questão {}.", id);
             throw new IllegalArgumentException("Nenhuma alternativa correta fornecida.");
         }
-        if (correctAlternatives.size() > 1) {
-            logger.error("Mais de uma alternativa correta fornecida ao atualizar questão {}.", id);
+
+        if (!question.isMultipleChoice() && corretas.size() > 1) {
+            logger.error("Mais de uma alternativa correta fornecida para questão NÃO múltipla {}.", id);
             throw new IllegalArgumentException("Mais de uma alternativa correta fornecida.");
         }
 
-        for (AlternativeDTO alternativeDTO : questionDTO.getAlternatives()) {
-            if (alternativeDTO.getId() != null) {
-                Alternative existingAlternative = alternativeRepository.findById(alternativeDTO.getId())
-                        .orElseThrow(() -> {
-                            logger.error("Alternative {} não encontrada ao atualizar questão {}.",
-                                    alternativeDTO.getId(), id);
-                            return new IllegalArgumentException("Alternativa não encontrada.");
-                        });
-                existingAlternative.setDescription(alternativeDTO.getDescription());
-                existingAlternative.setExplanation(alternativeDTO.getExplanation());
-                existingAlternative.setImagePath(alternativeDTO.getImagePath());
-                existingAlternative.setIsCorrect(alternativeDTO.getIsCorrect());
-                updatedAlternatives.add(alternativeRepository.save(existingAlternative));
-                logger.info("Alternativa {} atualizada para questão {}.", existingAlternative.getId(), id);
-            } else {
-                Alternative newAlternative = Alternative.builder()
-                        .description(alternativeDTO.getDescription())
-                        .imagePath(alternativeDTO.getImagePath())
-                        .isCorrect(alternativeDTO.getIsCorrect())
-                        .question(question)
-                        .build();
-                Alternative savedAlt = alternativeRepository.save(newAlternative);
-                updatedAlternatives.add(savedAlt);
-                logger.info("Nova alternative {} criada para questão {}.", savedAlt.getId(), id);
-            }
-        }
+        question.setAnswerId(corretas.get(0).getId());
 
-        // Definir answerId se houver alternativa correta
-        Alternative correctAlternativeEntity = updatedAlternatives.stream()
-                .filter(Alternative::getIsCorrect)
-                .findFirst()
-                .orElseThrow(() -> {
-                    logger.error("Nenhuma alternativa correta encontrada após atualizar questão {}.", id);
-                    return new IllegalArgumentException("Nenhuma alternativa correta fornecida.");
-                });
-        question.setAnswerId(correctAlternativeEntity.getId());
-        questionRepository.save(question);
-        logger.info("Id de resposta {} definido para questão {}.", correctAlternativeEntity.getId(), id);
-
+        // Salvar e sincronizar
+        Question updated = questionRepository.save(question);
         questionRepository.flush();
-        entityManager.refresh(question);
+        entityManager.refresh(updated);
 
-        Question updatedQuestion = questionRepository.findById(id)
-                .orElseThrow(() -> {
-                    logger.error("Questão {} não encontrada após atualização.", id);
-                    return new EntityNotFoundException("Pergunta não encontrada com ID " + id);
-                });
-        QuestionDTO resultDTO = questionMapper.toDTO(updatedQuestion);
+        QuestionDTO resultDTO = questionMapper.toDTO(updated);
         logger.info("Questão {} atualizada com sucesso: {}.", id, resultDTO);
         return resultDTO;
     }
@@ -411,7 +386,6 @@ public class QuestionService {
                         .description(alternativeDTO.getDescription())
                         .imagePath(alternativeDTO.getImagePath())
                         .isCorrect(alternativeDTO.getIsCorrect())
-                        .question(question)
                         .build();
                 Alternative savedAlt = alternativeRepository.save(newAlternative);
                 updatedAlternatives.add(savedAlt);

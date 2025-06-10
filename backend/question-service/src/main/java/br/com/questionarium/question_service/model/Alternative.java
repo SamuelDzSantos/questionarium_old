@@ -1,17 +1,7 @@
 package br.com.questionarium.question_service.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
+import lombok.*;
 
 @Entity
 @Table(name = "question_alternative")
@@ -37,12 +27,12 @@ public class Alternative {
     @Column(name = "explanation")
     private String explanation;
 
-    @ManyToOne
-    @JoinColumn(name = "question_id")
-    private Question question;
-
     @Column(name = "alternative_order", nullable = false)
     private Integer alternativeOrder;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "question_id")
+    private Question question;
 
     @Override
     public boolean equals(Object o) {

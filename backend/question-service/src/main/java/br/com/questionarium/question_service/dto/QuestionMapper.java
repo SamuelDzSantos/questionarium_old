@@ -23,10 +23,10 @@ public interface QuestionMapper {
     @Mapping(source = "alternatives", target = "alternatives")
     Question toEntity(QuestionDTO questionDTO);
 
-    @Mapping(target = "question", source = "questionId", qualifiedByName = "mapQuestionIdToQuestion")
+    @Mapping(target = "alternativeOrder", source = "alternativeOrder")
     Alternative toEntity(AlternativeDTO alternativeDTO);
 
-    @Mapping(target = "questionId", source = "question.id")
+    @Mapping(target = "questionId", ignore = true)
     AlternativeDTO toDTO(Alternative alternative);
 
     // Custom mapping methods
