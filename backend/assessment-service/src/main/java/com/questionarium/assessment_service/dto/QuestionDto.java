@@ -1,15 +1,15 @@
 package com.questionarium.assessment_service.dto;
 
 import java.util.List;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class QuestionDTO {
-    private Long id;
+
+    private Long question; // id da questão
     private Boolean multipleChoice;
     private Integer numberLines;
     private String educationLevel;
@@ -18,9 +18,9 @@ public class QuestionDTO {
     private Long answerId;
     private Boolean enable;
     private String accessLevel;
-    private List<String> tags;
 
-    // Campos exclusivos de snapshot
+    private List<String> tags;
     private List<AlternativeDTO> alternatives;
+
     private Double weight;
 }

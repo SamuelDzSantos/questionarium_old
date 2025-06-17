@@ -6,15 +6,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@Builder
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class AlternativeDTO {
     private Long id;
     private String description;
     private String imagePath;
     private Boolean isCorrect;
     private String explanation;
-    private Long questionId;
     private Integer alternativeOrder;
 }

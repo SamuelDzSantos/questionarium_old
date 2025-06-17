@@ -4,11 +4,11 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.questionarium.assessment_service.exception.BusinessException;
 import com.questionarium.assessment_service.model.AssessmentHeader;
 import com.questionarium.assessment_service.repository.AssessmentHeaderRepository;
+import com.questionarium.assessment_service.security.JwtUtils;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -21,10 +21,11 @@ import lombok.extern.slf4j.Slf4j;
 public class AssessmentHeaderService {
 
     private final AssessmentHeaderRepository assessmentHeaderRepository;
+    private final JwtUtils jwtUtils;   // injete aqui
 
     /** Cria um novo header, atribuindo o userId do token */
     public AssessmentHeader createHeader(AssessmentHeader header) {
-        Long currentUserId = getCurrentUserId();
+        Long currentUserId = jwtUtils.getCurrentUserId();   // use o JwtUtils
         header.setUserId(currentUserId);
         log.info("Criando novo AssessmentHeader para usuário {}", currentUserId);
         return assessmentHeaderRepository.save(header);
@@ -107,14 +108,11 @@ public class AssessmentHeaderService {
 
     /** Extrai o ID do usuário do JWT */
     private Long getCurrentUserId() {
-        return Long.valueOf(SecurityContextHolder.getContext()
-                .getAuthentication()
-                .getName()); // ajusta conforme seu token contém o userId como subject/name
+        return jwtUtils.getCurrentUserId();
     }
 
     /** Verifica se o usuário atual tem ROLE_ADMIN */
     private boolean isAdmin() {
-        return SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+        return jwtUtils.isAdmin();
     }
 }

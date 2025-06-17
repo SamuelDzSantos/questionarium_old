@@ -1,6 +1,7 @@
-package br.com.questionarium.question_service.dto;
+package br.com.questionarium.dtos;
 
 import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AnswerKeyRequestDTO {
-    private List<Long> questionIds;
-    private Long userId;
+public class RpcAnswerKeyRequestDTO {
+        private List<Long> questionIds;
+        private Long userId;
 }

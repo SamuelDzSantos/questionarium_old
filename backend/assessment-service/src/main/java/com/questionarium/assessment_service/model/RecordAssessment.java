@@ -1,6 +1,7 @@
 package com.questionarium.assessment_service.model;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -47,7 +48,7 @@ public class RecordAssessment {
     /** “Foto” completa de cada questão */
     @OneToMany(mappedBy = "recordAssessment", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @OrderColumn(name = "position")
-    private List<QuestionSnapshot> questionSnapshots;
+    private List<QuestionSnapshot> questionSnapshots = new ArrayList<>();
 
     /** Soma dos weights das questões */
     @NotNull

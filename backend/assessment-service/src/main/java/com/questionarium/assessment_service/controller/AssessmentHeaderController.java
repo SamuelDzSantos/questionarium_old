@@ -2,6 +2,7 @@ package com.questionarium.assessment_service.controller;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,7 +14,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
-@RequestMapping("/header")
+@RequestMapping("/assessment-headers")
 @RequiredArgsConstructor
 @Slf4j
 public class AssessmentHeaderController {
@@ -25,16 +26,18 @@ public class AssessmentHeaderController {
     @PostMapping
     public ResponseEntity<AssessmentHeader> createHeader(@RequestBody AssessmentHeader header) {
         Long userId = jwtUtils.getCurrentUserId();
-        log.info("POST /header – criando AssessmentHeader para userId={}", userId);
+        log.info("POST /assessment-headers – criando AssessmentHeader para userId={}", userId);
         header.setUserId(userId);
-        AssessmentHeader createdHeader = assessmentHeaderService.createHeader(header);
-        return ResponseEntity.ok(createdHeader);
+        AssessmentHeader created = assessmentHeaderService.createHeader(header);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(created);
     }
 
     /** Busca header por ID */
     @GetMapping("/{id}")
     public ResponseEntity<AssessmentHeader> getHeaderById(@PathVariable Long id) {
-        log.info("GET /header/{} – buscando header", id);
+        log.info("GET /assessment-headers/{} – buscando header", id);
         AssessmentHeader header = assessmentHeaderService.getHeaderById(id);
         return ResponseEntity.ok(header);
     }
@@ -43,7 +46,7 @@ public class AssessmentHeaderController {
     @GetMapping("/user")
     public ResponseEntity<List<AssessmentHeader>> getHeadersByUser() {
         Long userId = jwtUtils.getCurrentUserId();
-        log.info("GET /header/user – buscando headers para userId={}", userId);
+        log.info("GET /assessment-headers/user – buscando headers para userId={}", userId);
         List<AssessmentHeader> headers = assessmentHeaderService.getHeadersByUser();
         return ResponseEntity.ok(headers);
     }
@@ -51,7 +54,7 @@ public class AssessmentHeaderController {
     /** Busca todos os headers (admin) */
     @GetMapping
     public ResponseEntity<List<AssessmentHeader>> getAllHeaders() {
-        log.info("GET /header – buscando todos os headers (admin)");
+        log.info("GET /assessment-headers – buscando todos os headers (admin)");
         List<AssessmentHeader> headers = assessmentHeaderService.getAllHeaders();
         return ResponseEntity.ok(headers);
     }
@@ -61,7 +64,7 @@ public class AssessmentHeaderController {
     public ResponseEntity<AssessmentHeader> updateHeader(
             @PathVariable Long id,
             @RequestBody AssessmentHeader updatedHeader) {
-        log.info("PUT /header/{} – atualizando header", id);
+        log.info("PUT /assessment-headers/{} – atualizando header", id);
         AssessmentHeader result = assessmentHeaderService.updateHeader(id, updatedHeader);
         return ResponseEntity.ok(result);
     }
@@ -69,7 +72,7 @@ public class AssessmentHeaderController {
     /** Deleta um header */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteHeader(@PathVariable Long id) {
-        log.info("DELETE /header/{} – deletando header", id);
+        log.info("DELETE /assessment-headers/{} – deletando header", id);
         assessmentHeaderService.deleteHeader(id);
         return ResponseEntity.noContent().build();
     }

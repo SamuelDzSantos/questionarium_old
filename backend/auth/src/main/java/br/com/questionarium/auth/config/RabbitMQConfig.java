@@ -22,7 +22,7 @@ public class RabbitMQConfig {
         return new Queue(AUTH_QUEUE, true);
     }
 
-    // 2) Declara um exchange tipo Topic chamado "user-exchange"
+    // 2) Declara um exchan0ge tipo Topic chamado "user-exchange"
     @Bean
     public TopicExchange userExchange() {
         return new TopicExchange(USER_EXCHANGE);

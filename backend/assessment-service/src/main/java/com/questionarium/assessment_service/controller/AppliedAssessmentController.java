@@ -19,7 +19,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
-@RequestMapping("/applied-assessment")
+@RequestMapping("/applied-assessments")
 @RequiredArgsConstructor
 @Slf4j
 public class AppliedAssessmentController {
@@ -34,7 +34,7 @@ public class AppliedAssessmentController {
             @RequestBody @Valid ApplyAssessmentRequestDTO dto) {
 
         Long userId = jwtUtils.getCurrentUserId();
-        log.info("POST /applied-assessment – userId={} aplicando modelo {}", userId, dto.getModelId());
+        log.info("POST /applied-assessments – userId={} aplicando modelo {}", userId, dto.getModelId());
 
         AppliedAssessment applied = service.applyAssessment(
                 dto.getModelId(),
@@ -51,7 +51,7 @@ public class AppliedAssessmentController {
     /** 2) Busca uma aplicação por ID (200 OK ou 404) */
     @GetMapping("/{id}")
     public ResponseEntity<AppliedAssessmentDTO> getOne(@PathVariable Long id) {
-        log.info("GET /applied-assessment/{} – buscando aplicação", id);
+        log.info("GET /applied-assessments/{} – buscando aplicação", id);
         AppliedAssessment applied = service.findById(id);
         return ResponseEntity.ok(mapper.toDto(applied));
     }
@@ -59,7 +59,7 @@ public class AppliedAssessmentController {
     /** 3) Lista todas as aplicações (admin vê tudo, user só as ativas) */
     @GetMapping
     public ResponseEntity<List<AppliedAssessmentDTO>> listAll() {
-        log.info("GET /applied-assessment – listando aplicações");
+        log.info("GET /applied-assessments – listando aplicações");
         List<AppliedAssessmentDTO> list = service.findAllActive().stream()
                 .map(mapper::toDto)
                 .collect(Collectors.toList());
@@ -70,7 +70,7 @@ public class AppliedAssessmentController {
     @GetMapping("/user")
     public ResponseEntity<List<AppliedAssessmentDTO>> listByUser() {
         Long userId = jwtUtils.getCurrentUserId();
-        log.info("GET /applied-assessment/user – listando aplicações de userId={}", userId);
+        log.info("GET /applied-assessments/user – listando aplicações de userId={}", userId);
         List<AppliedAssessmentDTO> list = service.findByUser(userId).stream()
                 .map(mapper::toDto)
                 .collect(Collectors.toList());
@@ -80,7 +80,7 @@ public class AppliedAssessmentController {
     /** 5) Inativação (soft delete) de uma aplicação (204 No Content) */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        log.info("DELETE /applied-assessment/{} – soft-delete", id);
+        log.info("DELETE /applied-assessments/{} – soft-delete", id);
         service.softDelete(id);
         return ResponseEntity.noContent().build();
     }

@@ -35,8 +35,8 @@ public class RecordAssessmentController {
             @RequestBody @Valid CreateRecordAssessmentRequestDTO dto) {
 
         Long userId = jwtUtils.getCurrentUserId();
-        log.info("POST /record-assessments – userId={} criando registros para AppliedAssessment {}",
-                userId, dto.getAppliedAssessmentId());
+        log.info("POST /record-assessments – userId={} criando registros para appliedAssessmentId={}", userId,
+                dto.getAppliedAssessmentId());
 
         List<RecordAssessmentDTO> out = mapper.toDto(
                 service.createFromAppliedAssessment(

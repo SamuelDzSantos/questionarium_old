@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.questionarium.assessment_service.snapshot.QuestionSnapshot;
 
@@ -31,8 +30,7 @@ public class AppliedAssessment {
     private String description;
 
     // QUESTÕES SNAPSHOT
-    @ElementCollection
-    @CollectionTable(name = "applied_assessment_question_snapshots", joinColumns = @JoinColumn(name = "applied_assessment_id"))
+    @OneToMany(mappedBy = "appliedAssessment", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @OrderColumn(name = "position")
     private List<QuestionSnapshot> questionSnapshots = new ArrayList<>();
 

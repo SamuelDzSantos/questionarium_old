@@ -7,74 +7,76 @@ import lombok.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.questionarium.assessment_service.model.AppliedAssessment;
+import com.questionarium.assessment_service.model.RecordAssessment;
+
 @Entity
 @Table(name = "question_snapshots")
-@EqualsAndHashCode(exclude = {"alternatives", "recordAssessment"})
-@ToString(exclude = {"alternatives"})
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class QuestionSnapshot {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "original_question_id")
-    @NotNull
-    private Long originalQuestionId; // ID da questão original
+    // relacionamento com a AppliedAssessment
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "applied_assessment_id")
+    private AppliedAssessment appliedAssessment;
 
-    @Column(name = "multiple_choice")
+    // **novo**: relacionamento com RecordAssessment
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "record_assessment_id")
+    private RecordAssessment recordAssessment;
+
+    @Column(name = "question", nullable = false)
+    private Long question;
+
+    @Column(name = "multiple_choice", nullable = false)
     @NotNull
     private Boolean multipleChoice;
 
-    @Column(name = "number_lines")
+    @Column(name = "number_lines", nullable = false)
     @NotNull
     private Integer numberLines;
 
-    @Column(name = "education_level")
+    @Column(name = "education_level", nullable = false)
     @NotNull
     private String educationLevel;
 
-    @Column(name = "person_id")
-    @NotNull
-    private Long personId;
-
-    @Column(name = "header", columnDefinition = "TEXT")
+    @Column(name = "header", columnDefinition = "TEXT", nullable = false)
     @NotNull
     private String header;
 
     @Column(name = "header_image")
     private String headerImage;
 
-    @Column(name = "answer_id")
+    @Column(name = "answer_id", nullable = false)
     @NotNull
     private Long answerId;
 
-    @Column(name = "enable")
+    @Column(name = "enable", nullable = false)
     @NotNull
     private Boolean enable;
 
-    @Column(name = "access_level")
+    @Column(name = "access_level", nullable = false)
     @NotNull
     private String accessLevel;
 
-    @Builder.Default
     @ElementCollection
-    @CollectionTable(name = "question_snapshot_tags", joinColumns = @JoinColumn(name = "question_snapshot_id"))
+    @CollectionTable(name = "snapshot_tags", joinColumns = @JoinColumn(name = "parent_snapshot_id"))
     @Column(name = "tag")
+    @Builder.Default
     private List<String> tags = new ArrayList<>();
 
+    @ElementCollection
+    @CollectionTable(name = "snapshot_alternatives", joinColumns = @JoinColumn(name = "parent_snapshot_id"))
     @Builder.Default
-    @OneToMany(mappedBy = "questionSnapshot", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<AlternativeSnapshot> alternatives = new ArrayList<>();
 
-    @Column(name = "weight")
+    @Column(name = "weight", nullable = false)
     @NotNull
     private Double weight;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "record_assessment_id")
-    private com.questionarium.assessment_service.model.RecordAssessment recordAssessment; // FK para RecordAssessment
 }

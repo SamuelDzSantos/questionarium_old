@@ -38,7 +38,7 @@ public class JwtUtils {
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .subject(mongoUserId)
                 .claim("role", role.name())
-                .claim("userId", userIdPostgres) // ✅ nome correto do claim!
+                .claim("userId", userIdPostgres)
                 .issuer("questionarium-auth")
                 .issuedAt(now.toInstant())
                 .expiresAt(exp.toInstant())

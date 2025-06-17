@@ -1,13 +1,13 @@
 package br.com.questionarium.question_service.service;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.mapstruct.factory.Mappers;
+import jakarta.persistence.EntityNotFoundException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.jpa.domain.Specification;
@@ -17,19 +17,13 @@ import org.springframework.transaction.annotation.Transactional;
 import br.com.questionarium.question_service.dto.AlternativeDTO;
 import br.com.questionarium.question_service.dto.AnswerKeyDTO;
 import br.com.questionarium.question_service.dto.QuestionDTO;
-import br.com.questionarium.question_service.dto.QuestionMapper;
+import br.com.questionarium.question_service.mapper.QuestionMapper;
 import br.com.questionarium.question_service.model.Alternative;
 import br.com.questionarium.question_service.model.Question;
-import br.com.questionarium.question_service.model.Tag;
 import br.com.questionarium.question_service.repository.AlternativeRepository;
 import br.com.questionarium.question_service.repository.QuestionRepository;
-import br.com.questionarium.question_service.repository.TagRepository;
 import br.com.questionarium.question_service.types.QuestionAccessLevel;
 import br.com.questionarium.question_service.types.QuestionEducationLevel;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityNotFoundException;
-import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.criteria.Join;
 
 @Service
 public class QuestionService {
@@ -37,89 +31,76 @@ public class QuestionService {
     private static final Logger logger = LoggerFactory.getLogger(QuestionService.class);
 
     private final QuestionRepository questionRepository;
-    private final TagRepository tagRepository;
     private final AlternativeRepository alternativeRepository;
-    private QuestionMapper questionMapper = Mappers.getMapper(QuestionMapper.class);
+    private final QuestionMapper questionMapper;
 
     public QuestionService(QuestionRepository questionRepository,
-            TagRepository tagRepository,
             AlternativeRepository alternativeRepository,
             QuestionMapper questionMapper) {
         this.questionRepository = questionRepository;
-        this.tagRepository = tagRepository;
         this.alternativeRepository = alternativeRepository;
         this.questionMapper = questionMapper;
     }
-
-    @PersistenceContext
-    private EntityManager entityManager;
 
     @Transactional
     public QuestionDTO createQuestion(QuestionDTO questionDTO) {
         logger.info("Criando nova questão para usuário {}", questionDTO.getUserId());
 
-        // Validar alternativas corretas
-        List<AlternativeDTO> correctAlternatives = questionDTO.getAlternatives().stream()
+        var correctAlternatives = questionDTO.getAlternatives().stream()
                 .filter(AlternativeDTO::getIsCorrect)
-                .toList();
+                .collect(Collectors.toList());
         if (correctAlternatives.isEmpty()) {
-            logger.error("Nenhuma alternativa correta fornecida ao atualizar questão {}.");
             throw new IllegalArgumentException("Nenhuma alternativa correta fornecida.");
         }
-
-        if (!questionDTO.isMultipleChoice() && correctAlternatives.size() > 1) {
-            logger.error(
-                    "Mais de uma alternativa correta fornecida ao atualizar questão {} (questão NÃO é de múltipla escolha).");
+        if (!Boolean.TRUE.equals(questionDTO.getMultipleChoice()) && correctAlternatives.size() > 1) {
             throw new IllegalArgumentException(
                     "Mais de uma alternativa correta fornecida para questão não múltipla escolha.");
         }
+
         // Mapear DTO para entidade
         Question question = questionMapper.toEntity(questionDTO);
 
-        // Associar tags
-        QuestionServiceHelper.setTags(questionDTO, question, tagRepository);
+        // Preencher alternativas
+        Set<Alternative> alternatives = questionDTO.getAlternatives().stream()
+                .map(dto -> Alternative.builder()
+                        .description(dto.getDescription())
+                        .imagePath(dto.getImagePath())
+                        .explanation(dto.getExplanation())
+                        .isCorrect(dto.getIsCorrect())
+                        .alternativeOrder(dto.getAlternativeOrder())
+                        .question(question)
+                        .build())
+                .collect(Collectors.toSet());
+        question.setAlternatives(alternatives);
 
-        // Salvar questão SEM o answerId (temporariamente null)
-        question.setAnswerId(null); // Garantido
-        Question savedQuestion = questionRepository.save(question);
+        // Salvar para gerar IDs
+        Question saved = questionRepository.save(question);
 
-        // AGORA, obter o ID correto
-        Alternative correctAlternative = savedQuestion.getAlternatives().stream()
+        // Determinar gabarito
+        Alternative correct = saved.getAlternatives().stream()
                 .filter(Alternative::getIsCorrect)
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Nenhuma alternativa correta fornecida."));
+                .orElseThrow(() -> new IllegalArgumentException("Nenhuma alternativa correta encontrada."));
+        saved.setAnswerId(correct.getId());
 
-        // Atualizar answerId e re-salvar
-        savedQuestion.setAnswerId(correctAlternative.getId());
-        savedQuestion = questionRepository.save(savedQuestion);
-
-        QuestionDTO resultDTO = questionMapper.toDTO(savedQuestion);
-        logger.info("Questão criada com sucesso: {}", resultDTO);
-        return resultDTO;
+        // Re-salvar com gabarito
+        Question updated = questionRepository.save(saved);
+        return questionMapper.toDto(updated);
     }
 
     public List<QuestionDTO> getAllQuestions() {
-        logger.info("Buscando todas as questões");
-        List<Question> questions = questionRepository.findAll();
-        List<QuestionDTO> result = questions.stream()
-                .map(questionMapper::toDTO)
+        return questionRepository.findAll().stream()
+                .map(questionMapper::toDto)
                 .collect(Collectors.toList());
-        logger.info("Foram encontradas {} questões", result.size());
-        return result;
     }
 
-    public List<QuestionDTO> getFilteredQuestions(
-            Long userId,
+    public List<QuestionDTO> getFilteredQuestions(Long userId,
             Boolean multipleChoice,
             List<Long> tagIds,
             Integer accessLevel,
             Integer educationLevel,
             String header) {
-        logger.info(
-                "Buscando questões filtradas: userId={}, multipleChoice={}, tagIds={}, accessLevel={}, educationLevel={}, header={}",
-                userId, multipleChoice, tagIds, accessLevel, educationLevel, header);
-
-        Specification<Question> spec = Specification.where((root, query, cb) -> cb.equal(root.get("enable"), true));
+        Specification<Question> spec = Specification.where((root, query, cb) -> cb.isTrue(root.get("enable")));
 
         if (userId != null) {
             spec = spec.and((root, query, cb) -> cb.equal(root.get("userId"), userId));
@@ -133,41 +114,31 @@ public class QuestionService {
         }
         if (tagIds != null && !tagIds.isEmpty()) {
             spec = spec.and((root, query, cb) -> {
-                Join<Question, Tag> tagJoin = root.join("tags");
-                return tagJoin.get("id").in(tagIds);
+                var join = root.join("tags");
+                return join.get("id").in(tagIds);
             });
         }
         if (accessLevel != null) {
-            QuestionAccessLevel accessLevelEnum = QuestionAccessLevel.values()[accessLevel];
-            spec = spec.and((root, query, cb) -> cb.equal(root.get("accessLevel"), accessLevelEnum));
+            QuestionAccessLevel acl = QuestionAccessLevel.values()[accessLevel];
+            spec = spec.and((root, query, cb) -> cb.equal(root.get("accessLevel"), acl));
         }
         if (educationLevel != null) {
-            QuestionEducationLevel educationLevelEnum = QuestionEducationLevel.values()[educationLevel];
-            spec = spec.and((root, query, cb) -> cb.equal(root.get("educationLevel"), educationLevelEnum));
+            QuestionEducationLevel ed = QuestionEducationLevel.values()[educationLevel];
+            spec = spec.and((root, query, cb) -> cb.equal(root.get("educationLevel"), ed));
         }
 
-        List<Question> questions = questionRepository.findAll(spec);
-        List<QuestionDTO> result = questions.stream()
-                .map(questionMapper::toDTO)
+        return questionRepository.findAll(spec).stream()
+                .map(questionMapper::toDto)
                 .collect(Collectors.toList());
-
-        logger.info("Foram encontradas {} questões após filtragem.", result.size());
-        return result;
     }
 
-    public List<QuestionDTO> getFilteredQuestionsAsAdmin(
-            Long userId,
+    public List<QuestionDTO> getFilteredQuestionsAsAdmin(Long userId,
             Boolean multipleChoice,
             List<Long> tagIds,
             Integer accessLevel,
             Integer educationLevel,
             String header) {
-
-        logger.info(
-                "Buscando questões filtradas (ADMIN): userId={}, multipleChoice={}, tagIds={}, accessLevel={}, educationLevel={}, header={}",
-                userId, multipleChoice, tagIds, accessLevel, educationLevel, header);
-
-        Specification<Question> spec = Specification.where(null); // ADMIN → não filtra enable
+        Specification<Question> spec = Specification.where(null);
 
         if (userId != null) {
             spec = spec.and((root, query, cb) -> cb.equal(root.get("userId"), userId));
@@ -181,296 +152,122 @@ public class QuestionService {
         }
         if (tagIds != null && !tagIds.isEmpty()) {
             spec = spec.and((root, query, cb) -> {
-                Join<Question, Tag> tagJoin = root.join("tags");
-                return tagJoin.get("id").in(tagIds);
+                var join = root.join("tags");
+                return join.get("id").in(tagIds);
             });
         }
         if (accessLevel != null) {
-            QuestionAccessLevel accessLevelEnum = QuestionAccessLevel.values()[accessLevel];
-            spec = spec.and((root, query, cb) -> cb.equal(root.get("accessLevel"), accessLevelEnum));
+            QuestionAccessLevel acl = QuestionAccessLevel.values()[accessLevel];
+            spec = spec.and((root, query, cb) -> cb.equal(root.get("accessLevel"), acl));
         }
         if (educationLevel != null) {
-            QuestionEducationLevel educationLevelEnum = QuestionEducationLevel.values()[educationLevel];
-            spec = spec.and((root, query, cb) -> cb.equal(root.get("educationLevel"), educationLevelEnum));
+            QuestionEducationLevel ed = QuestionEducationLevel.values()[educationLevel];
+            spec = spec.and((root, query, cb) -> cb.equal(root.get("educationLevel"), ed));
         }
 
-        List<Question> questions = questionRepository.findAll(spec);
-        List<QuestionDTO> result = questions.stream()
-                .map(questionMapper::toDTO)
+        return questionRepository.findAll(spec).stream()
+                .map(questionMapper::toDto)
                 .collect(Collectors.toList());
-
-        logger.info("Foram encontradas {} questões após filtragem (ADMIN).", result.size());
-        return result;
     }
 
     public Optional<QuestionDTO> getQuestionById(Long id) {
-        logger.info("Buscando questão por ID {}.", id);
-        Optional<QuestionDTO> result = questionRepository.findById(id)
-                .map(questionMapper::toDTO);
-        if (result.isPresent()) {
-            logger.info("Questão {} encontrada.", id);
-        } else {
-            logger.warn("Questão {} não encontrada.", id);
-        }
-        return result;
+        return questionRepository.findById(id)
+                .map(questionMapper::toDto);
     }
 
     public Optional<QuestionDTO> getQuestionByIdForUser(Long id, Long userId) {
-        logger.info("Buscando questão por ID {} para userId={}.", id, userId);
-
         return questionRepository.findById(id)
-                .filter(question -> question.isEnable())
-                .filter(question -> question.getUserId().equals(userId)
-                        || QuestionAccessLevel.PUBLIC.equals(question.getAccessLevel()))
-                .map(questionMapper::toDTO)
-                .map(dto -> {
-                    logger.info("Questão {} acessível para userId={}, retornando.", id, userId);
-                    return dto;
-                })
-                .or(() -> {
-                    logger.warn("Questão {} não acessível para userId={}. Não pertence ao usuário ou não é PÚBLICA.",
-                            id,
-                            userId);
-                    return Optional.empty();
-                });
+                .filter(q -> q.isEnable())
+                .filter(q -> q.getUserId().equals(userId)
+                        || QuestionAccessLevel.PUBLIC.equals(q.getAccessLevel()))
+                .map(questionMapper::toDto);
     }
 
     @Transactional
-    public List<AnswerKeyDTO> getAnswerKeys(List<Long> questionsIds, Long userId) {
-        logger.info("Buscando gabaritos para questões {} para userId={}.", questionsIds, userId);
-
-        List<AnswerKeyDTO> pairs = new ArrayList<>();
-
-        for (Long id : questionsIds) {
-            questionRepository.findById(id).ifPresentOrElse(question -> {
-                boolean isOwner = question.getUserId().equals(userId);
-                boolean isPublic = QuestionAccessLevel.PUBLIC.equals(question.getAccessLevel());
-
-                if (isOwner || isPublic) {
-                    pairs.add(new AnswerKeyDTO(question.getId(), question.getAnswerId()));
-                    logger.info("Gabarito adicionada para questão {} (userId={}, PUBLIC={})", id, isOwner, isPublic);
-                } else {
-                    logger.warn("Usuário {} não tem permissão para acessar gabarito da questão {}.", userId, id);
+    public List<AnswerKeyDTO> getAnswerKeys(List<Long> questionIds, Long userId) {
+        List<AnswerKeyDTO> keys = new ArrayList<>();
+        for (Long id : questionIds) {
+            questionRepository.findById(id).ifPresent(q -> {
+                if (q.getUserId().equals(userId) ||
+                        QuestionAccessLevel.PUBLIC.equals(q.getAccessLevel())) {
+                    keys.add(new AnswerKeyDTO(q.getId(), q.getAnswerId()));
                 }
-            }, () -> {
-                logger.warn("Questão {} não encontrada ao buscar gabarito.", id);
             });
         }
-
-        logger.info("Gabarito retornado: {}.", pairs);
-        return pairs;
+        return keys;
     }
 
     @Transactional
     public QuestionDTO updateQuestion(Long id, QuestionDTO questionDTO, Long userId) {
-        logger.info("Atualizando questão {} com dados {} para userId={}.", id, questionDTO, userId);
-
-        Question question = questionRepository.findById(id)
-                .orElseThrow(() -> {
-                    logger.error("Questão {} não encontrada para atualizar.", id);
-                    return new EntityNotFoundException("Pergunta não encontrada com ID " + id);
-                });
-
-        // Validação de segurança
-        if (!question.getUserId().equals(userId)) {
-            logger.warn("Usuário {} não tem permissão para atualizar questão {}.", userId, id);
-            throw new EntityNotFoundException("Você não tem permissão para atualizar esta pergunta.");
+        Question q = questionRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Questão não encontrada: " + id));
+        if (!q.getUserId().equals(userId)) {
+            throw new EntityNotFoundException("Permissão negada.");
         }
 
-        // Atualizar campos da questão
-        question.setMultipleChoice(questionDTO.isMultipleChoice());
-        question.setNumberLines(questionDTO.getNumberLines());
-        question.setHeader(questionDTO.getHeader());
-        question.setHeaderImage(questionDTO.getHeaderImage());
-        question.setEnable(questionDTO.isEnable());
-        question.setAccessLevel(questionDTO.getAccessLevel());
-        question.setEducationLevel(questionDTO.getEducationLevel());
+        q.setMultipleChoice(questionDTO.getMultipleChoice());
+        q.setNumberLines(questionDTO.getNumberLines());
+        q.setHeader(questionDTO.getHeader());
+        q.setHeaderImage(questionDTO.getHeaderImage());
+        q.setEnable(questionDTO.getEnable());
+        q.setAccessLevel(questionDTO.getAccessLevel());
+        q.setEducationLevel(questionDTO.getEducationLevel());
 
-        QuestionServiceHelper.setTags(questionDTO, question, tagRepository);
-
-        // Limpar alternativas antigas (orphanRemoval cuida da exclusão)
-        question.getAlternatives().clear();
-
-        // Criar novas alternativas e vincular
-        Set<Alternative> novasAlternativas = questionDTO.getAlternatives().stream()
-                .map(altDTO -> Alternative.builder()
-                        .description(altDTO.getDescription())
-                        .imagePath(altDTO.getImagePath())
-                        .explanation(altDTO.getExplanation())
-                        .isCorrect(altDTO.getIsCorrect())
-                        .alternativeOrder(altDTO.getAlternativeOrder())
+        // Atualiza alternativas
+        q.getAlternatives().clear();
+        Set<Alternative> novos = questionDTO.getAlternatives().stream()
+                .map(dto -> Alternative.builder()
+                        .description(dto.getDescription())
+                        .imagePath(dto.getImagePath())
+                        .explanation(dto.getExplanation())
+                        .isCorrect(dto.getIsCorrect())
+                        .alternativeOrder(dto.getAlternativeOrder())
+                        .question(q)
                         .build())
                 .collect(Collectors.toSet());
+        q.getAlternatives().addAll(novos);
 
-        question.getAlternatives().addAll(novasAlternativas);
-
-        // Validar alternativas corretas
-        List<Alternative> corretas = novasAlternativas.stream()
-                .filter(Alternative::getIsCorrect)
-                .toList();
-
-        if (corretas.isEmpty()) {
-            logger.error("Nenhuma alternativa correta fornecida ao atualizar questão {}.", id);
-            throw new IllegalArgumentException("Nenhuma alternativa correta fornecida.");
-        }
-
-        if (!question.isMultipleChoice() && corretas.size() > 1) {
-            logger.error("Mais de uma alternativa correta fornecida para questão NÃO múltipla {}.", id);
-            throw new IllegalArgumentException("Mais de uma alternativa correta fornecida.");
-        }
-
-        question.setAnswerId(corretas.get(0).getId());
-
-        // Salvar e sincronizar
-        Question updated = questionRepository.save(question);
-        questionRepository.flush();
-        entityManager.refresh(updated);
-
-        QuestionDTO resultDTO = questionMapper.toDTO(updated);
-        logger.info("Questão {} atualizada com sucesso: {}.", id, resultDTO);
-        return resultDTO;
-    }
-
-    @Transactional
-    public QuestionDTO updateQuestionAsAdmin(Long id, QuestionDTO questionDTO) {
-        logger.info("Atualizando questão {} como ADMIN.", id);
-
-        Question question = questionRepository.findById(id)
-                .orElseThrow(() -> {
-                    logger.error("Questão {} não encontrada para atualizar (ADMIN).", id);
-                    return new EntityNotFoundException("Questao não encontrada com ID." + id);
-                });
-
-        question.setMultipleChoice(questionDTO.isMultipleChoice());
-        question.setNumberLines(questionDTO.getNumberLines());
-        question.setUserId(questionDTO.getUserId());
-        question.setHeader(questionDTO.getHeader());
-        question.setHeaderImage(questionDTO.getHeaderImage());
-        question.setEnable(questionDTO.isEnable());
-        question.setAccessLevel(questionDTO.getAccessLevel());
-        question.setEducationLevel(questionDTO.getEducationLevel());
-
-        QuestionServiceHelper.setTags(questionDTO, question, tagRepository);
-
-        // Processar alternativas existentes e novas
-        Set<Alternative> updatedAlternatives = new HashSet<>();
-        List<AlternativeDTO> correctAlternatives = questionDTO.getAlternatives().stream()
-                .filter(AlternativeDTO::getIsCorrect)
-                .collect(Collectors.toList());
-
-        if (correctAlternatives.isEmpty()) {
-            logger.error("Nenhuma alternativa correta fornecida ao atualizar questão {}.", id);
-            throw new IllegalArgumentException("Nenhuma alternativa correta fornecida.");
-        }
-        if (correctAlternatives.size() > 1) {
-            logger.error("Mais de uma alternativa correta fornecida ao atualizar questão {}.", id);
-            throw new IllegalArgumentException("Mais de uma alternativa correta fornecida.");
-        }
-
-        for (AlternativeDTO alternativeDTO : questionDTO.getAlternatives()) {
-            if (alternativeDTO.getId() != null) {
-                Alternative existingAlternative = alternativeRepository.findById(alternativeDTO.getId())
-                        .orElseThrow(() -> {
-                            logger.error("Alternative {} não encontrada ao atualizar questão {}.",
-                                    alternativeDTO.getId(), id);
-                            return new IllegalArgumentException("Alternativa não encontrada.");
-                        });
-                existingAlternative.setDescription(alternativeDTO.getDescription());
-                existingAlternative.setExplanation(alternativeDTO.getExplanation());
-                existingAlternative.setImagePath(alternativeDTO.getImagePath());
-                existingAlternative.setIsCorrect(alternativeDTO.getIsCorrect());
-                updatedAlternatives.add(alternativeRepository.save(existingAlternative));
-                logger.info("Alternativa {} atualizada para questão {}.", existingAlternative.getId(), id);
-            } else {
-                Alternative newAlternative = Alternative.builder()
-                        .description(alternativeDTO.getDescription())
-                        .imagePath(alternativeDTO.getImagePath())
-                        .isCorrect(alternativeDTO.getIsCorrect())
-                        .build();
-                Alternative savedAlt = alternativeRepository.save(newAlternative);
-                updatedAlternatives.add(savedAlt);
-                logger.info("Nova alternative {} criada para questão {}.", savedAlt.getId(), id);
-            }
-        }
-
-        // Definir answerId se houver alternativa correta
-        Alternative correctAlternativeEntity = updatedAlternatives.stream()
+        Alternative corret = novos.stream()
                 .filter(Alternative::getIsCorrect)
                 .findFirst()
-                .orElseThrow(() -> {
-                    logger.error("Nenhuma alternativa correta encontrada após atualizar questão {}.", id);
-                    return new IllegalArgumentException("Nenhuma alternativa correta fornecida.");
-                });
-        question.setAnswerId(correctAlternativeEntity.getId());
-        questionRepository.save(question);
-        logger.info("Id de resposta {} definido para questão {}.", correctAlternativeEntity.getId(), id);
+                .orElseThrow(() -> new IllegalArgumentException("Nenhuma alternativa correta fornecida."));
+        q.setAnswerId(corret.getId());
 
-        questionRepository.flush();
-        entityManager.refresh(question);
-
-        Question updatedQuestion = questionRepository.findById(id)
-                .orElseThrow(() -> {
-                    logger.error("Questão {} não encontrada após atualização.", id);
-                    return new EntityNotFoundException("Questão não encontrada com ID." + id);
-                });
-        QuestionDTO resultDTO = questionMapper.toDTO(updatedQuestion);
-        logger.info("Questão {} atualizada com sucesso: {}", id, resultDTO);
-
-        return resultDTO;
-
+        Question updated = questionRepository.save(q);
+        return questionMapper.toDto(updated);
     }
 
     @Transactional
     public void deleteQuestion(Long id, Long userId) {
-        logger.info("Tentando deletar (soft delete) questão {} para userId={}", id, userId);
-
-        Question question = questionRepository.findById(id)
-                .orElseThrow(() -> {
-                    logger.error("Questão {} não encontrada para exclusão", id);
-                    throw new EntityNotFoundException("Questão não encontrada com o ID " + id);
-                });
-
-        if (!question.getUserId().equals(userId)) {
-            logger.warn("Usuário {} não tem permissão para deletar a questão {}", userId, id);
-            throw new EntityNotFoundException("Você não tem permissão para deletar esta questão.");
+        Question q = questionRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Questão não encontrada: " + id));
+        if (!q.getUserId().equals(userId)) {
+            throw new EntityNotFoundException("Permissão negada.");
         }
-
-        question.setEnable(false);
-        questionRepository.save(question);
-
-        logger.info("Questão {} foi desativada com sucesso pelo usuário {}", id, userId);
+        q.setEnable(false);
+        questionRepository.save(q);
     }
 
-    @Transactional
-    public void deleteQuestionAsAdmin(Long id) {
-        logger.info("Tentando deletar (soft delete) questão {} como ADMIN", id);
+    // Métodos usados pelo Rabbit consumer
 
-        Question question = questionRepository.findById(id)
-                .orElseThrow(() -> {
-                    logger.error("Questão {} não encontrada para exclusão (ADMIN)", id);
-                    throw new EntityNotFoundException("Questão não encontrada com o ID " + id);
-                });
-
-        question.setEnable(false);
-        questionRepository.save(question);
-
-        logger.info("Questão {} foi desativada com sucesso (ADMIN)", id);
+    @Transactional(readOnly = true)
+    public QuestionDTO getQuestionAsDto(Long id) {
+        return questionRepository.findById(id)
+                .map(questionMapper::toDto)
+                .orElseThrow(() -> new EntityNotFoundException("Questão não encontrada: " + id));
     }
 
-}
-
-class QuestionServiceHelper {
-
-    public static void setTags(QuestionDTO questionDTO, Question question, TagRepository tagRepository) {
-        if (questionDTO.getTagIds() != null && !questionDTO.getTagIds().isEmpty()) {
-            Set<Tag> tags = new HashSet<>();
-            for (Long tagId : questionDTO.getTagIds()) {
-                Optional<Tag> tagOpt = tagRepository.findById(tagId);
-                if (tagOpt.isPresent()) {
-                    tags.add(tagOpt.get());
-                }
-            }
-            question.setTags(tags);
-        }
+    @Transactional(readOnly = true)
+    public List<AlternativeDTO> getAlternativesAsDto(Long questionId) {
+        return alternativeRepository.findAllByQuestionId(questionId)
+                .stream()
+                .map(a -> new AlternativeDTO(
+                        a.getId(),
+                        a.getDescription(),
+                        a.getImagePath(),
+                        a.getIsCorrect(),
+                        a.getExplanation(),
+                        a.getAlternativeOrder()))
+                .collect(Collectors.toList());
     }
 }

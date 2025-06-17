@@ -1,10 +1,14 @@
 br\com\questionarium\entities\Email.class
-br\com\questionarium\entities\AuthRequest.class
 br\com\questionarium\entities\PasswordPatch.class
-br\com\questionarium\entities\UserData.class
 br\com\questionarium\entities\AuthResponse.class
-br\com\questionarium\entities\UserCreatedEvent.class
+br\com\questionarium\dtos\RpcAnswerKeyRequestDTO.class
+br\com\questionarium\dtos\RpcQuestionDTO.class
 br\com\questionarium\entities\RegistrationRequest.class
 br\com\questionarium\types\AccessType.class
 br\com\questionarium\types\Role.class
 br\com\questionarium\entities\CreatedUserAuthDTO.class
+br\com\questionarium\entities\AuthRequest.class
+br\com\questionarium\entities\UserData.class
+br\com\questionarium\dtos\RpcAnswerKeyDTO.class
+br\com\questionarium\entities\UserCreatedEvent.class
+br\com\questionarium\dtos\RpcAlternativeDTO.class
