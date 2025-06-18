@@ -15,7 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 
 @Configuration
 public class SecurityConfig {
-    
+
     @Value("${spring.security.oauth2.resourceserver.jwt.secret}")
     private String jwtSecret;
 

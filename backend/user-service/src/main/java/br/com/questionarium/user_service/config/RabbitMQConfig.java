@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 
 @Configuration
-public class RabbitConfig {
+public class RabbitMQConfig {
 
     @Bean
     public Jackson2JsonMessageConverter jackson2JsonMessageConverter() {
@@ -23,5 +23,4 @@ public class RabbitConfig {
         return template;
     }
 
-    // Se você criar filas/exchanges via código, pode adicioná-las aqui
 }
