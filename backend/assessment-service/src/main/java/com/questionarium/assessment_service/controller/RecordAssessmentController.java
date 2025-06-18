@@ -6,11 +6,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.questionarium.assessment_service.dto.AppliedAssessmentDTO;
+import com.questionarium.assessment_service.dto.ApplyAssessmentRequestDTO;
 import com.questionarium.assessment_service.dto.CreateRecordAssessmentRequestDTO;
 import com.questionarium.assessment_service.dto.RecordAssessmentDTO;
 import com.questionarium.assessment_service.dto.RecordAssessmentPublicDTO;
 import com.questionarium.assessment_service.mapper.RecordAssessmentMapper;
 import com.questionarium.assessment_service.mapper.RecordAssessmentPublicMapper;
+import com.questionarium.assessment_service.model.AppliedAssessment;
 import com.questionarium.assessment_service.security.JwtUtils;
 import com.questionarium.assessment_service.service.RecordAssessmentService;
 
@@ -47,6 +50,61 @@ public class RecordAssessmentController {
                 .status(HttpStatus.CREATED)
                 .body(out);
     }
+
+//     import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
+// import org.springframework.hateoas.EntityModel;
+// import org.springframework.hateoas.Link;
+
+// @PostMapping
+// public ResponseEntity<EntityModel<AppliedAssessmentDTO>> apply(
+//     @Valid @RequestBody ApplyAssessmentRequestDTO dto) {
+
+//   // 1) cria a avaliação aplicada
+//   AppliedAssessment applied = service.applyAssessment(
+//       dto.getModelId(),
+//       dto.getApplicationDate(),
+//       dto.getQuantity(),
+//       dto.getShuffleQuestions()
+//   );
+//   AppliedAssessmentDTO body = mapper.toDto(applied);
+
+//   // 2) monta o model HATEOAS
+//   EntityModel<AppliedAssessmentDTO> model = EntityModel.of(body);
+
+//   // link para criar records: passa só o ID, lista de nomes fica nula/vazia
+//   CreateRecordAssessmentRequestDTO template = 
+//       new CreateRecordAssessmentRequestDTO(applied.getId(), Collections.emptyList());
+//   Link createRecords = linkTo(methodOn(RecordAssessmentController.class)
+//       .createBatch(template))
+//     .withRel("create-records")
+//     .withTitle("Cria registros (studentNames opcional)");
+
+//   model.add(
+//     linkTo(methodOn(AppliedAssessmentController.class)
+//       .getOne(applied.getId())).withSelfRel(),
+//     createRecords,
+//     linkTo(methodOn(RecordAssessmentController.class)
+//       .listByUser()).withRel("my-records")
+//   );
+
+//   return ResponseEntity
+//     .created(linkTo(methodOn(AppliedAssessmentController.class)
+//       .getOne(applied.getId())).toUri())
+//     .body(model);
+// }
+
+
+
+//     {
+//   "description": "...",
+//   "links": [
+//     { "rel": "self", "href": "/applied-assessments/123" },
+//     { "rel": "create-records",
+//       "href": "/record-assessments",
+//       "title": "Cria registros (studentNames opcional)" },
+//     { "rel": "my-records", "href": "/record-assessments/user" }
+//   ]
+// }
 
     /** 2) Busca um registro por ID (admin vê qualquer, user só ativo) */
     @GetMapping("/{id}")
