@@ -13,7 +13,6 @@ import br.com.questionarium.auth.interfaces.CreatedUserAuthDTO;
 import br.com.questionarium.auth.interfaces.LoginFormDTO;
 import br.com.questionarium.auth.model.AuthUser;
 import br.com.questionarium.auth.repository.AuthUserRepository;
-import br.com.questionarium.auth.service.other.JwtUtils;
 import br.com.questionarium.types.Role;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +24,7 @@ public class AuthUserService {
     private final AuthUserRepository userRepository;
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
-    private final JwtUtils jwtUtils;
+    private final JwtTokenProvider jwtUtils;
     private final UserServiceClient userServiceClient;
 
     public void register(CreatedUserAuthDTO userData) {

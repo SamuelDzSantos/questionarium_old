@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.questionarium.assessment_service.exception.BusinessException;
 import com.questionarium.assessment_service.model.AssessmentHeader;
 import com.questionarium.assessment_service.repository.AssessmentHeaderRepository;
-import com.questionarium.assessment_service.security.JwtUtils;
+import com.questionarium.assessment_service.security.JwtTokenDecoder;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 public class AssessmentHeaderService {
 
     private final AssessmentHeaderRepository assessmentHeaderRepository;
-    private final JwtUtils jwtUtils;   // injete aqui
+    private final JwtTokenDecoder jwtUtils;   // injete aqui
 
     /** Cria um novo header, atribuindo o userId do token */
     public AssessmentHeader createHeader(AssessmentHeader header) {

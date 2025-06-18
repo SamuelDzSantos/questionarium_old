@@ -11,7 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Component
 @Slf4j
-public class JwtUtils {
+public class JwtTokenDecoder {
 
     /**
      * Recupera o ID do usuário autenticado a partir do token JWT.

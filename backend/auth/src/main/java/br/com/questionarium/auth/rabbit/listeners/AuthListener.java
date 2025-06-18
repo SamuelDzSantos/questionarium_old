@@ -1,4 +1,4 @@
-package br.com.questionarium.auth.service.listeners;
+package br.com.questionarium.auth.rabbit.listeners;
 
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;

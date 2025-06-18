@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.questionarium.assessment_service.model.AssessmentHeader;
-import com.questionarium.assessment_service.security.JwtUtils;
+import com.questionarium.assessment_service.security.JwtTokenDecoder;
 import com.questionarium.assessment_service.service.AssessmentHeaderService;
 
 import lombok.RequiredArgsConstructor;
@@ -20,7 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 public class AssessmentHeaderController {
 
     private final AssessmentHeaderService assessmentHeaderService;
-    private final JwtUtils jwtUtils;
+    private final JwtTokenDecoder jwtUtils;
 
     /** Cria header */
     @PostMapping

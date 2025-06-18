@@ -11,7 +11,7 @@ import com.questionarium.assessment_service.dto.AppliedAssessmentDTO;
 import com.questionarium.assessment_service.dto.ApplyAssessmentRequestDTO;
 import com.questionarium.assessment_service.mapper.AppliedAssessmentMapper;
 import com.questionarium.assessment_service.model.AppliedAssessment;
-import com.questionarium.assessment_service.security.JwtUtils;
+import com.questionarium.assessment_service.security.JwtTokenDecoder;
 import com.questionarium.assessment_service.service.AppliedAssessmentService;
 
 import jakarta.validation.Valid;
@@ -26,7 +26,7 @@ public class AppliedAssessmentController {
 
     private final AppliedAssessmentService service;
     private final AppliedAssessmentMapper mapper;
-    private final JwtUtils jwtUtils;
+    private final JwtTokenDecoder jwtUtils;
 
     /** 1) Aplica um template e retorna o DTO criado (201 Created) */
     @PostMapping

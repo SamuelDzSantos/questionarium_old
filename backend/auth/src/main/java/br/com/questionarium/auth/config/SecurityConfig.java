@@ -32,7 +32,7 @@ import com.nimbusds.jose.proc.SecurityContext;
 @Configuration
 public class SecurityConfig {
 
-    @Value("${key.secret}")
+    @Value("${spring.security.oauth2.resourceserver.jwt.secret}")
     private String secret;
 
     @Bean

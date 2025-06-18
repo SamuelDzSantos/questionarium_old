@@ -14,7 +14,7 @@ import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
-public class SecutiryConfig {
+public class SecurityConfig {
 
     @Value("${spring.security.oauth2.resourceserver.jwt.secret}")
     private String jwtSecret;

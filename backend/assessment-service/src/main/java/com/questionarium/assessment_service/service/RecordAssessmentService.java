@@ -14,7 +14,7 @@ import com.questionarium.assessment_service.exception.BusinessException;
 import com.questionarium.assessment_service.model.AppliedAssessment;
 import com.questionarium.assessment_service.model.RecordAssessment;
 import com.questionarium.assessment_service.repository.RecordAssessmentRepository;
-import com.questionarium.assessment_service.security.JwtUtils;
+import com.questionarium.assessment_service.security.JwtTokenDecoder;
 import com.questionarium.assessment_service.snapshot.QuestionSnapshot;
 
 import lombok.RequiredArgsConstructor;
@@ -28,7 +28,7 @@ public class RecordAssessmentService {
 
     private final RecordAssessmentRepository repository;
     private final AppliedAssessmentService appliedService;
-    private final JwtUtils jwtUtils;
+    private final JwtTokenDecoder jwtUtils;
 
     public List<RecordAssessment> createFromAppliedAssessment(Long appliedAssessmentId, List<String> studentNames) {
         AppliedAssessment applied = appliedService.findById(appliedAssessmentId);

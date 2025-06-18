@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Primary;
 
 import com.questionarium.assessment_service.client.QuestionClient;
 import com.questionarium.assessment_service.config.RabbitMQConfig;
-import com.questionarium.assessment_service.security.JwtUtils;
+import com.questionarium.assessment_service.security.JwtTokenDecoder;
 
 import br.com.questionarium.dtos.RpcAlternativeDTO;
 import br.com.questionarium.dtos.RpcAnswerKeyDTO;
@@ -21,9 +21,9 @@ import br.com.questionarium.dtos.RpcQuestionDTO;
 public class QuestionClientRabbitMQ implements QuestionClient {
 
     private final RabbitTemplate rabbit;
-    private final JwtUtils jwtUtils;
+    private final JwtTokenDecoder jwtUtils;
 
-    public QuestionClientRabbitMQ(RabbitTemplate rabbit, JwtUtils jwtUtils) {
+    public QuestionClientRabbitMQ(RabbitTemplate rabbit, JwtTokenDecoder jwtUtils) {
         this.rabbit = rabbit;
         this.jwtUtils = jwtUtils;
     }

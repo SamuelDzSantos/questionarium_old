@@ -15,7 +15,7 @@ import com.questionarium.assessment_service.model.AppliedAssessment;
 import com.questionarium.assessment_service.model.AssessmentModel;
 import com.questionarium.assessment_service.repository.AppliedAssessmentRepository;
 import com.questionarium.assessment_service.repository.AssessmentModelRepository;
-import com.questionarium.assessment_service.security.JwtUtils;
+import com.questionarium.assessment_service.security.JwtTokenDecoder;
 import com.questionarium.assessment_service.snapshot.AlternativeSnapshot;
 import com.questionarium.assessment_service.snapshot.QuestionSnapshot;
 
@@ -33,14 +33,14 @@ public class AppliedAssessmentService {
 
         private final AppliedAssessmentRepository appliedRepo;
         private final AssessmentModelRepository modelRepo;
-        private final JwtUtils jwtUtils;
+        private final JwtTokenDecoder jwtUtils;
 
         private final QuestionClient questionClient;
 
         public AppliedAssessmentService(
                         AppliedAssessmentRepository appliedRepo,
                         AssessmentModelRepository modelRepo,
-                        JwtUtils jwtUtils,
+                        JwtTokenDecoder jwtUtils,
                         @Qualifier("questionClientRabbitMQ") QuestionClient questionClient) {
                 this.appliedRepo = appliedRepo;
                 this.modelRepo = modelRepo;

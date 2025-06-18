@@ -1,4 +1,4 @@
-package br.com.questionarium.auth.service.other;
+package br.com.questionarium.auth.service;
 
 import java.util.Date;
 
@@ -14,7 +14,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class JwtUtils {
+public class JwtTokenProvider {
 
     private final JwtEncoder jwtEncoder;
 

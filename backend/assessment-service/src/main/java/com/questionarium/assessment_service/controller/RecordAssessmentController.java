@@ -6,15 +6,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.questionarium.assessment_service.dto.AppliedAssessmentDTO;
-import com.questionarium.assessment_service.dto.ApplyAssessmentRequestDTO;
 import com.questionarium.assessment_service.dto.CreateRecordAssessmentRequestDTO;
 import com.questionarium.assessment_service.dto.RecordAssessmentDTO;
 import com.questionarium.assessment_service.dto.RecordAssessmentPublicDTO;
 import com.questionarium.assessment_service.mapper.RecordAssessmentMapper;
 import com.questionarium.assessment_service.mapper.RecordAssessmentPublicMapper;
-import com.questionarium.assessment_service.model.AppliedAssessment;
-import com.questionarium.assessment_service.security.JwtUtils;
+import com.questionarium.assessment_service.security.JwtTokenDecoder;
 import com.questionarium.assessment_service.service.RecordAssessmentService;
 
 import jakarta.validation.Valid;
@@ -30,7 +27,7 @@ public class RecordAssessmentController {
     private final RecordAssessmentService service;
     private final RecordAssessmentMapper mapper;
     private final RecordAssessmentPublicMapper publicMapper;
-    private final JwtUtils jwtUtils;
+    private final JwtTokenDecoder jwtUtils;
 
     /** 1) Cria registros em lote (soft-delete apenas inativa, não remove) */
     @PostMapping

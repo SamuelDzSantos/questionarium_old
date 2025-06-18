@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.questionarium.assessment_service.exception.BusinessException;
 import com.questionarium.assessment_service.model.AssessmentModel;
 import com.questionarium.assessment_service.repository.AssessmentModelRepository;
-import com.questionarium.assessment_service.security.JwtUtils;
+import com.questionarium.assessment_service.security.JwtTokenDecoder;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 public class AssessmentModelService {
 
     private final AssessmentModelRepository assessmentModelRepository;
-    private final JwtUtils jwtUtils;
+    private final JwtTokenDecoder jwtUtils;
 
     /** Cria um novo modelo de avaliação */
     public AssessmentModel createAssessment(AssessmentModel assessment) {

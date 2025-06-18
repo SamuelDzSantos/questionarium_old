@@ -13,7 +13,7 @@ import com.questionarium.assessment_service.dto.AssessmentModelDTO;
 import com.questionarium.assessment_service.dto.CreateAssessmentModelRequestDTO;
 import com.questionarium.assessment_service.mapper.AssessmentModelMapper;
 import com.questionarium.assessment_service.model.AssessmentModel;
-import com.questionarium.assessment_service.security.JwtUtils;
+import com.questionarium.assessment_service.security.JwtTokenDecoder;
 import com.questionarium.assessment_service.service.AssessmentModelService;
 
 import jakarta.validation.Valid;
@@ -28,7 +28,7 @@ public class AssessmentModelController {
 
     private final AssessmentModelService service;
     private final AssessmentModelMapper mapper;
-    private final JwtUtils jwtUtils;
+    private final JwtTokenDecoder jwtUtils;
 
     /** Cria um novo modelo para o usuário logado */
     @PostMapping
