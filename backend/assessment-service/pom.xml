@@ -24,95 +24,95 @@
 	</properties>
 
 	<dependencies>
-		<!-- Spring Boot starters -->
+		<!-- Spring Boot Starters -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
+			<artifactId>spring-boot-starter-web</artifactId> <!-- Web (REST, MVC) -->
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-jpa</artifactId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId> <!-- JPA (ORM) -->
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-validation</artifactId>
+			<artifactId>spring-boot-starter-validation</artifactId> <!-- Bean Validation -->
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+			<artifactId>spring-boot-starter-security</artifactId> <!-- Spring Security -->
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-security</artifactId>
+			<artifactId>spring-boot-starter-oauth2-resource-server</artifactId> <!-- OAuth2 Resource Server -->
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-hateoas</artifactId> <!-- HATEOAS support -->
 		</dependency>
 
-		<!-- Database -->
+		<!-- Database Driver -->
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
-			<scope>runtime</scope>
+			<scope>runtime</scope> <!-- PostgreSQL JDBC driver -->
 		</dependency>
 
-		<!-- Lombok -->
+		<!-- Code Generation -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<version>${lombok.version}</version>
-			<scope>provided</scope>
+			<scope>provided</scope> <!-- Lombok annotations -->
 		</dependency>
 
-		<!-- Test -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-
+		<!-- JSON/Hibernate Integration -->
 		<dependency>
 			<groupId>com.fasterxml.jackson.datatype</groupId>
-			<artifactId>jackson-datatype-hibernate5</artifactId>
+			<artifactId>jackson-datatype-hibernate5</artifactId> <!-- Jackson support for Hibernate types -->
 		</dependency>
 
-		<!-- MapStruct -->
+		<!-- MapStruct for DTO mapping -->
 		<dependency>
 			<groupId>org.mapstruct</groupId>
-			<artifactId>mapstruct</artifactId>
+			<artifactId>mapstruct</artifactId> <!-- MapStruct API -->
 			<version>${mapstruct.version}</version>
 		</dependency>
-
 		<dependency>
 			<groupId>org.mapstruct</groupId>
 			<artifactId>mapstruct-processor</artifactId>
 			<version>${mapstruct.version}</version>
-			<scope>provided</scope>
+			<scope>provided</scope> <!-- MapStruct annotation processor -->
 		</dependency>
 
+		<!-- RabbitMQ Testing -->
 		<dependency>
 			<groupId>org.springframework.amqp</groupId>
-			<artifactId>spring-rabbit-test</artifactId>
+			<artifactId>spring-rabbit-test</artifactId> <!-- RabbitMQ test utilities -->
 		</dependency>
 
-		<!-- shared module -->
-		<dependency>
-			<groupId>br.com.questionarium</groupId>
-			<artifactId>shared</artifactId>
-		</dependency>
-
+		<!-- OpenFeign HTTP clients -->
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-openfeign</artifactId>
+			<artifactId>spring-cloud-starter-openfeign</artifactId> <!-- OpenFeign support -->
 		</dependency>
 
+		<!-- Shared module -->
+		<dependency>
+			<groupId>br.com.questionarium</groupId>
+			<artifactId>shared</artifactId> <!-- Shared domain/components -->
+		</dependency>
+
+		<!-- Testing framework -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-hateoas</artifactId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope> <!-- JUnit, MockMVC, etc. -->
 		</dependency>
-
-
 	</dependencies>
 
 	<build>
 		<plugins>
+			<!-- Java compiler + annotation processing -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -132,16 +132,18 @@
 						</path>
 					</annotationProcessorPaths>
 					<compilerArgs>
-						<arg>-Amapstruct.verbose=true</arg>
+						<arg>-Amapstruct.verbose=true</arg> <!-- Verbose MapStruct logs -->
 					</compilerArgs>
 				</configuration>
 			</plugin>
 
+			<!-- Spring Boot packaging -->
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
+				<artifactId>spring-boot-maven-plugin</artifactId> <!-- Package & run Spring Boot app -->
 			</plugin>
 
+			<!-- Add generated sources to compile path -->
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>build-helper-maven-plugin</artifactId>
@@ -155,7 +157,8 @@
 						</goals>
 						<configuration>
 							<sources>
-								<source>${project.build.directory}/generated-sources/annotations</source>
+								<source>${project.build.directory}/generated-sources/annotations</source> <!--
+								Include annotation-generated code -->
 							</sources>
 						</configuration>
 					</execution>
@@ -163,5 +166,4 @@
 			</plugin>
 		</plugins>
 	</build>
-
 </project>

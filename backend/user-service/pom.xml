@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
-                             https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <!-- 1. Herdando do POM pai do projeto (questionarium) -->
+    <!-- 1. Herdando do POM pai (questionarium) -->
     <parent>
         <groupId>br.com.questionarium</groupId>
         <artifactId>questionarium</artifactId>
         <version>1.0-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath> <!-- ajuste conforme seu layout de pastas -->
+        <relativePath>../pom.xml</relativePath> <!-- Caminho para o POM pai -->
     </parent>
 
     <groupId>br.com.questionarium</groupId>
@@ -21,88 +20,96 @@
     <description>Microservice de Usuários (User Service)</description>
 
     <properties>
-        <!-- A versão do Java já vem definida no POM pai como 17 -->
-        <!-- Se você quiser usar uma versão diferente, pode sobrescrever aqui -->
+        <!-- Java 17, herdado do pai mas sobrescrito aqui -->
         <java.version>17</java.version>
-        <!-- Herdamos spring-cloud.version do parent (ou podemos sobrescrever aqui se necessário) -->
     </properties>
 
     <dependencies>
-        <!-- 2. Spring Boot Starter Web (rest) -->
+        <!-- 2. Web (REST API) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
+            <artifactId>spring-boot-starter-web</artifactId> <!-- REST, MVC -->
         </dependency>
 
-        <!-- 3. Spring Data JPA (PostgreSQL) -->
+        <!-- 3. JPA + PostgreSQL -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId> <!-- JPA (ORM) -->
         </dependency>
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <scope>runtime</scope>
+            <scope>runtime</scope> <!-- Driver PostgreSQL -->
         </dependency>
 
-        <!-- 4. Spring Cloud Stream (com suporte a RabbitMQ) -->
+        <!-- 4. Spring Cloud Stream (RabbitMQ) -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-stream-rabbit</artifactId>
+            <artifactId>spring-cloud-starter-stream-rabbit</artifactId> <!-- Binder RabbitMQ -->
         </dependency>
 
-        <!-- 5. Spring AMQP (caso queira usar RabbitMQ sem Cloud Stream) -->
+        <!-- 5. AMQP puro (RabbitMQ) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-amqp</artifactId>
+            <artifactId>spring-boot-starter-amqp</artifactId> <!-- Spring AMQP -->
         </dependency>
 
-        <!-- 6. Caso queira testar (JUnit, etc.) -->
+        <!-- 6. Testes (JUnit, MockMVC) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
+            <scope>test</scope> <!-- Framework de testes -->
         </dependency>
 
-        <!-- 7. Binder de teste para Spring Cloud Stream -->
+        <!-- 7. Binder de teste para Cloud Stream -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-stream-test-binder</artifactId>
-            <scope>test</scope>
+            <scope>test</scope> <!-- Teste de streams -->
         </dependency>
 
-        <!-- 8. Dependência do módulo “shared” (se precisar compartilhar DTOs) -->
+        <!-- 8. Módulo compartilhado (DTOs, utilitários) -->
         <dependency>
             <groupId>br.com.questionarium</groupId>
             <artifactId>shared</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.0-SNAPSHOT</version> <!-- Módulo compartilhado -->
         </dependency>
+
+        <!-- 9. Segurança -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId> <!-- Spring Security -->
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-oauth2-resource-server</artifactId> <!-- OAuth2 Resource Server -->
+		</dependency>
     </dependencies>
 
-    <!-- 9. Herdamos o gerenciamento de versões (dependencyManagement) do POM pai -->
+    <!-- 10. Gerenciamento de versões herdado do POM pai -->
     <dependencyManagement>
         <dependencies>
-            <!-- Spring Cloud BOM já é importado no POM pai via spring-cloud-dependencies -->
-            <!-- Aqui não precisamos declarar nada extra, pois o parent já cuida disso -->
+            <!-- BOMs (ex.: spring-cloud-dependencies) importados no parent -->
         </dependencies>
     </dependencyManagement>
 
     <build>
         <plugins>
-            <!-- 10. Plugin do Spring Boot para empacotar jar executável -->
+            <!-- 11. Empacotamento Spring Boot -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
+                <artifactId>spring-boot-maven-plugin</artifactId> <!-- Executável Spring Boot -->
             </plugin>
-            <!-- 11. Compiler plugin (já herdado do parent, mas podemos sobrescrever se precisar) -->
+
+            <!-- 12. Compilador Java -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
-                    <encoding>UTF-8</encoding>
-                    <parameters>true</parameters>
+                    <source>${java.version}</source> <!-- Versão do Java fonte -->
+                    <target>${java.version}</target> <!-- Versão de bytecode -->
+                    <encoding>UTF-8</encoding> <!-- Encoding -->
+                    <parameters>true</parameters> <!-- Preserve nomes de parâmetros -->
                 </configuration>
             </plugin>
         </plugins>
