@@ -15,9 +15,9 @@ import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.oauth2.jwt.ReactiveJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusReactiveJwtDecoder;
 import org.springframework.security.web.server.SecurityWebFilterChain;
-import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.reactive.CorsConfigurationSource;
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
+import org.springframework.web.cors.CorsConfiguration;
 
 @Configuration
 @EnableWebFluxSecurity
@@ -29,64 +29,45 @@ public class SecurityConfig {
 	@Bean
 	public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
 		http
-				// 1) Desabilita CSRF (API stateless)
+				// 1) API stateless
 				.csrf(csrf -> csrf.disable())
-
-				// 2) Habilita CORS, usando nosso bean reactiveCorsConfigurationSource()
 				.cors(cors -> cors.configurationSource(reactiveCorsConfigurationSource()))
 
-				// 3) Regras de autorização:
-				// - POST /auth/login e POST /users são públicos (sem JWT)
-				// - Qualquer outra rota exige JWT válido
-				.authorizeExchange(exchanges -> exchanges
-						.pathMatchers(HttpMethod.POST, "/auth/login").permitAll()
-						.pathMatchers(HttpMethod.POST, "/users").permitAll()
-						.anyExchange().authenticated())
+				// 2) Desabilita httpBasic e formLogin via DSL
+				.httpBasic(httpBasic -> httpBasic.disable())
+				.formLogin(formLogin -> formLogin.disable())
 
-				// 4) Resource Server: o gateway valida o JWT, não gera tokens
-				.oauth2ResourceServer(oauth2 -> oauth2
-						.jwt(jwtSpec -> {
-							// Usará o ReactiveJwtDecoder definido abaixo
-						}));
+				// 3) Autorizações: libera apenas os públicos, roteia todo o resto
+				.authorizeExchange(exchanges -> exchanges
+						.pathMatchers(HttpMethod.POST, "/auth/login", "/users", "/users/confirm")
+						.permitAll()
+						.pathMatchers(HttpMethod.GET, "/users/email")
+						.permitAll()
+						.anyExchange()
+						.permitAll());
 
 		return http.build();
 	}
 
-	// Bean responsável por configurar CORS para chamadas vindas do front-end (ex:
-	// http://localhost:4200)
 	@Bean
 	public CorsConfigurationSource reactiveCorsConfigurationSource() {
-		CorsConfiguration config = new CorsConfiguration();
+		CorsConfiguration cfg = new CorsConfiguration();
+		cfg.setAllowedOrigins(Arrays.asList("http://localhost:4200"));
+		cfg.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH", "HEAD"));
+		cfg.setAllowedHeaders(Arrays.asList("*"));
+		cfg.setAllowCredentials(true);
+		cfg.setExposedHeaders(Arrays.asList("Authorization"));
 
-		// Permitir apenas o domínio do front-end durante desenvolvimento
-		config.setAllowedOrigins(Arrays.asList("http://localhost:4200"));
-
-		// Métodos HTTP permitidos
-		config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH", "HEAD"));
-
-		// Permitir todos os headers
-		config.setAllowedHeaders(Arrays.asList("*"));
-
-		// Permitir credenciais (cookies, headers de autorização, etc.)
-		config.setAllowCredentials(true);
-
-		// Expor o header Authorization para que o browser possa lê-lo
-		config.setExposedHeaders(Arrays.asList("Authorization"));
-
-		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-
-		// Aplica esta configuração a todas as rotas do gateway
-		source.registerCorsConfiguration("/**", config);
-		return source;
+		UrlBasedCorsConfigurationSource src = new UrlBasedCorsConfigurationSource();
+		src.registerCorsConfiguration("/**", cfg);
+		return src;
 	}
 
-	// JwtDecoder para validar os tokens assinados pelo AuthService.
-	// Alterado o algoritmo de "AES" para "HmacSHA256", que é compatível com HS256
-	// (HMAC) usado na assinatura JWT.
 	@Bean
 	public ReactiveJwtDecoder jwtDecoder() {
-		// Converte a string secreta em bytes UTF-8 e cria uma chave HMAC-SHA256
-		SecretKey secretKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), "HmacSHA256");
+		SecretKey secretKey = new SecretKeySpec(
+				secret.getBytes(StandardCharsets.UTF_8),
+				"HmacSHA256");
 		return NimbusReactiveJwtDecoder.withSecretKey(secretKey).build();
 	}
 }

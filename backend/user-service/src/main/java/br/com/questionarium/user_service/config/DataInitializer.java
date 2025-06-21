@@ -1,43 +1,49 @@
 package br.com.questionarium.user_service.config;
 
-import br.com.questionarium.user_service.dto.CreateUserRequest;
-import br.com.questionarium.user_service.dto.UserResponse;
-import br.com.questionarium.user_service.repository.UserRepository;
-import br.com.questionarium.user_service.service.UserService;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.List;
+import br.com.questionarium.user_service.model.User;
+import br.com.questionarium.user_service.repository.UserRepository;
 
 @Configuration
 public class DataInitializer {
 
-    @Bean
-    public CommandLineRunner initUsers(UserRepository userRepository, UserService userService) {
+    private static final Logger logger = LoggerFactory.getLogger(DataInitializer.class);
+
+    @Bean("initialUserData")
+    public CommandLineRunner dataInitializer(UserRepository repo) {
         return args -> {
-            if (userRepository.count() == 0) {
-                System.out.println("Criando usuários de teste...");
+            if (repo.count() == 0) {
+                // Admin users
+                User admin1 = new User("admin1", "admin1@quest.com", List.of("ADMIN"));
+                admin1.setActive(true);
+                repo.save(admin1);
 
-                // Cria
-                UserResponse admin1 = userService.createUser(
-                        new CreateUserRequest("Admin 1", "admin1@quest.com", "senha123", List.of("ADMIN")));
-                UserResponse admin2 = userService.createUser(
-                        new CreateUserRequest("Admin 2", "admin2@quest.com", "senha123", List.of("ADMIN")));
-                UserResponse user1 = userService
-                        .createUser(new CreateUserRequest("User 1", "user1@quest.com", "senha123", List.of("USER")));
-                UserResponse user2 = userService
-                        .createUser(new CreateUserRequest("User 2", "user2@quest.com", "senha123", List.of("USER")));
+                User admin2 = new User("admin2", "admin2@quest.com", List.of("ADMIN"));
+                admin2.setActive(true);
+                repo.save(admin2);
 
-                // Ativa
-                userService.activateUser(admin1.getId());
-                userService.activateUser(admin2.getId());
-                userService.activateUser(user1.getId());
-                userService.activateUser(user2.getId());
+                // Regular users
+                User user1 = new User("user1", "user1@quest.com", List.of("USER"));
+                user1.setActive(true);
+                repo.save(user1);
 
-                System.out.println("Usuários de teste criados e ativados.");
-            } else {
-                System.out.println("Usuários já existem. Nenhum dado de teste foi criado.");
+                User user2 = new User("user2", "user2@quest.com", List.of("USER"));
+                user2.setActive(true);
+                repo.save(user2);
+
+                User user3 = new User("user3", "user3@quest.com", List.of("USER"));
+                user3.setActive(true);
+                repo.save(user3);
+
+                logger.info("Dados de inicialização criados com sucesso.");
             }
         };
     }

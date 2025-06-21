@@ -1,9 +1,6 @@
 package br.com.questionarium.user_service.dto;
 
-import java.util.List;
-
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,11 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UpdateUserRequest {
-
+public class ConfirmUserRequest {
     @NotBlank
-    private String name;
-
-    private List<@NotBlank String> roles;
-
+    private String token;
 }
