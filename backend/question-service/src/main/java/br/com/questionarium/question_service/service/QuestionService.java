@@ -205,6 +205,7 @@ public class QuestionService {
             throw new EntityNotFoundException("Permissão negada.");
         }
 
+        // Atualiza campos básicos...
         q.setMultipleChoice(questionDTO.getMultipleChoice());
         q.setNumberLines(questionDTO.getNumberLines());
         q.setHeader(questionDTO.getHeader());
@@ -213,7 +214,7 @@ public class QuestionService {
         q.setAccessLevel(questionDTO.getAccessLevel());
         q.setEducationLevel(questionDTO.getEducationLevel());
 
-        // Atualiza alternativas
+        // Limpa e adiciona novas alternativas (sem answerId ainda)
         q.getAlternatives().clear();
         Set<Alternative> novos = questionDTO.getAlternatives().stream()
                 .map(dto -> Alternative.builder()
@@ -227,13 +228,19 @@ public class QuestionService {
                 .collect(Collectors.toSet());
         q.getAlternatives().addAll(novos);
 
-        Alternative corret = novos.stream()
+        // 1) Persiste para gerar IDs nas alternativas
+        Question saved = questionRepository.save(q);
+
+        // 2) Encontra a alternativa correta já com ID
+        Alternative corret = saved.getAlternatives().stream()
                 .filter(Alternative::getIsCorrect)
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Nenhuma alternativa correta fornecida."));
-        q.setAnswerId(corret.getId());
 
-        Question updated = questionRepository.save(q);
+        // 3) Atualiza o answerId no question e salva de novo
+        saved.setAnswerId(corret.getId());
+        Question updated = questionRepository.save(saved);
+
         return questionMapper.toDto(updated);
     }
 

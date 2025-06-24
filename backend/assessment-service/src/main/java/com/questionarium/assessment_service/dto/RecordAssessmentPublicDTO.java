@@ -15,7 +15,7 @@ public class RecordAssessmentPublicDTO {
     private String studentName;
     private List<Long> questionOrder;
     private List<QuestionDTO> questionSnapshots;
-    private String correctAnswerKey;
+    private List<String> correctAnswerKeyLetter;
     private String studentAnswerKey;
     private Double obtainedScore;
 }

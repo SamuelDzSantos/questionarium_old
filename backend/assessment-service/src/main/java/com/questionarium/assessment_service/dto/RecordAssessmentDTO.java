@@ -21,7 +21,7 @@ public class RecordAssessmentDTO {
     private List<QuestionDTO> questionSnapshots;
     private Double totalScore;
     private Double obtainedScore;
-    private String correctAnswerKey;
+    private List<String> correctAnswerKeyLetter;
     private String studentAnswerKey;
     private LocalDateTime creationDateTime;
     private LocalDateTime updateDateTime;

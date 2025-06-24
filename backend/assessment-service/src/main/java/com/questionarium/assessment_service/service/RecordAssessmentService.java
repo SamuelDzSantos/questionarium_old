@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import jakarta.persistence.EntityNotFoundException;
 
@@ -16,6 +17,7 @@ import com.questionarium.assessment_service.model.RecordAssessment;
 import com.questionarium.assessment_service.repository.AppliedAssessmentRepository;
 import com.questionarium.assessment_service.repository.RecordAssessmentRepository;
 import com.questionarium.assessment_service.security.JwtTokenDecoder;
+import com.questionarium.assessment_service.snapshot.AlternativeSnapshot;
 import com.questionarium.assessment_service.snapshot.QuestionSnapshot;
 
 import lombok.RequiredArgsConstructor;
@@ -28,11 +30,10 @@ import lombok.extern.slf4j.Slf4j;
 public class RecordAssessmentService {
 
     private final RecordAssessmentRepository repository;
-    private final AppliedAssessmentRepository appliedRepo; // injetado
+    private final AppliedAssessmentRepository appliedRepo;
     private final JwtTokenDecoder jwtUtils;
 
     public List<RecordAssessment> createFromAppliedAssessment(Long appliedAssessmentId, List<String> studentNames) {
-        // Busca e valida a AppliedAssessment diretamente
         AppliedAssessment applied = appliedRepo.findById(appliedAssessmentId)
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Avaliação aplicada não encontrada: " + appliedAssessmentId));
@@ -89,16 +90,26 @@ public class RecordAssessmentService {
                             .collect(Collectors.toList()));
             rec.setQuestionSnapshots(clones);
             rec.setTotalScore(applied.getTotalScore());
-            rec.setCorrectAnswerKey(applied.getCorrectAnswerKey());
+
+            // Geração de gabarito em letras
+            List<String> letters = IntStream.range(0, clones.size())
+                    .mapToObj(idx -> {
+                        List<AlternativeSnapshot> alts = clones.get(idx).getAlternatives();
+                        int correctIdx = IntStream.range(0, alts.size())
+                                .filter(j -> Boolean.TRUE.equals(alts.get(j).getIsCorrect()))
+                                .findFirst()
+                                .orElseThrow(() -> new BusinessException(
+                                        "Alternativa correta não encontrada na questão " +
+                                                clones.get(idx).getQuestion()));
+                        return String.valueOf((char) ('A' + correctIdx));
+                    })
+                    .collect(Collectors.toList());
+            rec.setCorrectAnswerKeyLetter(letters);
 
             created.add(repository.save(rec));
         }
 
         return created;
-    }
-
-    public RecordAssessment create(RecordAssessment entity) {
-        return repository.save(entity);
     }
 
     @Transactional(readOnly = true)
@@ -107,7 +118,6 @@ public class RecordAssessmentService {
                 .filter(RecordAssessment::getActive)
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Registro de avaliação não encontrado ou inativo: " + id));
-
         if (isAdmin() || rec.getAppliedAssessment().getUserId().equals(getCurrentUserId())) {
             return rec;
         }
@@ -144,23 +154,8 @@ public class RecordAssessmentService {
         throw new BusinessException("Você não tem permissão para acessar registros desta avaliação");
     }
 
-    public RecordAssessment updateObtainedScore(Long id, Double obtainedScore) {
-        RecordAssessment rec = findById(id);
-        rec.setObtainedScore(obtainedScore);
-        return repository.save(rec);
-    }
-
-    public RecordAssessment updateStudentAnswerKey(Long id, String studentAnswerKey) {
-        RecordAssessment rec = findById(id);
-        rec.setStudentAnswerKey(studentAnswerKey);
-        return repository.save(rec);
-    }
-
     public void softDelete(Long id) {
         RecordAssessment rec = findById(id);
-        if (isAdmin()) {
-            throw new BusinessException("Soft-delete de registros deve ser feito com método de admin específico");
-        }
         rec.setActive(false);
         repository.save(rec);
     }

@@ -14,6 +14,7 @@ public interface RecordAssessmentMapper {
 
     // entidade → DTO de resposta
     @Mapping(source = "appliedAssessment.id", target = "appliedAssessmentId")
+    @Mapping(source = "correctAnswerKeyLetter", target = "correctAnswerKeyLetter")
     RecordAssessmentDTO toDto(RecordAssessment entity);
 
     // lista de entidades → lista de DTOs
@@ -28,7 +29,7 @@ public interface RecordAssessmentMapper {
     @Mapping(target = "questionSnapshots", ignore = true)
     @Mapping(target = "totalScore", ignore = true)
     @Mapping(target = "obtainedScore", ignore = true)
-    @Mapping(target = "correctAnswerKey", ignore = true)
+    @Mapping(target = "correctAnswerKeyLetter", ignore = true)
     @Mapping(target = "studentAnswerKey", ignore = true)
     @Mapping(target = "creationDateTime", ignore = true)
     @Mapping(target = "updateDateTime", ignore = true)

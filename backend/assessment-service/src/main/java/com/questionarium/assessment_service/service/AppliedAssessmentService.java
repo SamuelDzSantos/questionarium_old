@@ -145,11 +145,16 @@ public class AppliedAssessmentService {
                 }
 
                 // 5) monta gabarito concatenado
-                String correctKey = questionClient.getAnswerKeys(
-                                snapshots.stream()
-                                                .map(QuestionSnapshot::getQuestion)
-                                                .collect(Collectors.toList()))
-                                .stream()
+
+                List<Long> questionIds = snapshots.stream()
+                                .map(QuestionSnapshot::getQuestion)
+                                .collect(Collectors.toList());
+                List<RpcAnswerKeyDTO> answerKeys = questionClient.getAnswerKeys(questionIds);
+                if (answerKeys == null || answerKeys.isEmpty()) {
+                        throw new BusinessException(
+                                        "Não foi possível obter o gabarito das questões: " + questionIds);
+                }
+                String correctKey = answerKeys.stream()
                                 .map(RpcAnswerKeyDTO::getAnswerKey)
                                 .collect(Collectors.joining(",", "[", "]"));
 

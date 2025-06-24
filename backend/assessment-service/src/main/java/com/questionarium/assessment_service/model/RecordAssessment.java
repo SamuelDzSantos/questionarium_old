@@ -59,10 +59,11 @@ public class RecordAssessment {
     @Column(name = "obtained_score")
     private Double obtainedScore;
 
-    /** Gabarito correto desta instância, ex. "[A,B,C,...]" */
-    @NotNull
-    @Column(name = "correct_answer_key", columnDefinition = "TEXT", nullable = false)
-    private String correctAnswerKey;
+    /** NOVO: gabarito em letras (A, B, C…) para cada questão */
+    @ElementCollection
+    @CollectionTable(name = "record_letter_keys", joinColumns = @JoinColumn(name = "record_assessment_id"))
+    @Column(name = "letter")
+    private List<String> correctAnswerKeyLetter = new ArrayList<>();
 
     /** Gabarito fornecido pelo aluno */
     @NotNull

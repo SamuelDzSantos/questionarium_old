@@ -24,7 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class RecordAssessmentController {
 
-    private final RecordAssessmentService service;
+    private final RecordAssessmentService recordService;
     private final RecordAssessmentMapper mapper;
     private final RecordAssessmentPublicMapper publicMapper;
     private final JwtTokenDecoder jwtUtils;
@@ -39,7 +39,7 @@ public class RecordAssessmentController {
                 dto.getAppliedAssessmentId());
 
         List<RecordAssessmentDTO> out = mapper.toDto(
-                service.createFromAppliedAssessment(
+                recordService.createFromAppliedAssessment(
                         dto.getAppliedAssessmentId(),
                         dto.getStudentNames()));
 
@@ -48,66 +48,11 @@ public class RecordAssessmentController {
                 .body(out);
     }
 
-//     import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
-// import org.springframework.hateoas.EntityModel;
-// import org.springframework.hateoas.Link;
-
-// @PostMapping
-// public ResponseEntity<EntityModel<AppliedAssessmentDTO>> apply(
-//     @Valid @RequestBody ApplyAssessmentRequestDTO dto) {
-
-//   // 1) cria a avaliação aplicada
-//   AppliedAssessment applied = service.applyAssessment(
-//       dto.getModelId(),
-//       dto.getApplicationDate(),
-//       dto.getQuantity(),
-//       dto.getShuffleQuestions()
-//   );
-//   AppliedAssessmentDTO body = mapper.toDto(applied);
-
-//   // 2) monta o model HATEOAS
-//   EntityModel<AppliedAssessmentDTO> model = EntityModel.of(body);
-
-//   // link para criar records: passa só o ID, lista de nomes fica nula/vazia
-//   CreateRecordAssessmentRequestDTO template = 
-//       new CreateRecordAssessmentRequestDTO(applied.getId(), Collections.emptyList());
-//   Link createRecords = linkTo(methodOn(RecordAssessmentController.class)
-//       .createBatch(template))
-//     .withRel("create-records")
-//     .withTitle("Cria registros (studentNames opcional)");
-
-//   model.add(
-//     linkTo(methodOn(AppliedAssessmentController.class)
-//       .getOne(applied.getId())).withSelfRel(),
-//     createRecords,
-//     linkTo(methodOn(RecordAssessmentController.class)
-//       .listByUser()).withRel("my-records")
-//   );
-
-//   return ResponseEntity
-//     .created(linkTo(methodOn(AppliedAssessmentController.class)
-//       .getOne(applied.getId())).toUri())
-//     .body(model);
-// }
-
-
-
-//     {
-//   "description": "...",
-//   "links": [
-//     { "rel": "self", "href": "/applied-assessments/123" },
-//     { "rel": "create-records",
-//       "href": "/record-assessments",
-//       "title": "Cria registros (studentNames opcional)" },
-//     { "rel": "my-records", "href": "/record-assessments/user" }
-//   ]
-// }
-
     /** 2) Busca um registro por ID (admin vê qualquer, user só ativo) */
     @GetMapping("/{id}")
     public ResponseEntity<RecordAssessmentDTO> getOne(@PathVariable Long id) {
         log.info("GET /record-assessments/{} – buscando registro", id);
-        RecordAssessmentDTO out = mapper.toDto(service.findById(id));
+        RecordAssessmentDTO out = mapper.toDto(recordService.findById(id));
         return ResponseEntity.ok(out);
     }
 
@@ -115,7 +60,7 @@ public class RecordAssessmentController {
     @GetMapping
     public ResponseEntity<List<RecordAssessmentDTO>> listAll() {
         log.info("GET /record-assessments – listando registros");
-        List<RecordAssessmentDTO> out = mapper.toDto(service.findAllActive());
+        List<RecordAssessmentDTO> out = mapper.toDto(recordService.findAllActive());
         return ResponseEntity.ok(out);
     }
 
@@ -124,7 +69,7 @@ public class RecordAssessmentController {
     public ResponseEntity<List<RecordAssessmentDTO>> listByUser() {
         Long userId = jwtUtils.getCurrentUserId();
         log.info("GET /record-assessments/user – listando registros de userId={}", userId);
-        List<RecordAssessmentDTO> out = mapper.toDto(service.findByUser(userId));
+        List<RecordAssessmentDTO> out = mapper.toDto(recordService.findByUser(userId));
         return ResponseEntity.ok(out);
     }
 
@@ -132,7 +77,7 @@ public class RecordAssessmentController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         log.info("DELETE /record-assessments/{} – soft-delete pelo USER", id);
-        service.softDelete(id);
+        recordService.softDelete(id);
         return ResponseEntity.noContent().build();
     }
 
@@ -140,7 +85,7 @@ public class RecordAssessmentController {
     @DeleteMapping("/admin/{id}")
     public ResponseEntity<Void> adminDelete(@PathVariable Long id) {
         log.info("DELETE /record-assessments/admin/{} – soft-delete pelo ADMIN", id);
-        service.adminSoftDelete(id);
+        recordService.adminSoftDelete(id);
         return ResponseEntity.noContent().build();
     }
 
@@ -148,7 +93,7 @@ public class RecordAssessmentController {
     @GetMapping("/public/{id}")
     public ResponseEntity<RecordAssessmentPublicDTO> publicGet(@PathVariable Long id) {
         log.info("GET /record-assessments/public/{} – consulta pública", id);
-        RecordAssessmentPublicDTO out = publicMapper.toDto(service.publicFindById(id));
+        RecordAssessmentPublicDTO out = publicMapper.toDto(recordService.publicFindById(id));
         return ResponseEntity.ok(out);
     }
 }
