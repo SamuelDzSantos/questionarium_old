@@ -33,17 +33,19 @@ public class AppliedAssessmentService {
 
         private final AppliedAssessmentRepository appliedRepo;
         private final AssessmentModelRepository modelRepo;
+        private final RecordAssessmentService recordService;
         private final JwtTokenDecoder jwtUtils;
-
         private final QuestionClient questionClient;
 
         public AppliedAssessmentService(
                         AppliedAssessmentRepository appliedRepo,
                         AssessmentModelRepository modelRepo,
+                        RecordAssessmentService recordService,
                         JwtTokenDecoder jwtUtils,
                         @Qualifier("questionClientRabbitMQ") QuestionClient questionClient) {
                 this.appliedRepo = appliedRepo;
                 this.modelRepo = modelRepo;
+                this.recordService = recordService;
                 this.jwtUtils = jwtUtils;
                 this.questionClient = questionClient;
         }
@@ -85,26 +87,28 @@ public class AppliedAssessmentService {
                         Integer quantity,
                         Boolean shuffleQuestions) {
 
+                // 1) valida quantidade
                 if (quantity == null || quantity <= 0) {
                         throw new BusinessException("A quantidade de aplicações deve ser um número positivo");
                 }
 
+                // 2) busca modelo
                 AssessmentModel model = modelRepo.findById(modelId)
                                 .orElseThrow(() -> new EntityNotFoundException(
                                                 "Modelo de avaliação não encontrado: " + modelId));
 
+                // 3) monta snapshots de perguntas + alternativas
                 List<QuestionSnapshot> snapshots = model.getQuestions().stream()
                                 .map(qw -> {
-                                        RpcQuestionDTO qDto = questionClient.getQuestion(qw.getQuestionId());
+                                        Long qid = qw.getQuestionId();
+                                        RpcQuestionDTO qDto = questionClient.getQuestion(qid);
                                         if (qDto == null) {
-                                                throw new BusinessException("Questão não encontrada para o ID: "
-                                                                + qw.getQuestionId());
+                                                throw new BusinessException("Questão não encontrada para o ID: " + qid);
                                         }
-                                        List<RpcAlternativeDTO> alts = questionClient
-                                                        .getAlternatives(qw.getQuestionId());
+                                        List<RpcAlternativeDTO> alts = questionClient.getAlternatives(qid);
                                         if (alts == null || alts.isEmpty()) {
-                                                throw new BusinessException("Questão " + qw.getQuestionId()
-                                                                + " não possui alternativas");
+                                                throw new BusinessException(
+                                                                "Questão " + qid + " não possui alternativas");
                                         }
 
                                         List<AlternativeSnapshot> altSnaps = alts.stream()
@@ -135,10 +139,12 @@ public class AppliedAssessmentService {
                                 })
                                 .collect(Collectors.toList());
 
+                // 4) opcionalmente embaralha as questões
                 if (Boolean.TRUE.equals(shuffleQuestions)) {
                         Collections.shuffle(snapshots);
                 }
 
+                // 5) monta gabarito concatenado
                 String correctKey = questionClient.getAnswerKeys(
                                 snapshots.stream()
                                                 .map(QuestionSnapshot::getQuestion)
@@ -147,10 +153,12 @@ public class AppliedAssessmentService {
                                 .map(RpcAnswerKeyDTO::getAnswerKey)
                                 .collect(Collectors.joining(",", "[", "]"));
 
+                // 6) popula entidade AppliedAssessment
                 AppliedAssessment applied = new AppliedAssessment();
                 applied.setDescription(model.getDescription());
                 applied.setQuestionSnapshots(snapshots);
-                applied.setTotalScore(snapshots.stream().mapToDouble(QuestionSnapshot::getWeight).sum());
+                applied.setTotalScore(snapshots.stream()
+                                .mapToDouble(QuestionSnapshot::getWeight).sum());
                 applied.setUserId(model.getUserId());
                 applied.setInstitution(model.getInstitution());
                 applied.setDepartment(model.getDepartment());
@@ -159,15 +167,25 @@ public class AppliedAssessmentService {
                 applied.setProfessor(model.getProfessor());
                 applied.setInstructions(model.getInstructions());
                 applied.setImage(model.getImage());
-                applied.setApplicationDate(applicationDate != null ? applicationDate : LocalDate.now());
+                applied.setApplicationDate(
+                                applicationDate != null ? applicationDate : LocalDate.now());
                 applied.setQuantity(quantity);
                 applied.setShuffleQuestions(shuffleQuestions);
                 applied.setActive(true);
                 applied.setCorrectAnswerKey(correctKey);
 
+                // 7) relaciona snapshots com o applied
                 snapshots.forEach(snap -> snap.setAppliedAssessment(applied));
 
-                return appliedRepo.save(applied);
+                // 8) salva o AppliedAssessment
+                AppliedAssessment saved = appliedRepo.save(applied);
+
+                // 9) cria automaticamente os RecordAssessment em branco
+                List<String> emptyNames = Collections.nCopies(saved.getQuantity(), "");
+                recordService.createFromAppliedAssessment(saved.getId(), emptyNames);
+
+                // 10) retorna o objeto salvo
+                return saved;
         }
 
         public void softDelete(Long id) {

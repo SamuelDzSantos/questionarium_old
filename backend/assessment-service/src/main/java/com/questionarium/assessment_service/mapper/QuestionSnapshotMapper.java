@@ -1,15 +1,15 @@
 package com.questionarium.assessment_service.mapper;
 
 import org.mapstruct.Mapper;
+import org.mapstruct.ReportingPolicy;
+
 import com.questionarium.assessment_service.dto.QuestionDTO;
 import com.questionarium.assessment_service.snapshot.QuestionSnapshot;
 
-@Mapper(componentModel = "spring", uses = { AlternativeSnapshotMapper.class })
+@Mapper(componentModel = "spring", uses = {
+        AlternativeSnapshotMapper.class }, unmappedSourcePolicy = ReportingPolicy.IGNORE)
 public interface QuestionSnapshotMapper {
-
-    // Entidade embeddable → DTO
     QuestionDTO toDto(QuestionSnapshot entity);
 
-    // DTO → entidade embeddable
     QuestionSnapshot toEntity(QuestionDTO dto);
 }
