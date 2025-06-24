@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RpcQuestionDTO {
+        private Long userId;
         private Long question;
         private Boolean multipleChoice;
         private Integer numberLines;

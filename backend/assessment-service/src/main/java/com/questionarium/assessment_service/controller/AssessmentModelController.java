@@ -38,7 +38,6 @@ public class AssessmentModelController {
         log.info("POST /assessment-models – criando AssessmentModel para userId={}", userId);
 
         AssessmentModel entity = mapper.toEntity(dto);
-        entity.setUserId(userId);
 
         AssessmentModel saved = service.createAssessment(entity);
         AssessmentModelDTO response = mapper.toDto(saved);
@@ -88,7 +87,6 @@ public class AssessmentModelController {
 
         AssessmentModel entity = mapper.toEntity(dto);
         entity.setId(id);
-        entity.setUserId(userId);
 
         AssessmentModel updated = service.updateAssessment(id, entity);
         return ResponseEntity.ok(mapper.toDto(updated));

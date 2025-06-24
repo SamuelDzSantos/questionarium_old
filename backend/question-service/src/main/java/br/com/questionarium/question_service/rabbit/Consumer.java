@@ -65,6 +65,7 @@ public class Consumer {
                 Long questionId = Long.valueOf(body);
                 QuestionDTO dto = questionService.getQuestionAsDto(questionId);
                 RpcQuestionDTO rpc = new RpcQuestionDTO();
+                rpc.setUserId(dto.getUserId());
                 rpc.setQuestion(dto.getId());
                 rpc.setMultipleChoice(dto.getMultipleChoice());
                 rpc.setNumberLines(dto.getNumberLines());
@@ -74,12 +75,10 @@ public class Consumer {
                 rpc.setAnswerId(dto.getAnswerId());
                 rpc.setEnable(dto.getEnable());
                 rpc.setAccessLevel(dto.getAccessLevel().toString());
-                // converter Long IDs em String para o setter correto
                 rpc.setTags(dto.getTagIds().stream()
                         .map(String::valueOf)
                         .collect(Collectors.toList()));
-                rpc.setAlternatives(dto.getAlternatives()
-                        .stream()
+                rpc.setAlternatives(dto.getAlternatives().stream()
                         .map(a -> {
                             RpcAlternativeDTO alt = new RpcAlternativeDTO();
                             alt.setAlternative(a.getId());
@@ -91,6 +90,7 @@ public class Consumer {
                             return alt;
                         })
                         .collect(Collectors.toList()));
+
                 return rpc;
 
             } else if ("question.alternatives".equals(key)) {

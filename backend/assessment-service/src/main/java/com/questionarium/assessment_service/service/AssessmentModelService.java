@@ -1,15 +1,21 @@
 package com.questionarium.assessment_service.service;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.questionarium.assessment_service.client.QuestionClient;
 import com.questionarium.assessment_service.exception.BusinessException;
 import com.questionarium.assessment_service.model.AssessmentModel;
+import com.questionarium.assessment_service.model.QuestionWeight;
 import com.questionarium.assessment_service.repository.AssessmentModelRepository;
 import com.questionarium.assessment_service.security.JwtTokenDecoder;
 
+import br.com.questionarium.dtos.RpcQuestionDTO;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,19 +28,58 @@ public class AssessmentModelService {
 
     private final AssessmentModelRepository assessmentModelRepository;
     private final JwtTokenDecoder jwtUtils;
+    private final QuestionClient questionClient;
 
-    /** Cria um novo modelo de avaliação */
+    /** Cria um novo modelo de avaliação com validação via RabbitMQ */
     public AssessmentModel createAssessment(AssessmentModel assessment) {
         Long currentUserId = jwtUtils.getCurrentUserId();
+
+        List<Long> ids = assessment.getQuestions()
+                .stream()
+                .map(QuestionWeight::getQuestionId)
+                .collect(Collectors.toList());
+        Set<Long> uniqueIds = new HashSet<>();
+        List<Long> duplicates = ids.stream()
+                .filter(id -> !uniqueIds.add(id))
+                .distinct()
+                .collect(Collectors.toList());
+        if (!duplicates.isEmpty()) {
+            log.error("Tentativa de criar um modelo de avaliação com questões duplicadas: {}", duplicates);
+            throw new BusinessException(
+                    "Não é permitido repetir a mesma questão: duplicatas encontradas " + duplicates);
+        }
+
+        log.info("Criando novo modelo de avaliação para usuário {}", currentUserId);
+
+        // Validação de cada questão
+        for (QuestionWeight qw : assessment.getQuestions()) {
+            Long qid = qw.getQuestionId();
+            RpcQuestionDTO question = questionClient.getQuestion(qid);
+
+            if (question == null) {
+                throw new BusinessException("Questão não encontrada: id=" + qid);
+            }
+            if (Boolean.FALSE.equals(question.getEnable())) {
+                throw new BusinessException("Questão não habilitada: id=" + qid);
+            }
+
+            // validação fina: PRIVATE só para quem criou
+            boolean isPublic = "PUBLIC".equalsIgnoreCase(question.getAccessLevel());
+            if (!isPublic && !question.getUserId().equals(currentUserId)) {
+                throw new BusinessException(
+                        "Você não tem permissão para usar a questão privada id=" + qid);
+            }
+        }
+
+        // tudo validado: atribui dono e salva
         assessment.setUserId(currentUserId);
-        log.info("Criando novo AssessmentModel para usuário {}", currentUserId);
         return assessmentModelRepository.save(assessment);
     }
 
     /** Busca um modelo por ID ou lança 404, com controle de acesso */
     @Transactional(readOnly = true)
     public AssessmentModel getAssessmentById(Long id) {
-        log.info("Buscando AssessmentModel com id {}", id);
+        log.info("Buscando modelo de avaliação com id {}", id);
         AssessmentModel existing = assessmentModelRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Modelo de avaliação não encontrado: " + id));
@@ -50,14 +95,14 @@ public class AssessmentModelService {
         if (!isAdmin()) {
             throw new BusinessException("Somente administradores podem listar todos os modelos");
         }
-        log.info("ADMIN: buscando todos os AssessmentModels");
+        log.info("ADMIN: buscando todos os modelo de avaliação");
         return assessmentModelRepository.findAll();
     }
 
     /** Busca modelos por userId (admin ou próprio usuário) */
     @Transactional(readOnly = true)
     public List<AssessmentModel> getAssessmentsByUserId(Long userId) {
-        log.info("Buscando AssessmentModels do usuário {}", userId);
+        log.info("Buscando modelo de avaliação do usuário {}", userId);
         if (!isAdmin() && !userId.equals(getCurrentUserId())) {
             throw new BusinessException("Você não tem permissão para listar modelos de outro usuário");
         }
@@ -66,13 +111,50 @@ public class AssessmentModelService {
 
     /** Atualiza um modelo existente */
     public AssessmentModel updateAssessment(Long id, AssessmentModel updatedAssessment) {
-        log.info("Atualizando AssessmentModel com id {}", id);
+        Long currentUserId = jwtUtils.getCurrentUserId();
+
+        log.info("Atualizando o modelo de avaliação de id {}", id);
+
         AssessmentModel existing = assessmentModelRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Modelo de avaliação não encontrado para atualização: " + id));
+
         if (!isAdmin() && !existing.getUserId().equals(getCurrentUserId())) {
             throw new BusinessException("Você não tem permissão para atualizar este modelo");
         }
+
+        List<Long> ids = updatedAssessment.getQuestions()
+                .stream()
+                .map(QuestionWeight::getQuestionId)
+                .collect(Collectors.toList());
+
+        Set<Long> uniqueIds = new HashSet<>();
+        List<Long> duplicates = ids.stream()
+                .filter(qid -> !uniqueIds.add(qid))
+                .distinct()
+                .collect(Collectors.toList());
+        if (!duplicates.isEmpty()) {
+            log.error("Tentativa de atualizar AssessmentModel {} com questões duplicadas: {}", id, duplicates);
+            throw new BusinessException(
+                    "Não é permitido repetir a mesma questão: duplicatas encontradas " + duplicates);
+        }
+
+        for (QuestionWeight questionWeight : updatedAssessment.getQuestions()) {
+            Long questionId = questionWeight.getQuestionId();
+            RpcQuestionDTO question = questionClient.getQuestion(questionId);
+            if (question == null) {
+                throw new BusinessException("Questão não encontrada: id=" + questionId);
+            }
+            if (Boolean.FALSE.equals(question.getEnable())) {
+                throw new BusinessException("Questão não habilitada: id=" + questionId);
+            }
+            boolean isPublic = "PUBLIC".equalsIgnoreCase(question.getAccessLevel());
+            if (!isPublic && !question.getUserId().equals(currentUserId)) {
+                throw new BusinessException(
+                        "Você não tem permissão para usar a questão privada id=" + questionId);
+            }
+        }
+
         existing.setDescription(updatedAssessment.getDescription());
         existing.setQuestions(updatedAssessment.getQuestions());
         existing.setInstitution(updatedAssessment.getInstitution());
@@ -82,14 +164,15 @@ public class AssessmentModelService {
         existing.setProfessor(updatedAssessment.getProfessor());
         existing.setInstructions(updatedAssessment.getInstructions());
         existing.setImage(updatedAssessment.getImage());
+
         AssessmentModel saved = assessmentModelRepository.save(existing);
-        log.info("AssessmentModel {} atualizado com sucesso", saved.getId());
+        log.info("Modelo de avaliação {} atualizado com sucesso", saved.getId());
         return saved;
     }
 
     /** Deleta um modelo (admin ou próprio usuário) */
     public void deleteAssessment(Long id) {
-        log.info("Deletando AssessmentModel com id {}", id);
+        log.info("Deletando modelo de avaliação com id {}", id);
         AssessmentModel existing = assessmentModelRepository.findById(id)
                 .orElseThrow(() -> new BusinessException(
                         "Modelo de avaliação não encontrado para exclusão: " + id));
@@ -97,7 +180,7 @@ public class AssessmentModelService {
             throw new BusinessException("Você não tem permissão para excluir este modelo");
         }
         assessmentModelRepository.deleteById(id);
-        log.info("AssessmentModel {} deletado com sucesso", id);
+        log.info("Modelo de avaliação {} deletado com sucesso", id);
     }
 
     private Long getCurrentUserId() {

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -21,79 +22,74 @@ public class GlobalExceptionHandler {
     /** 400 para payload JSON malformado */
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<Object> handleMalformedJson(HttpMessageNotReadableException ex) {
-        Map<String, Object> body = new LinkedHashMap<>();
-        body.put("status", HttpStatus.BAD_REQUEST.value());
-        body.put("erro", "Formato de JSON inválido");
-        body.put("detalhes", ex.getLocalizedMessage());
-        return ResponseEntity.badRequest().body(body);
+        return buildResponse(HttpStatus.BAD_REQUEST,
+                "Formato de JSON inválido",
+                ex.getLocalizedMessage());
     }
 
-    /** 400 para BusinessException (regras de negócio) */
+    /** 403 para BusinessException (regras de negócio proibitivas) */
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<Object> handleBusiness(BusinessException ex) {
-        Map<String, Object> body = new LinkedHashMap<>();
-        body.put("status", HttpStatus.BAD_REQUEST.value());
-        body.put("erro", ex.getMessage());
-        body.put("detalhes", null);
-        return ResponseEntity.badRequest().body(body);
+        return buildResponse(HttpStatus.FORBIDDEN,
+                "Regra de negócio violada",
+                ex.getMessage());
     }
 
     /** 400 para erros de validação de @Valid em @RequestBody */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Object> handleValidationErrors(MethodArgumentNotValidException ex) {
-        Map<String, Object> body = new LinkedHashMap<>();
-        body.put("status", HttpStatus.BAD_REQUEST.value());
-        body.put("erro", "Erro de validação nos campos");
         Map<String, String> fieldErrors = ex.getBindingResult()
-                .getFieldErrors()
-                .stream()
+                .getFieldErrors().stream()
                 .collect(Collectors.toMap(
                         err -> err.getField(),
                         err -> err.getDefaultMessage()));
-        body.put("detalhes", fieldErrors);
-        return ResponseEntity.badRequest().body(body);
+        return buildResponse(HttpStatus.BAD_REQUEST,
+                "Erro de validação nos campos",
+                fieldErrors);
     }
 
     /** 400 para violações em @RequestParam, @PathVariable */
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<Object> handleConstraintViolation(ConstraintViolationException ex) {
-        Map<String, Object> body = new LinkedHashMap<>();
-        body.put("status", HttpStatus.BAD_REQUEST.value());
-        body.put("erro", "Violação de restrição");
-        body.put("detalhes", ex.getConstraintViolations()
-                .stream()
+        List<String> details = ex.getConstraintViolations().stream()
                 .map(v -> v.getPropertyPath() + ": " + v.getMessage())
-                .collect(Collectors.toList()));
-        return ResponseEntity.badRequest().body(body);
+                .collect(Collectors.toList());
+        return buildResponse(HttpStatus.BAD_REQUEST,
+                "Violação de restrição",
+                details);
     }
 
-    /** 403 para falta de permissão */
+    /** 403 para falta de permissão via Spring Security */
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<Object> handleAccessDenied(AccessDeniedException ex) {
-        Map<String, Object> body = new LinkedHashMap<>();
-        body.put("status", HttpStatus.FORBIDDEN.value());
-        body.put("erro", "Acesso negado");
-        body.put("detalhes", ex.getMessage());
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(body);
+        return buildResponse(HttpStatus.FORBIDDEN,
+                "Acesso negado",
+                ex.getMessage());
     }
 
     /** 404 para entidades não encontradas */
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<Object> handleEntityNotFound(EntityNotFoundException ex) {
-        Map<String, Object> body = new LinkedHashMap<>();
-        body.put("status", HttpStatus.NOT_FOUND.value());
-        body.put("erro", ex.getMessage());
-        body.put("detalhes", null);
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
+        return buildResponse(HttpStatus.NOT_FOUND,
+                "Não encontrado",
+                ex.getMessage());
     }
 
     /** 500 para qualquer outra exceção */
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> handleGeneral(Exception ex) {
-        Map<String, Object> body = new LinkedHashMap<>();
-        body.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
-        body.put("erro", "Erro interno inesperado");
-        body.put("detalhes", ex.getMessage());
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
+        return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR,
+                "Erro interno inesperado",
+                ex.getMessage());
+    }
+
+    private ResponseEntity<Object> buildResponse(HttpStatus status,
+            String error,
+            Object details) {
+        var body = new LinkedHashMap<String, Object>();
+        body.put("status", status.value());
+        body.put("erro", error);
+        body.put("detalhes", details);
+        return ResponseEntity.status(status).body(body);
     }
 }
