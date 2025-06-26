@@ -24,10 +24,15 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/actuator/**").permitAll() // Libera o actuator inteiro
-                        .anyRequest().authenticated())
+                        // libera o actuator inteiro e o endpoint público de record-assessments
+                        .requestMatchers("/actuator/**",
+                                "/record-assessments/public/**")
+                        .permitAll()
+                        // todo o resto exige autenticação
+                        .anyRequest()
+                        .authenticated())
                 .oauth2ResourceServer(oauth2 -> oauth2
-                        .jwt(jwt -> jwt.decoder(jwtDecoder()))); // Usa o decoder
+                        .jwt(jwt -> jwt.decoder(jwtDecoder())));
 
         return http.build();
     }

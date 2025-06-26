@@ -19,77 +19,83 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    /** 400 para payload JSON malformado */
-    @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<Object> handleMalformedJson(HttpMessageNotReadableException ex) {
-        return buildResponse(HttpStatus.BAD_REQUEST,
-                "Formato de JSON inválido",
-                ex.getLocalizedMessage());
-    }
+        // 400 para JSON malformado
+        @ExceptionHandler(HttpMessageNotReadableException.class)
+        public ResponseEntity<Object> handleMalformedJson(HttpMessageNotReadableException ex) {
+                return buildResponse(HttpStatus.BAD_REQUEST,
+                                "Formato de JSON inválido",
+                                ex.getLocalizedMessage());
+        }
 
-    /** 403 para BusinessException (regras de negócio proibitivas) */
-    @ExceptionHandler(BusinessException.class)
-    public ResponseEntity<Object> handleBusiness(BusinessException ex) {
-        return buildResponse(HttpStatus.FORBIDDEN,
-                "Regra de negócio violada",
-                ex.getMessage());
-    }
+        // 400 para BusinessException (regras de negócio)
+        @ExceptionHandler(BusinessException.class)
+        public ResponseEntity<Object> handleBusiness(BusinessException ex) {
+                // Se implementou errorCode na BusinessException, inclua no detalhes:
+                Map<String, Object> detalhes = new LinkedHashMap<>();
+                detalhes.put("message", ex.getMessage());
+                if (ex.getErrorCode() != null) {
+                        detalhes.put("errorCode", ex.getErrorCode());
+                }
+                return buildResponse(HttpStatus.BAD_REQUEST,
+                                "Regra de negócio violada",
+                                detalhes);
+        }
 
-    /** 400 para erros de validação de @Valid em @RequestBody */
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Object> handleValidationErrors(MethodArgumentNotValidException ex) {
-        Map<String, String> fieldErrors = ex.getBindingResult()
-                .getFieldErrors().stream()
-                .collect(Collectors.toMap(
-                        err -> err.getField(),
-                        err -> err.getDefaultMessage()));
-        return buildResponse(HttpStatus.BAD_REQUEST,
-                "Erro de validação nos campos",
-                fieldErrors);
-    }
+        // 400 para @Valid em @RequestBody
+        @ExceptionHandler(MethodArgumentNotValidException.class)
+        public ResponseEntity<Object> handleValidationErrors(MethodArgumentNotValidException ex) {
+                Map<String, String> fieldErrors = ex.getBindingResult()
+                                .getFieldErrors().stream()
+                                .collect(Collectors.toMap(
+                                                err -> err.getField(),
+                                                err -> err.getDefaultMessage()));
+                return buildResponse(HttpStatus.BAD_REQUEST,
+                                "Erro de validação nos campos",
+                                fieldErrors);
+        }
 
-    /** 400 para violações em @RequestParam, @PathVariable */
-    @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<Object> handleConstraintViolation(ConstraintViolationException ex) {
-        List<String> details = ex.getConstraintViolations().stream()
-                .map(v -> v.getPropertyPath() + ": " + v.getMessage())
-                .collect(Collectors.toList());
-        return buildResponse(HttpStatus.BAD_REQUEST,
-                "Violação de restrição",
-                details);
-    }
+        // 400 para @RequestParam, @PathVariable inválidos
+        @ExceptionHandler(ConstraintViolationException.class)
+        public ResponseEntity<Object> handleConstraintViolation(ConstraintViolationException ex) {
+                List<String> details = ex.getConstraintViolations().stream()
+                                .map(v -> v.getPropertyPath() + ": " + v.getMessage())
+                                .collect(Collectors.toList());
+                return buildResponse(HttpStatus.BAD_REQUEST,
+                                "Violação de restrição",
+                                details);
+        }
 
-    /** 403 para falta de permissão via Spring Security */
-    @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<Object> handleAccessDenied(AccessDeniedException ex) {
-        return buildResponse(HttpStatus.FORBIDDEN,
-                "Acesso negado",
-                ex.getMessage());
-    }
+        // 403 para AccessDenied
+        @ExceptionHandler(AccessDeniedException.class)
+        public ResponseEntity<Object> handleAccessDenied(AccessDeniedException ex) {
+                return buildResponse(HttpStatus.FORBIDDEN,
+                                "Acesso negado",
+                                ex.getMessage());
+        }
 
-    /** 404 para entidades não encontradas */
-    @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<Object> handleEntityNotFound(EntityNotFoundException ex) {
-        return buildResponse(HttpStatus.NOT_FOUND,
-                "Não encontrado",
-                ex.getMessage());
-    }
+        // 404 para entidades não encontradas
+        @ExceptionHandler(EntityNotFoundException.class)
+        public ResponseEntity<Object> handleEntityNotFound(EntityNotFoundException ex) {
+                return buildResponse(HttpStatus.NOT_FOUND,
+                                "Não encontrado",
+                                ex.getMessage());
+        }
 
-    /** 500 para qualquer outra exceção */
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<Object> handleGeneral(Exception ex) {
-        return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR,
-                "Erro interno inesperado",
-                ex.getMessage());
-    }
+        // 500 para qualquer outro erro
+        @ExceptionHandler(Exception.class)
+        public ResponseEntity<Object> handleGeneral(Exception ex) {
+                return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR,
+                                "Erro interno inesperado",
+                                ex.getMessage());
+        }
 
-    private ResponseEntity<Object> buildResponse(HttpStatus status,
-            String error,
-            Object details) {
-        var body = new LinkedHashMap<String, Object>();
-        body.put("status", status.value());
-        body.put("erro", error);
-        body.put("detalhes", details);
-        return ResponseEntity.status(status).body(body);
-    }
+        private ResponseEntity<Object> buildResponse(HttpStatus status,
+                        String error,
+                        Object details) {
+                var body = new LinkedHashMap<String, Object>();
+                body.put("status", status.value());
+                body.put("erro", error);
+                body.put("detalhes", details);
+                return ResponseEntity.status(status).body(body);
+        }
 }

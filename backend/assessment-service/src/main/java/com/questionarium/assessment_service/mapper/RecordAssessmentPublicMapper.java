@@ -11,6 +11,7 @@ import com.questionarium.assessment_service.model.RecordAssessment;
 @Mapper(componentModel = "spring", uses = { QuestionSnapshotMapper.class })
 public interface RecordAssessmentPublicMapper {
     @Mapping(source = "correctAnswerKeyLetter", target = "correctAnswerKeyLetter")
+    @Mapping(source = "studentAnswerKey", target = "studentAnswerKey")
     RecordAssessmentPublicDTO toDto(RecordAssessment entity);
 
     List<RecordAssessmentPublicDTO> toDto(List<RecordAssessment> entities);

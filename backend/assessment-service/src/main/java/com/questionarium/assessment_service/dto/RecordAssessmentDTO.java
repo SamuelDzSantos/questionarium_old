@@ -22,7 +22,8 @@ public class RecordAssessmentDTO {
     private Double totalScore;
     private Double obtainedScore;
     private List<String> correctAnswerKeyLetter;
-    private String studentAnswerKey;
+    private List<String> studentAnswerKey;
     private LocalDateTime creationDateTime;
     private LocalDateTime updateDateTime;
+    private Boolean active;
 }

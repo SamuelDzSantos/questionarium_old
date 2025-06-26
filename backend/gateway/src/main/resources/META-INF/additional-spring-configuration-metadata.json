@@ -3,5 +3,30 @@
     "name": "key.secret",
     "type": "java.lang.String",
     "description": "A description for 'key.secret'"
+  },
+  {
+    "name": "spring.cloud.circuitbreaker.resilience4j.instances.authCircuitBreaker.timeLimiter.timeoutDuration",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.cloud.circuitbreaker.resilience4j.instances.authCircuitBreaker.timeLimiter.timeoutDuration'"
+  },
+  {
+    "name": "spring.cloud.circuitbreaker.resilience4j.instances.userCircuitBreaker.timeLimiter.timeoutDuration",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.cloud.circuitbreaker.resilience4j.instances.userCircuitBreaker.timeLimiter.timeoutDuration'"
+  },
+  {
+    "name": "spring.cloud.circuitbreaker.resilience4j.instances.questionCircuitBreaker.timeLimiter.timeoutDuration",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.cloud.circuitbreaker.resilience4j.instances.questionCircuitBreaker.timeLimiter.timeoutDuration'"
+  },
+  {
+    "name": "spring.cloud.circuitbreaker.resilience4j.instances.assessmentCircuitBreaker.timeLimiter.timeoutDuration",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.cloud.circuitbreaker.resilience4j.instances.assessmentCircuitBreaker.timeLimiter.timeoutDuration'"
+  },
+  {
+    "name": "spring.cloud.circuitbreaker.resilience4j.instances.authCircuitBreaker.timeLimiter.timeoutDuration",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.cloud.circuitbreaker.resilience4j.instances.authCircuitBreaker.timeLimiter.timeoutDuration'"
   }
 ]}

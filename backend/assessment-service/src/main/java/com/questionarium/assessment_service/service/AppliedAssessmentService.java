@@ -50,37 +50,6 @@ public class AppliedAssessmentService {
                 this.questionClient = questionClient;
         }
 
-        @Transactional(readOnly = true)
-        public List<AppliedAssessment> findAllActive() {
-                if (isAdmin()) {
-                        return appliedRepo.findByActiveTrue();
-                } else {
-                        return appliedRepo.findByUserIdAndActiveTrue(getCurrentUserId());
-                }
-        }
-
-        @Transactional(readOnly = true)
-        public AppliedAssessment findById(Long id) {
-                var applied = appliedRepo.findById(id)
-                                .orElseThrow(() -> new EntityNotFoundException(
-                                                "Avaliação aplicada não encontrada: " + id));
-                if (!isAdmin() && (!applied.getUserId().equals(getCurrentUserId()) || !applied.getActive())) {
-                        throw new BusinessException("Você não tem permissão para acessar esta avaliação");
-                }
-                return applied;
-        }
-
-        @Transactional(readOnly = true)
-        public List<AppliedAssessment> findByUser(Long userId) {
-                if (isAdmin()) {
-                        return appliedRepo.findByUserId(userId);
-                } else if (userId.equals(getCurrentUserId())) {
-                        return appliedRepo.findByUserIdAndActiveTrue(userId);
-                } else {
-                        throw new BusinessException("Você não tem permissão para acessar avaliações de outro usuário");
-                }
-        }
-
         public AppliedAssessment applyAssessment(
                         Long modelId,
                         LocalDate applicationDate,
@@ -191,6 +160,37 @@ public class AppliedAssessmentService {
 
                 // 10) retorna o objeto salvo
                 return saved;
+        }
+
+        @Transactional(readOnly = true)
+        public List<AppliedAssessment> findAllActive() {
+                if (isAdmin()) {
+                        return appliedRepo.findByActiveTrue();
+                } else {
+                        return appliedRepo.findByUserIdAndActiveTrue(getCurrentUserId());
+                }
+        }
+
+        @Transactional(readOnly = true)
+        public AppliedAssessment findById(Long id) {
+                var applied = appliedRepo.findById(id)
+                                .orElseThrow(() -> new EntityNotFoundException(
+                                                "Avaliação aplicada não encontrada: " + id));
+                if (!isAdmin() && (!applied.getUserId().equals(getCurrentUserId()) || !applied.getActive())) {
+                        throw new BusinessException("Você não tem permissão para acessar esta avaliação");
+                }
+                return applied;
+        }
+
+        @Transactional(readOnly = true)
+        public List<AppliedAssessment> findByUser(Long userId) {
+                if (isAdmin()) {
+                        return appliedRepo.findByUserId(userId);
+                } else if (userId.equals(getCurrentUserId())) {
+                        return appliedRepo.findByUserIdAndActiveTrue(userId);
+                } else {
+                        throw new BusinessException("Você não tem permissão para acessar avaliações de outro usuário");
+                }
         }
 
         public void softDelete(Long id) {

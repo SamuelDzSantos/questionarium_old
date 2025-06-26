@@ -9,9 +9,11 @@ import com.questionarium.assessment_service.mapper.AlternativeSnapshotMapper;
 @Configuration
 public class MapStructConfig {
 
-    // problema de bean AlternativeSnapshotMapper exista antes de ser injetado nos mappers
+    // problema de bean AlternativeSnapshotMapper exista antes de ser injetado nos
+    // mappers
     @Bean
     public AlternativeSnapshotMapper alternativeSnapshotMapper() {
         return Mappers.getMapper(AlternativeSnapshotMapper.class);
     }
+
 }

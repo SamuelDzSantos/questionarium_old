@@ -7,12 +7,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.questionarium.assessment_service.dto.CreateRecordAssessmentRequestDTO;
+import com.questionarium.assessment_service.dto.PatchRecordAssessmentRequestDTO;
 import com.questionarium.assessment_service.dto.RecordAssessmentDTO;
 import com.questionarium.assessment_service.dto.RecordAssessmentPublicDTO;
 import com.questionarium.assessment_service.mapper.RecordAssessmentMapper;
 import com.questionarium.assessment_service.mapper.RecordAssessmentPublicMapper;
-import com.questionarium.assessment_service.security.JwtTokenDecoder;
 import com.questionarium.assessment_service.service.RecordAssessmentService;
+import com.questionarium.assessment_service.security.JwtTokenDecoder;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -29,14 +30,14 @@ public class RecordAssessmentController {
     private final RecordAssessmentPublicMapper publicMapper;
     private final JwtTokenDecoder jwtUtils;
 
-    /** 1) Cria registros em lote (soft-delete apenas inativa, não remove) */
+    /** 1) Cria registros em lote */
     @PostMapping
     public ResponseEntity<List<RecordAssessmentDTO>> createBatch(
             @RequestBody @Valid CreateRecordAssessmentRequestDTO dto) {
 
         Long userId = jwtUtils.getCurrentUserId();
-        log.info("POST /record-assessments – userId={} criando registros para appliedAssessmentId={}", userId,
-                dto.getAppliedAssessmentId());
+        log.info("POST /record-assessments – userId={} criando registros para appliedAssessmentId={}",
+                userId, dto.getAppliedAssessmentId());
 
         List<RecordAssessmentDTO> out = mapper.toDto(
                 recordService.createFromAppliedAssessment(
@@ -48,7 +49,7 @@ public class RecordAssessmentController {
                 .body(out);
     }
 
-    /** 2) Busca um registro por ID (admin vê qualquer, user só ativo) */
+    /** 2) Busca um registro por ID */
     @GetMapping("/{id}")
     public ResponseEntity<RecordAssessmentDTO> getOne(@PathVariable Long id) {
         log.info("GET /record-assessments/{} – buscando registro", id);
@@ -56,7 +57,7 @@ public class RecordAssessmentController {
         return ResponseEntity.ok(out);
     }
 
-    /** 3) Lista registros (admin vê todos, user só ativos) */
+    /** 3) Lista registros */
     @GetMapping
     public ResponseEntity<List<RecordAssessmentDTO>> listAll() {
         log.info("GET /record-assessments – listando registros");
@@ -64,7 +65,7 @@ public class RecordAssessmentController {
         return ResponseEntity.ok(out);
     }
 
-    /** 4) Lista registros do usuário logado (sempre só ativos) */
+    /** 4) Lista registros do usuário logado */
     @GetMapping("/user")
     public ResponseEntity<List<RecordAssessmentDTO>> listByUser() {
         Long userId = jwtUtils.getCurrentUserId();
@@ -73,7 +74,7 @@ public class RecordAssessmentController {
         return ResponseEntity.ok(out);
     }
 
-    /** 5) Soft-delete de um registro pelo usuário (inativa somente se for dono) */
+    /** 5) Soft-delete de um registro pelo usuário */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         log.info("DELETE /record-assessments/{} – soft-delete pelo USER", id);
@@ -81,7 +82,7 @@ public class RecordAssessmentController {
         return ResponseEntity.noContent().build();
     }
 
-    /** 6) Soft-delete de um registro pelo ADMIN (inativa qualquer) */
+    /** 6) Soft-delete de um registro pelo ADMIN */
     @DeleteMapping("/admin/{id}")
     public ResponseEntity<Void> adminDelete(@PathVariable Long id) {
         log.info("DELETE /record-assessments/admin/{} – soft-delete pelo ADMIN", id);
@@ -89,11 +90,32 @@ public class RecordAssessmentController {
         return ResponseEntity.noContent().build();
     }
 
-    /** 7) Consulta pública de um registro, sem autenticação adicional */
+    /** 7) Consulta pública de um registro */
     @GetMapping("/public/{id}")
     public ResponseEntity<RecordAssessmentPublicDTO> publicGet(@PathVariable Long id) {
         log.info("GET /record-assessments/public/{} – consulta pública", id);
         RecordAssessmentPublicDTO out = publicMapper.toDto(recordService.publicFindById(id));
+        return ResponseEntity.ok(out);
+    }
+
+    /**
+     * 8) PATCH /record-assessments/{id}
+     * Atualiza studentAnswerKey (List<String>) e recalcula obtainedScore.
+     */
+    @PatchMapping("/{id}")
+    public ResponseEntity<RecordAssessmentDTO> patchStudentKey(
+            @PathVariable Long id,
+            @RequestBody @Valid PatchRecordAssessmentRequestDTO dto) {
+
+        log.info("PATCH /record-assessments/{} – atualizando studentAnswerKey={}", id,
+                dto.getStudentAnswerKey());
+
+        // Calcula e persiste score junto com o novo studentAnswerKey
+        double newScore = recordService.calculateScore(id, dto.getStudentAnswerKey());
+        log.info("Novo obtainedScore para record {} = {}", id, newScore);
+
+        // Retorna o DTO atualizado, já contendo studentAnswerKey e obtainedScore
+        RecordAssessmentDTO out = mapper.toDto(recordService.findById(id));
         return ResponseEntity.ok(out);
     }
 }

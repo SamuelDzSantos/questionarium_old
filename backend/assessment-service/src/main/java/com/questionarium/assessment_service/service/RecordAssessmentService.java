@@ -89,7 +89,11 @@ public class RecordAssessmentService {
                             .map(QuestionSnapshot::getQuestion)
                             .collect(Collectors.toList()));
             rec.setQuestionSnapshots(clones);
-            rec.setTotalScore(applied.getTotalScore());
+
+            double total = clones.stream()
+                    .mapToDouble(QuestionSnapshot::getWeight)
+                    .sum();
+            rec.setTotalScore(total);
 
             // Geração de gabarito em letras
             List<String> letters = IntStream.range(0, clones.size())
@@ -105,6 +109,9 @@ public class RecordAssessmentService {
                     })
                     .collect(Collectors.toList());
             rec.setCorrectAnswerKeyLetter(letters);
+
+            // Inicializa lista de respostas do aluno vazia
+            rec.setStudentAnswerKey(new ArrayList<>());
 
             created.add(repository.save(rec));
         }
@@ -173,6 +180,38 @@ public class RecordAssessmentService {
         return repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Registro de avaliação não encontrado: " + id));
+    }
+
+    /**
+     * Calcula e persiste a nota obtida pelo aluno para um RecordAssessment.
+     *
+     * @param id        ID do RecordAssessment
+     * @param answerKey Lista de letras com as respostas do aluno
+     * @return Nota obtida (soma dos pesos das questões corretas)
+     */
+    public double calculateScore(Long id, List<String> answerKey) {
+        RecordAssessment rec = repository.findById(id)
+                .filter(RecordAssessment::getActive)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Registro de avaliação não encontrado ou inativo: " + id));
+        if (!isAdmin() && !rec.getAppliedAssessment().getUserId().equals(getCurrentUserId())) {
+            throw new BusinessException("Você não tem permissão para corrigir este registro");
+        }
+
+        // Armazena diretamente a lista de respostas do aluno
+        rec.setStudentAnswerKey(new ArrayList<>(answerKey));
+
+        // Calcula a pontuação obtida
+        List<String> correct = rec.getCorrectAnswerKeyLetter();
+        List<QuestionSnapshot> snaps = rec.getQuestionSnapshots();
+        double score = IntStream.range(0, correct.size())
+                .filter(i -> correct.get(i).equals(answerKey.get(i)))
+                .mapToDouble(i -> snaps.get(i).getWeight())
+                .sum();
+        rec.setObtainedScore(score);
+
+        repository.save(rec);
+        return score;
     }
 
     private Long getCurrentUserId() {

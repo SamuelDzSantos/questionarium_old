@@ -66,9 +66,11 @@ public class RecordAssessment {
     private List<String> correctAnswerKeyLetter = new ArrayList<>();
 
     /** Gabarito fornecido pelo aluno */
-    @NotNull
-    @Column(name = "student_answer_key", columnDefinition = "TEXT", nullable = false)
-    private String studentAnswerKey = "[]";
+    @ElementCollection
+    @CollectionTable(name = "record_student_keys", joinColumns = @JoinColumn(name = "record_assessment_id"))
+    @OrderColumn(name = "position")
+    @Column(name = "letter", nullable = false)
+    private List<String> studentAnswerKey = new ArrayList<>();
 
     /** Data/hora de criação (preenchido automaticamente) */
     @NotNull
@@ -90,10 +92,7 @@ public class RecordAssessment {
         LocalDateTime now = LocalDateTime.now();
         if (creationDateTime == null) {
             creationDateTime = now;
-        }
-        updateDateTime = now;
-        if (studentAnswerKey == null) {
-            studentAnswerKey = "[]";
+            updateDateTime = now;
         }
         if (active == null) {
             active = true;

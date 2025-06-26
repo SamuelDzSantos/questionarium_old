@@ -15,6 +15,7 @@ public interface RecordAssessmentMapper {
     // entidade → DTO de resposta
     @Mapping(source = "appliedAssessment.id", target = "appliedAssessmentId")
     @Mapping(source = "correctAnswerKeyLetter", target = "correctAnswerKeyLetter")
+    @Mapping(source = "studentAnswerKey", target = "studentAnswerKey")
     RecordAssessmentDTO toDto(RecordAssessment entity);
 
     // lista de entidades → lista de DTOs

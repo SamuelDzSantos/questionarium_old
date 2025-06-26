@@ -16,6 +16,6 @@ public class RecordAssessmentPublicDTO {
     private List<Long> questionOrder;
     private List<QuestionDTO> questionSnapshots;
     private List<String> correctAnswerKeyLetter;
-    private String studentAnswerKey;
+    private List<String> studentAnswerKey;
     private Double obtainedScore;
 }
