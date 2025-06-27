@@ -1,6 +1,7 @@
 package br.com.questionarium.question_service.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -48,53 +49,63 @@ public class QuestionService {
     public QuestionDTO createQuestion(QuestionDTO questionDTO) {
         logger.info("Criando nova questão para usuário {}", questionDTO.getUserId());
 
-        // Extrai as alternativas do DTO
-        List<AlternativeDTO> alternativesDto = questionDTO.getAlternatives();
-        List<AlternativeDTO> correctAlternatives = alternativesDto.stream()
-                .filter(AlternativeDTO::getIsCorrect)
-                .collect(Collectors.toList());
+        // 1) Se for múltipla escolha, valide e monte as alternativas
+        Set<Alternative> alternatives = Collections.emptySet();
+        if (questionDTO.getMultipleChoice()) {
+            List<AlternativeDTO> alternativesDto = questionDTO.getAlternatives();
+            List<AlternativeDTO> correctAlternatives = alternativesDto.stream()
+                    .filter(AlternativeDTO::getIsCorrect)
+                    .collect(Collectors.toList());
 
-        // Se não houver exatamente uma correta, lança 400 Bad Request
-        if (correctAlternatives.size() != 1) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "Deve existir exatamente uma alternativa correta. Encontradas: "
-                            + correctAlternatives.size());
+            if (correctAlternatives.size() != 1) {
+                throw new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST,
+                        "Deve existir exatamente uma alternativa correta. Encontradas: "
+                                + correctAlternatives.size());
+            }
+
+            alternatives = alternativesDto.stream()
+                    .map(dto -> Alternative.builder()
+                            .description(dto.getDescription())
+                            .imagePath(dto.getImagePath())
+                            .explanation(dto.getExplanation())
+                            .isCorrect(dto.getIsCorrect())
+                            .alternativeOrder(dto.getAlternativeOrder())
+                            .question(null) // será associado depois
+                            .build())
+                    .collect(Collectors.toSet());
+        } else {
+            if (questionDTO.getAlternatives() != null && !questionDTO.getAlternatives().isEmpty()) {
+                throw new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST,
+                        "Questões dissertativas não podem ter alternativas.");
+            }
         }
 
-        // Mapeia DTO para entidade
+        // 2) Mapeia DTO para entidade e atribui alternatives
         Question question = questionMapper.toEntity(questionDTO);
-
-        // Preenche o conjunto de alternativas
-        Set<Alternative> alternatives = alternativesDto.stream()
-                .map(dto -> Alternative.builder()
-                        .description(dto.getDescription())
-                        .imagePath(dto.getImagePath())
-                        .explanation(dto.getExplanation())
-                        .isCorrect(dto.getIsCorrect())
-                        .alternativeOrder(dto.getAlternativeOrder())
-                        .question(question)
-                        .build())
-                .collect(Collectors.toSet());
         question.setAlternatives(alternatives);
 
-        // Salva para gerar IDs
+        // 3) Persiste para gerar IDs nas alternativas (ou só a questão)
         Question saved = questionRepository.save(question);
 
-        // Determina e persiste o gabarito (answerId)
-        Alternative correct = saved.getAlternatives().stream()
-                .filter(Alternative::getIsCorrect)
-                .findFirst()
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.INTERNAL_SERVER_ERROR,
-                        "Alternativa correta não encontrada após salvar."));
-        saved.setAnswerId(correct.getId());
+        // 4) Se for MC, associa alternativas e define o answerId
+        if (questionDTO.getMultipleChoice()) {
+            saved.getAlternatives().forEach(a -> a.setQuestion(saved));
 
-        // Re-salva com o answerId definido
-        Question updated = questionRepository.save(saved);
+            Alternative correct = saved.getAlternatives().stream()
+                    .filter(Alternative::getIsCorrect)
+                    .findFirst()
+                    .orElseThrow(() -> new ResponseStatusException(
+                            HttpStatus.INTERNAL_SERVER_ERROR,
+                            "Alternativa correta não encontrada após salvar."));
 
-        // Retorna o DTO da questão criada
-        return questionMapper.toDto(updated);
+            saved.setAnswerId(correct.getId());
+            Question updated = questionRepository.save(saved);
+            return questionMapper.toDto(updated);
+        }
+
+        return questionMapper.toDto(saved);
     }
 
     public List<QuestionDTO> getAllQuestions() {
