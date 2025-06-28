@@ -38,24 +38,30 @@ export class QuestionService {
 
   filterQuestions(
     multipleChoice?: boolean,
-    personId?: number,
-    educationLevel?: number,
-    accessLevel?: number,
     tagIds?: number[],
-    enunciado?: string,
+    accessLevel?: number,
+    educationLevel?: number,
+    header?: string
   ): Observable<Question[]> {
     let params = new HttpParams();
-    if (multipleChoice !== undefined) params = params.set('multipleChoice', multipleChoice);
-    if (personId !== undefined) params = params.set('personId', personId);
-    if (educationLevel !== undefined) params = params.set('educationLevel', educationLevel);
-    if (accessLevel != null) params = params.set('accessLevel', accessLevel);
-    if (enunciado != null) params = params.set('header', enunciado);
-    if (tagIds && tagIds.length > 0) {
-      const tagIdsStr = tagIds.join(',');
-      params = params.set('tagIds', tagIdsStr);
+
+    if (multipleChoice != null) {
+      params = params.set('multipleChoice', String(multipleChoice));
     }
-    console.log(params)
+    if (tagIds?.length) {
+      params = params.set('tagIds', tagIds.join(','));
+    }
+    if (accessLevel != null) {
+      params = params.set('accessLevel', String(accessLevel));
+    }
+    if (educationLevel != null) {
+      params = params.set('educationLevel', String(educationLevel));
+    }
+    if (header) {
+      params = params.set('header', header);
+    }
 
     return this.http.get<Question[]>(`${this.baseUrl}`, { params });
   }
+
 }
