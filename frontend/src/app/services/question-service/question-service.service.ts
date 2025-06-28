@@ -3,12 +3,14 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Question } from '../../types/dto/Question';
 import { Tag } from '../../types/dto/Tag';
+import { environment } from '../../../enviroments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class QuestionService {
-  private readonly baseUrl = 'http://127.0.0.1:14006/questions';
+
+  private readonly baseUrl = `${environment.apiUrl}/questions`;
 
   constructor(private http: HttpClient) { }
 
@@ -21,7 +23,7 @@ export class QuestionService {
   }
 
   getAllTags(): Observable<Tag[]> {
-    return this.http.get<Tag[]>(`${this.baseUrl}/tags`);
+    return this.http.get<Tag[]>(`${environment.apiUrl}/questions/tags`);
   }
 
   getQuestionById(id: number): Observable<Question> {
