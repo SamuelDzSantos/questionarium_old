@@ -1,0 +1,85 @@
+<div class="area">
+
+    <h1>Aplicar Avaliação</h1>
+
+    <div class="cabecalho">
+        <h2>Cabeçalho</h2>
+
+        <div class="cabeçalho_area">
+            <div class="input">
+                <span>Instituição</span>
+                <div class="text">{{ header.institution }}</div>
+            </div>
+            <div class="input">
+                <span>Departamento</span>
+                <div class="text">{{ header.department }}</div>
+            </div>
+            <div class="input">
+                <span>Curso</span>
+                <div class="text">{{ header.course }}</div>
+            </div>
+            <div class="input">
+                <span>Turma</span>
+                <div class="text">{{ header.classroom }}</div>
+            </div>
+            <div class="input">
+                <span>Professor</span>
+                <div class="text">{{ header.professor }}</div>
+            </div>
+            <div class="input_text">
+                <span>Instruções</span>
+                <div class="text-area">{{ header.instructions }}</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="atributos">
+        <div class="atributos_area">
+            <h2>Atributos da Aplicação da Avaliação</h2>
+            <div class="input">
+                <span>Data da Aplicação</span>
+                <input type="date" [(ngModel)]="appliesAssessment.applicationDate" [min]="minDate" [max]="maxDate"
+                    (change)="validateDate()" />
+            </div>
+
+            <div class="input">
+                <span>Quantidade de Aplicações</span>
+                <input type="number" [(ngModel)]="appliesAssessment.quantity" min="1" max="100"
+                    (input)="validateQuantity()" />
+            </div>
+
+            <div class="input">
+                <span>Misturar questões</span>
+                <input type="checkbox" [(ngModel)]="appliesAssessment.shuffle" />
+            </div>
+        </div>
+
+    </div>
+
+    <div class="question_area">
+        <div *ngFor="let questao of questionExample; let i = index" class="question">
+            Questão {{ i + 1 }}
+            <div>
+                <span>Enunciado: {{ questao.header }}</span>
+                <span>Nível Escolar: {{questao.educationLevel}}  </span>
+                <span>Tags: {{questao.tagIds}}</span>
+                <span>{{ questao.accessLevel === 1 ? 'PÚBLICO' : 'PRIVADO' }}</span>
+                <div [ngStyle]="{'background-color': questao.difficultyLevel > 2 ? '#BBE8BA' : 'red'}">
+                    {{ questao.difficultyLevel > 2 ? 'Fácil' : 'Difícil' }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="bottom-button-area">
+        <button>Nova Questão</button>
+        <button (click)="return_assessment()">Cancelar</button>
+        <button (click)="save_applied_assessment()">Salvar</button>
+    </div>
+    <a href="">Crie sua questão aqui</a>
+    <div>
+        <p></p>
+    </div>
+
+</div>

@@ -18,4 +18,8 @@ export class LocalStorageService{
     public clearUserToken(){
         localStorage.removeItem("token");
     }
+
+    public getUserId() : number | null {
+        return Number(localStorage.getItem("userId"));
+    }
 }
