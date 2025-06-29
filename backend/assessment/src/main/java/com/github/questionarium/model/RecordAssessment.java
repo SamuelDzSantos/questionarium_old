@@ -59,7 +59,6 @@ public class RecordAssessment {
     /** Pontuação que o aluno obteve */
     @Column(name = "obtained_score")
     private Double obtainedScore;
-
     /** NOVO: gabarito em letras (A, B, C…) para cada questão */
     @ElementCollection
     @CollectionTable(name = "record_letter_keys", joinColumns = @JoinColumn(name = "record_assessment_id"))

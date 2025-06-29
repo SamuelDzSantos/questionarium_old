@@ -8,6 +8,8 @@ import { MainComponent } from './components/main/main.component';
 import { CreateQuestionComponent, ViewQuestionsComponent } from './components/questions';
 import { SobreComponent } from './components/sobre/sobre.component';
 import { defaultCanActivateGuard } from './guards/default-can-activate.guard';
+import { ListarRelatoriosComponent } from './components/relatorios/listar-relatorios/listar-relatorios';
+import { VerRelatorioComponent } from './components/relatorios/ver-relatorio/ver-relatorio';
 
 export const routes: Routes = [
     {
@@ -34,6 +36,13 @@ export const routes: Routes = [
                     { path: "", component: ViewQuestionsComponent },
                     { path: "criar", component: CreateQuestionComponent },
                     { path: ":id", component: CreateQuestionComponent }
+                ]
+            },
+            {
+                path: "relatorios",
+                children: [
+                    { path: "", component: ListarRelatoriosComponent },
+                    { path: ":id", component: VerRelatorioComponent }
                 ]
             },
         ],

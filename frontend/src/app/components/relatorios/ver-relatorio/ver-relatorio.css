@@ -1,0 +1,77 @@
+.body {
+    font-family: Arial, sans-serif;
+    padding-bottom: 100px;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    margin: 25px;
+}
+
+.header h1 {
+    flex: 1;
+    text-align: center;
+    margin: 0;
+}
+
+.header button {
+    position: absolute;
+    right: 0;
+    background-color: gray;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    border-radius: 10px;
+}
+
+
+.container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 20px;
+    height: 100vh;
+    box-sizing: border-box;
+}
+
+.info-box {
+    width: 15%;
+}
+
+.relatorio-table {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.relatorio-table table {
+    border-collapse: collapse;
+    width: 80%;
+    border-width: 1px;
+    border-color: black;
+    border-radius: 5px;
+    border-style: solid;
+}
+
+.relatorio-table th {
+    background-color: #e4e4e4;
+    padding: 5px;
+    border-bottom: 1px solid black;
+}
+
+.relatorio-table td {
+    padding: 5px;
+    text-align: center;
+    border: 1px solid black;
+}
+
+button {
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    border-radius: 10px;
+}

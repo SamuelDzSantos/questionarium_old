@@ -1,0 +1,46 @@
+.container {
+    padding: 20px;
+    font-family: Arial, sans-serif;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    margin: 25px;
+}
+
+.relatorio-table {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.relatorio-table table {
+    width: 80%;
+    border-width: 1px;
+    border-color: black;
+    border-radius: 5px;
+    border-style: solid;
+    border-collapse: collapse;
+}
+
+.relatorio-table th {
+    border-bottom: 1px solid black;
+    padding: 5px;
+}
+
+.relatorio-table td {
+    text-align: center;
+    padding: 5px;
+}
+
+button {
+    background-color: #002436;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    border-radius: 10px;
+    color: white;
+}
