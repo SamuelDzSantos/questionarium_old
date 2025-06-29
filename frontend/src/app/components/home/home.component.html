@@ -1,0 +1,38 @@
+<div class="menu-area">
+    <div class="menu-grid">
+        <div>
+            <img routerLink="/avaliacao" src="/resources/avaliacao.png" />
+            Avaliações
+        </div>
+        <div>
+            <img routerLink="/questions" src="/resources/questoes.png" />
+            Questões
+        </div>
+        <!--
+        <div>
+            <img src="/resources/cabecalho.png"/>
+            Cabeçalhos
+        </div>
+        
+        <div routerLink="/turma">
+            <img src="/resources/turmas.png">
+            Turmas
+        </div>
+        -->
+        <div routerLink="/sobre">
+            <img src="/resources/sobre.png" />
+            Sobre
+        </div>
+        <div>
+            <img src="/resources/aplicacao.png" />
+            Aplicações
+        </div>
+    </div>
+
+    <button *ngIf="!modalEnabled" (click)="openModal()" class="button-chatbot">
+        <img src="./resources/msg.png" width="50" height="50" />
+    </button>
+    <app-chat-bot [style.display]="modalEnabled ? 'inline-block' :'none'"
+        (closeModalEvent)="closeModal()"></app-chat-bot>
+
+</div>

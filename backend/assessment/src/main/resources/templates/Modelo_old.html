@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Avaliação</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            width: 210mm;
+            height: 297mm;
+            display: flex;
+            flex-direction: column;
+            margin: 0px;
+        }
+
+        .header {
+            border: 1px solid black;
+            justify-content: center;
+            display: grid;
+            width: 210mm;
+            grid-template-columns: 10% 70% 15%;
+            grid-template-rows: 30% 50% 20%;
+            min-height: 25mm;
+            column-gap: 2mm;
+            min-height: 30mm;
+        }
+
+        .instrucoes {
+            border: 1px solid black;
+            margin-top: 3%;
+            padding: 3mm;
+            width: 210mm;
+            box-sizing: border-box;
+        }
+
+        .instrucoes ol {
+            padding-left: 5mm;
+        }
+
+        .logo {
+            align-self: center;
+            justify-self: center;
+            height: 20mm;
+            width: 20mm;
+            grid-row: 1/4;
+            object-fit: fill;
+        }
+
+        .instituicao {
+            font-size: 5mm;
+            font-weight: bold;
+            text-align: center;
+            grid-column: 2/5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .info-grid {
+            height: 30%;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            justify-content: center;
+            font-size: 14px;
+            gap: 5px;
+            grid-row: 2/4;
+            grid-column: 2/5;
+        }
+
+        .user-info {
+            margin-top: 5mm;
+            display: flex;
+            flex-direction: row;
+            width: 210mm;
+            justify-content: space-between;
+        }
+
+        .data {
+            border: 1px solid black;
+            font-size: 3.5mm;
+            padding: 1mm 2mm;
+            display: flex;
+            align-items: end;
+            grid-column: 3/4;
+            grid-row: 3/4;
+            align-items: center;
+            box-sizing: border-box;
+        }
+
+        .user-input {
+            border: 1px solid black;
+            width: 100mm;
+            font-size: 14px;
+            padding: 1mm;
+        }
+
+        .info-item {
+            border: 1px solid black;
+            padding: 6px 10px;
+            max-height: 80%;
+            display: flex;
+            align-items: end;
+        }
+
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-top: 10mm;
+        }
+
+        .teste {
+            margin-left: 3px;
+            flex: 1;
+            border-top: 1px solid black;
+        }
+
+        .question {
+            border: 1px dotted black;
+            margin-top: 20px;
+            border-bottom: 1px solid #ccc;
+            padding: 2mm;
+            box-sizing: border-box;
+        }
+
+        .question img {
+            max-width: 100%;
+            margin: 10px 0;
+        }
+
+        .alternatives {
+            margin-top: 10px;
+        }
+
+        .alternative {
+            margin: 4px 0;
+        }
+
+        hr {
+            border: 1px solid black;
+            margin-top: 6mm;
+        }
+
+        .question-img {
+            height: 60mm;
+            width: 80mm;
+            object-fit: fill;
+        }
+
+        .qrcode img {
+            margin-top: 10mm;
+            width: 40mm;
+            height: 40mm;
+        }
+
+        .gabarito {
+            border-collapse: collapse;
+            margin-left: 10mm;
+            font-size: 3mm;
+        }
+
+        .gabarito tr {
+            height: 8mm;
+        }
+
+        .gabarito th {
+            border: 0.2mm solid black;
+        }
+
+        .gabarito td {
+            border: 0.2mm solid black;
+            width: 20mm;
+            padding: 1mm;
+            text-align: center;
+        }
+
+        #titulo {
+            border: none;
+            font-size: 5mm;
+        }
+
+        .page-number {
+            text-align: center;
+            font-size: 0.8em;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Header dinâmico -->
+    <div class="header">
+
+        <!-- Logo -->
+        <img th:if="${logoUrl != null}" class="logo" th:src="@{${logoUrl}}" alt="Logo">
+
+        <!-- Nome da Instituição -->
+        <div th:if="${instituicao != null}" th:text="${instituicao}" class=" instituicao">
+        </div>
+
+        <!-- Outros campos -->
+        <div class="info-grid">
+            <div th:if="${departamento != null}" th:text="'Departamento: ' + ${departamento}" class="info-item">
+                <span></span><span class="teste"></span>
+            </div>
+            <div th:if="${curso != null}" th:text="'Curso: ' + ${curso}" class="info-item">Curso: Física - 2ª Etapa
+            </div>
+            <div th:if="${classe != null}" th:text="'Classe: ' + ${classe}" class="info-item">Classe: 2º Ano</div>
+            <div th:if="${professor != null}" th:text="'Professor: ' + ${professor}" class="info-item">Professor:
+                Ronaldo
+            </div>
+        </div>
+
+    </div>
+
+    <div class="user-info">
+        <div class="user-input">Aluno:</div>
+        <div th:text="'Data: ' + ${data}" class="data">Data: 28/06/2025</div>
+    </div>
+
+    <!-- Instruções -->
+    <div th:if="${instrucoes != null}" class="instrucoes">
+        <strong>INSTRUÇÕES E OBSERVAÇÕES:</strong>
+        <ol>
+            <li th:each="instrucao : ${instrucoes}" th:text="${instrucao}"></li>
+            <!--
+            <li>Preencha o cabeçalho corretamente.</li>
+            <li>Verifique se seu exemplar está completo.</li>
+            <li>Não use corretivo.</li>
+            <li>Entregue a prova ao fiscal somente após 2 horas.</li>
+            -->
+            <p th:if="${instrucoes_footer} != null" th:text="${instrucoes_footer}" style="text-align: center;"><em>Boa
+                    prova!</em></p>
+        </ol>
+    </div>
+
+
+    <!-- Questões -->
+    <div th:each="questao, stat : ${questoes}" class="question">
+
+        <div>
+            <strong th:text="${stat.index + 1} + ') ' + ${questao.header}"></strong>
+        </div>
+
+        <div th:if="${questao.headerImage != null}">
+            <img th:src="@{${questao.headerImage}}" alt="Imagem da questão">
+        </div>
+
+        <div class="alternativas" th:if="${questao.multipleChoice}">
+            <div th:each="alt, i : ${questao.alternatives}">
+                <span th:text="${'ABCDEFGHIJKLMNOPQRSTUVWXYZ'[i.index]} + ') ' + ${alt.description}"></span>
+            </div>
+        </div>
+        <div th:if="${!questao.multipleChoice}">
+            <hr th:each="i: ${#numbers.sequence(1,questao.numberLines)}">
+        </div>
+
+        <!--
+        <p>1) Qual é a fórmula da velocidade média?</p>
+
+        <img class="question-img" src="https://picsum.photos/200/300" alt="Imagem da questão">
+-->
+        <!-- Questão Discursiva -->
+
+
+        <!-- Questão de Múltipla Escolha -->
+        <!--
+        <div class="alternatives">
+            <div class="alternative">
+                <label>
+                    <span>a</span>)
+                    <span>v = d / t</span>
+                </label>
+            </div>
+            <div class="alternative">
+                <label>
+                    <span>b</span>)
+                    <span>v = t / d</span>
+                </label>
+            </div>
+            <div class="alternative">
+                <label>
+                    <span>c</span>)
+                    <span>v = d * t</span>
+                </label>
+            </div>
+            <div class="alternative">
+                <label>
+                    <span>d</span>)
+                    <span>v = d + t</span>
+                </label>
+            </div>
+
+            <div class="alternative">
+                <label>
+                    <span>e</span>)
+                    <span>v = (d + t)*2</span>
+                </label>
+            </div>
+        </div>
+    </div>
+    <div class="question">
+        <p>2) Explique o conceito de aceleração.</p>
+        -->
+        <!-- Questão Discursiva -->
+        <!-- <div>
+            <hr>
+            <hr>
+            <hr>
+            <hr>
+    -->
+        <!--<textarea rows="4" style="width:100%;"></textarea>
+       
+    </div>
+     -->
+
+        <!-- Questão de Múltipla Escolha -->
+
+    </div>
+    <div class="footer">
+        <div class="qrcode">
+            <img th:src="'data:image/png;base64,' + ${qrcode}" alt="QR Code">
+            <div class="id-info">
+                ID: <span th:text="${codigo}">0039</span><br>
+                <a href="#" style="text-decoration: none;">Verifique seu resultado pelo app!</a>
+            </div>
+        </div>
+
+        <table class="gabarito">
+            <thead>
+                <tr>
+                    <th id="titulo" colspan="6">Gabarito</th>
+                </tr>
+                <tr>
+                    <th>#</th>
+                    <th>A</th>
+                    <th>B</th>
+                    <th>C</th>
+                    <th>D</th>
+                    <th>E</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="i: ${#numbers.sequence(1,10)}">
+                    <td th:text="${i}"></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+
+
+
+</body>
+
+</html>

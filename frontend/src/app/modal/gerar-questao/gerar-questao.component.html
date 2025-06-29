@@ -1,0 +1,59 @@
+<div class="modal-backdrop">
+  <div class="modal-container">
+    <div class="modal-header">
+      <h2>Gerar Questão</h2>
+      <button class="close-button" (click)="closeModal()">X</button>
+    </div>
+    <div class="modal-body">
+
+      <div class="form-group">
+        <label for="tema">Tema:</label>
+        <input type="text" id="tema" name="tema" [(ngModel)]="questionTheme"/>
+      </div>
+
+      <div class="form-group">
+        <label for="categoria">Categoria:</label>
+        <select id="categoria" [(ngModel)]="selectedCategorias" multiple>
+          <option value="" disabled selected>Selecione uma opção</option>
+          <option *ngFor="let categoria of categorias" [value]="categoria.id">
+            {{ categoria.description }}
+          </option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="nivel">Nível:</label>
+        <select id="nivel" [(ngModel)]="selectedNivel">
+          <option value="" disabled selected>Selecione uma opção</option>
+          <option *ngFor="let nivel of niveis" [value]="nivel.value">
+            {{ nivel.label }}
+          </option>
+        </select>
+      </div>
+
+      <div class="form-group checkbox-container">
+        <div class="checkbox-group">
+          <label for="tipo">Discursiva:</label>
+          <input type="checkbox" id="tipo" name="tipo" [(ngModel)]="discursiva"/>
+        </div>
+      
+        <div class="checkbox-group">
+          <label for="accessLevel">Pública:</label>
+          <input type="checkbox" id="accessLevel" name="accessLevel" [(ngModel)]="accessLevel"/>
+        </div>
+      </div>     
+
+      <button (click)="generateQuestion()">Gerar</button>
+
+      <div class="visualization">
+        <label for="visualization">Visualização:</label>
+        <textarea id="visualization" rows="10" readonly [(ngModel)]="generatedQuestion"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button (click)="acceptQuestion()">Aceitar</button>
+      <button (click)="generateQuestion()">Gerar Outra</button>
+      <button (click)="cancel()">Cancelar</button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,14 @@
+/* You can add global styles to this file, and also import other style files */
+@font-face {
+    font-family: 'Inter';
+    src: url("/fonts/Inter/Inter-ExtraBold.ttf") format('trueType');
+}
+
+* {
+    margin: 0px;
+}
+
+body {
+    height: 100%;
+    width: 100%;
+}

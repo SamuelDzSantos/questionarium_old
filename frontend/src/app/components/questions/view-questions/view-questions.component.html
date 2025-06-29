@@ -1,0 +1,57 @@
+<div class="container">
+    <div class="header">
+        <h1>Questões</h1>
+        <button class="btn-new-question" routerLink="/questions/criar">
+          <span>+ Nova Questão</span>
+        </button>
+      </div>
+      <div class="filters">
+        <div class="filter-group">
+          <label for="categoria">Categoria:</label>
+          <select id="categoria" class="form-select" (change)="onCategoriaChange($event)" multiple>
+            <option value="0" selected>Selecione uma categoria</option>
+            <option *ngFor="let categoria of categorias" [value]="categoria.id">{{ categoria.description }}</option>
+          </select>
+          <div *ngIf="selectedCategorias.length > 0" class="selected-tags">
+            <span *ngFor="let tagId of selectedCategorias" class="badge">
+              {{ getTagName(tagId) }}
+            </span>
+          </div>
+        </div>
+        <div class="filter-group">
+          <label for="tipo">Discursiva: </label>
+          <input type="checkbox" id="tipo" name="tipo" (change)="onDiscursivaChange($event)" [(ngModel)]="discursiva"/>
+        </div>
+        <div class="filter-group">
+          <label for="nivel">Nível:</label>
+          <select id="nivel" class="nivel-select" (change)="onNivelChange($event)" [(ngModel)]="selectedNivel">
+            <option value="-1" selected>Selecione uma opção</option>
+            <option *ngFor="let nivel of niveis" [value]="nivel.value">{{ nivel.label }}</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="access">Pública: </label>
+          <input type="checkbox" id="access" name="access" (change)="onAccessChange($event)" [(ngModel)]="access"/>
+        </div>
+        <div class="filter-group search">
+          <input type="text" id="enunciado" name="enunciado" [(ngModel)]="enunciado" placeholder="Palavras-chave, enunciado..."/>
+        </div>
+        <div class="search">
+          <button class="btn-search" (click)="onFilterClick()">Pesquisar</button>
+        </div>
+      </div>
+
+    <div class="questions">
+      <div class="question-card" *ngFor="let question of questions">
+        <!-- <h3>Disciplina</h3>
+        <div class="assuntos">
+          <span>Assuntos</span>
+        </div> -->
+        <p>{{ question.header }}</p>
+        <button class="btn-view" (click)='viewQuestion(question.id!)'>Visualizar</button>
+      </div>
+    </div>
+    <span *ngIf="questions.length===0">Nenhuma questão encontrada</span>
+    <div style="margin-bottom: 70px;"></div>
+  </div>
+  

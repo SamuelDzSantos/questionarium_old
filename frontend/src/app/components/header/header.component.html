@@ -1,0 +1,101 @@
+@if ((this.changes$ | async); as changes) {
+@switch (this.determinePage(changes)) {
+@case (PageTypes.LogoOnly) {
+<nav class="centered-logo">
+    <img routerLink="/" src="./resources/logo.png" />
+</nav>
+}
+@case (PageTypes.DefaultLogged){
+<nav>
+    <ul>
+        <li routerLink="/"><img src="./resources/logo.png"></li>
+        <li id="option-list-container-logged">
+            <ul>
+                <li class="bottom_list_item"><a routerLink="/questoes">Questões</a></li>
+                <li class="bottom_list_item"><a routerLink="/avaliacoes">Avaliações</a></li>
+                <li class="bottom_list_item"><a routerLink="/turmas">Turmas</a></li>
+                <li class="bottom_list_item"><a routerLink="/relatorios">Relatórios</a></li>
+                <li class="bottom_list_item"><a routerLink="/sobre">Sobre</a></li>
+            </ul>
+        </li>
+        <li id="user-icon-container">
+            <div id="logo-container">
+                <img src="./resources/default_user_logo.png" />
+                <span>Olá, <span>{{changes[0]?.name}} </span></span>
+                <div id="dropdown">
+                    <ul>
+                        <li><a routerLink="/edicao">Conta</a></li>
+                        <li><a (click)="logout()">Sair</a></li>
+                    </ul>
+                </div>
+            </div>
+
+        </li>
+    </ul>
+</nav>
+}
+@default () {
+<nav>
+    <ul>
+        <li routerLink="/"><img src="./resources/logo.png"></li>
+        <li id="option-list-container">
+            <ul>
+                <li><a>Novidades</a></li>
+                <li><a>Blog</a></li>
+                <li><a>Manual</a></li>
+                <li><a routerLink="/sobre">Sobre</a></li>
+            </ul>
+        </li>
+        <li id="home-options-list">
+            @if (this.determinePage(changes) == PageTypes.MainPageUnlogged) {
+            <a routerLink="/login">Login</a>
+            <a routerLink="/cadastro">Cadastrar</a>
+            }@else {
+            <a routerLink="/home">Home</a>
+            }
+        </li>
+    </ul>
+</nav>
+}
+
+}
+}
+<!--
+<nav>
+    <ul>
+        <li class="logo" routerLink="/"><img s></li>
+        @if(this.determinePage(changes) == PageTypes.DefaultLogged){
+        <ul class="icon-list-container">
+            <li class="bottom_list_item"><a routerLink="/questoes">Questões</a></li>
+            <li class="bottom_list_item"><a routerLink="/avaliacoes">Avaliações</a></li>
+            <li class="bottom_list_item"><a routerLink="/turmas">Turmas</a></li>
+            <li class="bottom_list_item"><a routerLink="/relatorios">Relatórios</a></li>
+            <li class="bottom_list_item"><a routerLink="/sobre">Sobre</a></li>
+        </ul>
+        <div class="logo-container">
+            <img src="./resources/default_user_logo.png" />
+            <span>Olá, <span>{{changes[0]?.name}} </span></span>
+        </div>
+        }
+        @else if (this.determinePage(changes) != PageTypes.LogoOnly) {
+        <li><a>Novidades</a></li>
+        <li><a>Blog</a></li>
+        <li><a>Manual</a></li>
+        <li><a routerLink="/sobre">Sobre</a></li>
+        <li>
+            @if(this.determinePage(changes) == PageTypes.MainPageUnlogged){
+            <a routerLink="/login">Login</a>
+            <a routerLink="/cadastro">Cadastrar</a>
+            }
+            @else {
+            <a routerLink="/home">Home</a>
+            }
+        </li>
+        }
+    </ul>
+    @if(this.determinePage(changes) == PageTypes.DefaultLogged){
+
+    }
+</nav>
+}
+-->

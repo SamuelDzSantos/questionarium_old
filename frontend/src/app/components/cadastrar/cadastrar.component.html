@@ -1,0 +1,19 @@
+<div>
+    <h1>Cadastro</h1>
+    <form [formGroup]="registerForm">
+        <div>
+            <label for="name"> Nome*</label>
+            <input id="name" type="text" formControlName="name" />
+        </div>
+        <div>
+            <label for="email"> Email*</label>
+            <input id="email" type="text" formControlName="email" />
+        </div>
+        <div>
+            <label for="senha"> Senha*</label>
+            <input id="senha" type="password" formControlName="password" />
+        </div>
+        <button type="submit" (click)="submitLogin()">Entrar</button>
+        <a routerLink="/login">Faça login aqui</a>
+    </form>
+</div>

@@ -1,0 +1,215 @@
+nav {
+    background-color: #002436;
+    position: sticky;
+    height: 85px;
+    z-index: 999;
+}
+
+nav ul {
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    list-style: none;
+}
+
+nav ul li {
+    height: 100%;
+    flex: 1;
+}
+
+img:hover {
+    cursor: pointer;
+}
+
+/* Css para Header da Home page */
+
+#option-list-container {
+    flex: 3;
+}
+
+#option-list-container ul {
+    width: 80%;
+    padding: 0;
+    justify-self: center;
+}
+
+
+@media (width < 1000px) {
+
+    #option-list-container {
+        flex: 1.5;
+    }
+
+    #option-list-container ul {
+        width: 100%;
+        padding: 0;
+        justify-self: center;
+    }
+}
+
+
+
+#option-list-container ul li {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#option-list-container ul li a {
+    color: white;
+    text-decoration: none;
+    transition: all 0.5s;
+    flex: 1;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#option-list-container ul li a:hover {
+    background-color: #51307e;
+}
+
+/* Css da página principal uma vez logado*/
+
+#home-options-list {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+#home-options-list a {
+    width: 50%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.5s;
+    text-decoration: none;
+    color: white;
+}
+
+#home-options-list a:hover {
+    background-color: #51307e;
+}
+
+
+
+.centered-logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#option-list-container-logged {
+    flex: 3;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+}
+
+
+
+#option-list-container-logged ul {
+    width: 80%;
+    height: 30%;
+    padding: 0;
+    margin-bottom: 10px;
+    background-color: #324A5F;
+    border-radius: 5px;
+}
+
+
+#option-list-container-logged ul li {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    border-left: 1px solid white;
+}
+
+#option-list-container-logged ul li:first-of-type {
+    border-left: none;
+}
+
+
+#option-list-container-logged ul li a {
+    color: white;
+    text-decoration: none;
+    transition: all 0.5s;
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#option-list-container-logged ul li:nth-child(1) {
+    color: red;
+}
+
+
+
+
+img {
+    height: 100%;
+}
+
+#user-icon-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+#logo-container {
+    height: 100%;
+    width: 25%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    font-size: 0.9rem;
+    color: white;
+}
+
+#logo-container:hover>#dropdown {
+    display: block;
+}
+
+
+#logo-container img {
+    height: 70%;
+}
+
+#logo-container span {
+    flex: 3;
+}
+
+#logo-container span span {
+    text-decoration: underline;
+}
+
+#dropdown {
+    background-color: #002436;
+    display: none;
+    position: relative;
+    width: 100%;
+}
+
+#dropdown ul {
+    display: flex;
+    background-color: #002436;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 50px;
+}
+
+#dropdown ul li a {
+    text-decoration: none;
+    color: white;
+}
+
+#dropdown ul li:hover {
+    cursor: pointer;
+    text-decoration: underline;
+}

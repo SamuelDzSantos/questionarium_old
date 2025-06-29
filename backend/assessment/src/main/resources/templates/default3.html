@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Avaliação</title>
+    <style>
+        body {
+            width: 210mm;
+            height: 297mm;
+            margin: 0;
+            padding: 10mm;
+            font-family: Arial, sans-serif;
+            font-size: 3mm;
+            box-sizing: border-box;
+        }
+
+        .header {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5mm;
+        }
+
+        .logo {
+            height: 20mm;
+            max-width: 30mm;
+        }
+
+        .instituicao,
+        .nome-aluno {
+            font-size: 5mm;
+            font-weight: bold;
+            flex: 1 0 100%;
+            text-align: center;
+            margin: 1mm 0;
+        }
+
+        .info-bloco {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            width: 100%;
+            gap: 2mm;
+            margin-bottom: 2mm;
+        }
+
+        .info-item {
+            border: 0.2mm solid #000;
+            padding: 1mm 2mm;
+            font-size: 3mm;
+        }
+
+        .instrucoes {
+            border: 0.3mm solid #000;
+            padding: 2mm;
+            margin: 3mm 0;
+        }
+
+        .instrucoes ul {
+            padding-left: 4mm;
+            margin: 0;
+        }
+
+        .questao {
+            margin-bottom: 5mm;
+            border-bottom: 0.2mm dashed #ccc;
+            padding-bottom: 2mm;
+        }
+
+        .questao img {
+            max-width: 100%;
+            max-height: 30mm;
+            margin-top: 2mm;
+        }
+
+        .alternativas {
+            margin-top: 2mm;
+            padding-left: 2mm;
+        }
+
+        .alternativas div {
+            margin-bottom: 1mm;
+        }
+
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10mm;
+        }
+
+        .qrcode img {
+            width: 30mm;
+            height: 30mm;
+        }
+
+        .gabarito {
+            border-collapse: collapse;
+            margin-left: 10mm;
+            font-size: 3mm;
+        }
+
+        .gabarito th,
+        .gabarito td {
+            border: 0.2mm solid black;
+            padding: 1mm;
+            text-align: center;
+        }
+
+        .id-info {
+            font-size: 3mm;
+            margin-top: 2mm;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Header -->
+    <div class="header">
+        <div th:if="${header.logoUrl != null}">
+            <img th:src="@{${header.logoUrl}}" alt="Logo" class="logo">
+        </div>
+
+        <div th:if="${header.instituicao != null}" class="instituicao" th:text="${header.instituicao}"></div>
+        <div th:if="${header.nomeAluno != null}" class="nome-aluno">Nome: <span th:text="${header.nomeAluno}"></span>
+        </div>
+
+        <div class="info-bloco">
+            <div th:if="${header.departamento != null}" class="info-item" th:text="${header.departamento}"></div>
+            <div th:if="${header.curso != null}" class="info-item" th:text="${header.curso}"></div>
+            <div th:if="${header.classe != null}" class="info-item" th:text="${header.classe}"></div>
+            <div th:if="${header.professor != null}" class="info-item" th:text="${header.professor}"></div>
+            <div th:if="${header.data != null}" class="info-item">Data: <span th:text="${header.data}"></span></div>
+        </div>
+
+        <div th:if="${header.instrucoes != null}" class="instrucoes">
+            <strong>Instruções:</strong>
+            <ul>
+                <li th:each="instrucao : ${header.instrucoes}" th:text="${instrucao}"></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Questões -->
+    <div th:each="questao, stat : ${questoes}" class="questao">
+        <div>
+            <strong th:text="${stat.index + 1} + ') ' + ${questao.texto}"></strong>
+        </div>
+
+        <div th:if="${questao.imagem != null}">
+            <img th:src="@{${questao.imagem}}" alt="Imagem da questão">
+        </div>
+
+        <div class="alternativas" th:if="${questao.tipo == 'multipla-escolha'}">
+            <div th:each="alt, i : ${questao.alternativas}">
+                <span th:text="${'ABCDEFGHIJKLMNOPQRSTUVWXYZ'[i.index]} + ') ' + ${alt}"></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rodapé com QR Code e Gabarito -->
+    <div class="footer">
+        <div class="qrcode">
+            <img th:src="@{static/qrcode.png}" alt="QR Code">
+            <div class="id-info">
+                ID: <span th:text="${id}"></span><br>
+                <a href="#" style="text-decoration: none;">Verifique seu resultado pelo app!</a>
+            </div>
+        </div>
+
+        <table class="gabarito">
+            <thead>
+                <tr>
+                    <th colspan="6">Gabarito</th>
+                </tr>
+                <tr>
+                    <th>#</th>
+                    <th>A</th>
+                    <th>B</th>
+                    <th>C</th>
+                    <th>D</th>
+                    <th>E</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="linha : ${gabarito}">
+                    <td th:text="${linha.numero}"></td>
+                    <td th:text="${linha.opcoes[0]}"></td>
+                    <td th:text="${linha.opcoes[1]}"></td>
+                    <td th:text="${linha.opcoes[2]}"></td>
+                    <td th:text="${linha.opcoes[3]}"></td>
+                    <td th:text="${linha.opcoes[4]}"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</body>
+
+</html>
