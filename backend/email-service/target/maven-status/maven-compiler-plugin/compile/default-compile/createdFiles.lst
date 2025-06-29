@@ -1,4 +1,0 @@
-dev\questionarium\EmailApplication.class
-dev\questionarium\EmailService.class
-dev\questionarium\RabbitMQConfig.class
-dev\questionarium\consumers\EmailConsumer.class
