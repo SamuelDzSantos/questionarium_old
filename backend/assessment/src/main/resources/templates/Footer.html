@@ -190,73 +190,44 @@
 
 <body>
 
-    <!-- Header dinâmico -->
-    <div class="header">
-
-        <!-- Logo -->
-        <img th:if="${logoUrl != null}" class="logo" th:src="@{${logoUrl}}" alt="Logo">
-
-        <!-- Nome da Instituição -->
-        <div th:if="${instituicao != null}" th:text="${instituicao}" class=" instituicao">
-        </div>
-
-        <!-- Outros campos -->
-        <div class="info-grid">
-            <div th:if="${departamento != null}" th:text="'Departamento: ' + ${departamento}" class="info-item">
-                <span></span><span class="teste"></span>
-            </div>
-            <div th:if="${curso != null}" th:text="'Curso: ' + ${curso}" class="info-item">Curso: Física - 2ª Etapa
-            </div>
-            <div th:if="${classe != null}" th:text="'Classe: ' + ${classe}" class="info-item">Classe: 2º Ano</div>
-            <div th:if="${professor != null}" th:text="'Professor: ' + ${professor}" class="info-item">Professor:
-                Ronaldo
+    </div>
+    <div class="footer">
+        <div class="qrcode">
+            <img th:src="'data:image/png;base64,' + ${qrcode}" alt="QR Code">
+            <div class="id-info">
+                ID: <span th:text="${codigo}">0039</span><br>
+                <a href="#" style="text-decoration: none;">Verifique seu resultado pelo app!</a>
             </div>
         </div>
 
-    </div>
+        <table class="gabarito">
+            <thead>
+                <tr>
+                    <th id="titulo" colspan="6">Gabarito</th>
+                </tr>
+                <tr>
+                    <th>#</th>
+                    <th>A</th>
+                    <th>B</th>
+                    <th>C</th>
+                    <th>D</th>
+                    <th>E</th>
+                </tr>
+            </thead>
+            <tbody>
 
-    <div class="user-info">
-        <div class="user-input">Aluno:</div>
-        <div th:text="'Data: ' + ${data}" class="data">Data: 28/06/2025</div>
-    </div>
-
-    <!-- Instruções -->
-    <div th:if="${instrucoes != null}" class="instrucoes">
-        <strong>INSTRUÇÕES E OBSERVAÇÕES:</strong>
-        <ol>
-            <li th:each="instrucao : ${instrucoes}" th:text="${instrucao}"></li>
-            <!--
-            <li>Preencha o cabeçalho corretamente.</li>
-            <li>Verifique se seu exemplar está completo.</li>
-            <li>Não use corretivo.</li>
-            <li>Entregue a prova ao fiscal somente após 2 horas.</li>
-            -->
-            <p th:if="${instrucoes_footer} != null" th:text="${instrucoes_footer}" style="text-align: center;"><em>Boa
-                    prova!</em></p>
-        </ol>
-    </div>
+                <tr th:each="i: ${#numbers.sequence(1,quantidade)}">
+                    <td th:text="${i}"></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
 
 
-    <!-- Questões -->
-    <div th:each="questao, stat : ${questoes}" class="question">
-
-        <div>
-            <strong th:text="${stat.index + 1} + ') ' + ${questao.header}"></strong>
-        </div>
-
-        <div th:if="${questao.headerImage != null}">
-            <img th:src="@{${questao.headerImage}}" alt="Imagem da questão">
-        </div>
-
-        <div class="alternativas" th:if="${questao.multipleChoice}">
-            <div th:each="alt, i : ${questao.alternatives}">
-                <span th:text="${'ABCDEFGHIJKLMNOPQRSTUVWXYZ'[i.index]} + ') ' + ${alt.description}"></span>
-            </div>
-        </div>
-        <div th:if="${!questao.multipleChoice}">
-            <hr th:each="i: ${#numbers.sequence(1,questao.numberLines)}">
-        </div>
-    </div>
 
 </body>
 

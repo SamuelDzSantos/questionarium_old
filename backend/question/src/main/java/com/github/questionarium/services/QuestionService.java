@@ -57,7 +57,7 @@ public class QuestionService {
         var correctAlternatives = questionDTO.getAlternatives().stream()
                 .filter(AlternativeDTO::getIsCorrect)
                 .collect(Collectors.toList());
-        if (correctAlternatives.isEmpty()) {
+        if (correctAlternatives.isEmpty() && questionDTO.getMultipleChoice()) {
             throw new IllegalArgumentException("Nenhuma alternativa correta fornecida.");
         }
         if (!Boolean.TRUE.equals(questionDTO.getMultipleChoice()) && correctAlternatives.size() > 1) {
@@ -88,12 +88,14 @@ public class QuestionService {
         // Salvar para gerar IDs
         Question saved = questionRepository.save(question);
 
-        // Determinar gabarito
-        Alternative correct = saved.getAlternatives().stream()
-                .filter(Alternative::getIsCorrect)
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Nenhuma alternativa correta encontrada."));
-        saved.setAnswerId(correct.getId());
+        if (questionDTO.getMultipleChoice()) {
+            // Determinar gabarito
+            Alternative correct = saved.getAlternatives().stream()
+                    .filter(Alternative::getIsCorrect)
+                    .findFirst()
+                    .orElseThrow(() -> new IllegalArgumentException("Nenhuma alternativa correta encontrada."));
+            saved.setAnswerId(correct.getId());
+        }
 
         // Re-salvar com gabarito
         Question updated = questionRepository.save(saved);
@@ -159,8 +161,9 @@ public class QuestionService {
             QuestionEducationLevel ed = QuestionEducationLevel.values()[educationLevel];
             spec = spec.and((root, query, cb) -> cb.equal(root.get("educationLevel"), ed));
         }
-
-        return questionRepository.findAll(spec).stream()
+        System.out.println("--------------------------------------------------------");
+        // return questionRepository.findAll(spec).stream()
+        return questionRepository.findAll().stream()
                 .map(questionMapper::toDto)
                 .collect(Collectors.toList());
     }

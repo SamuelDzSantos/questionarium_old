@@ -53,8 +53,12 @@ public class AppliedAssessmentService {
                 // 3) monta snapshots de perguntas + alternativas
                 List<QuestionSnapshot> snapshots = model.getQuestions().stream()
                                 .map(qw -> {
+
                                         Long qid = qw.getQuestionId();
+
                                         RpcQuestionDTO qDto = questionClient.getQuestion(qid);
+
+                                        log.info("QUestão:\n", qDto);
                                         if (qDto == null) {
                                                 throw new BusinessException("Questão não encontrada para o ID: " + qid);
                                         }
@@ -135,7 +139,7 @@ public class AppliedAssessmentService {
                 applied.setCorrectAnswerKey(correctKey);
 
                 // 7) relaciona snapshots com o applied
-                // snapshots.forEach(snap -> snap.setAppliedAssessment(applied));
+                snapshots.forEach(snap -> snap.setAppliedAssessment(applied));
 
                 // 8) salva o AppliedAssessment
                 AppliedAssessment saved = appliedRepo.save(applied);
