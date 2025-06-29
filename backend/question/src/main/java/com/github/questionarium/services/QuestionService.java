@@ -220,30 +220,34 @@ public class QuestionService {
         q.setEducationLevel(questionDTO.getEducationLevel());
 
         // Limpa e adiciona novas alternativas (sem answerId ainda)
-        q.getAlternatives().clear();
-        Set<Alternative> novos = questionDTO.getAlternatives().stream()
-                .map(dto -> Alternative.builder()
-                        .description(dto.getDescription())
-                        .imagePath(dto.getImagePath())
-                        .explanation(dto.getExplanation())
-                        .isCorrect(dto.getIsCorrect())
-                        .alternativeOrder(dto.getAlternativeOrder())
-                        .question(q)
-                        .build())
-                .collect(Collectors.toSet());
-        q.getAlternatives().addAll(novos);
+        if(Boolean.TRUE.equals(questionDTO.getMultipleChoice())){
+            q.getAlternatives().clear();
+            Set<Alternative> novos = questionDTO.getAlternatives().stream()
+                    .map(dto -> Alternative.builder()
+                            .description(dto.getDescription())
+                            .imagePath(dto.getImagePath())
+                            .explanation(dto.getExplanation())
+                            .isCorrect(dto.getIsCorrect())
+                            .alternativeOrder(dto.getAlternativeOrder())
+                            .question(q)
+                            .build())
+                    .collect(Collectors.toSet());
+            q.getAlternatives().addAll(novos);
+        }
 
         // 1) Persiste para gerar IDs nas alternativas
         Question saved = questionRepository.save(q);
 
         // 2) Encontra a alternativa correta já com ID
-        Alternative corret = saved.getAlternatives().stream()
-                .filter(Alternative::getIsCorrect)
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Nenhuma alternativa correta fornecida."));
-
-        // 3) Atualiza o answerId no question e salva de novo
-        saved.setAnswerId(corret.getId());
+        if(Boolean.TRUE.equals(questionDTO.getMultipleChoice())){
+            Alternative corret = saved.getAlternatives().stream()
+                    .filter(Alternative::getIsCorrect)
+                    .findFirst()
+                    .orElseThrow(() -> new IllegalArgumentException("Nenhuma alternativa correta fornecida."));
+    
+            // 3) Atualiza o answerId no question e salva de novo
+            saved.setAnswerId(corret.getId());
+        }
         Question updated = questionRepository.save(saved);
 
         return questionMapper.toDto(updated);

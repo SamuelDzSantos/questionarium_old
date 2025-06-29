@@ -94,7 +94,7 @@ export class GerarQuestaoComponent implements OnInit {
   }
 
   orderToLetter() {
-    let order = this.question?.alternatives.find((alt) => alt.isCorrect)?.order!
+    let order = this.question?.alternatives.find((alt) => alt.isCorrect)?.alternativeOrder!
     const letters = ['A', 'B', 'C', 'D', 'E'];
     return letters[order - 1];
   };

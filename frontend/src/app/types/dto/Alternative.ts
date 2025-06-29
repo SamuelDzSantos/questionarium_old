@@ -5,7 +5,7 @@ export interface Alternative{
     isCorrect: boolean;
     explanation: string;
     question_id: number | null;
-    order: number;
+    alternativeOrder: number;
 }
 
     
