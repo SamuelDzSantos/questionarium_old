@@ -94,32 +94,35 @@ export class CreateQuestionComponent implements OnInit {
       this.selectedNivel = this.niveis.find(nivel => nivel.name === response.educationLevel)?.value;
       this.discursiva = !response.multipleChoice;
       this.access = response.accessLevel == 1 ? true : false;
+      this.numberLines = response.numberLines ?? 0;
 
+      console.log("*****************response********************")
+      console.log(response)
 
       this.questionForm.patchValue({
         enunciado: response.header,
-        alternativa: response.alternatives.find(alt => alt.order === 1)?.description || '',
-        explicacao: response.alternatives.find(alt => alt.order === 1)?.explanation || '',
-        isCorrectA: response.alternatives.find(alt => alt.order === 1)?.isCorrect ? 1 : 0,
-        alternativaB: response.alternatives.find(alt => alt.order === 2)?.description || '',
-        explicacaoB: response.alternatives.find(alt => alt.order === 2)?.explanation || '',
-        isCorrectB: response.alternatives.find(alt => alt.order === 2)?.isCorrect ? 2 : 0,
-        alternativaC: response.alternatives.find(alt => alt.order === 3)?.description || '',
-        explicacaoC: response.alternatives.find(alt => alt.order === 3)?.explanation || '',
-        isCorrectC: response.alternatives.find(alt => alt.order === 3)?.isCorrect ? 3 : 0,
-        alternativaD: response.alternatives.find(alt => alt.order === 4)?.description || '',
-        explicacaoD: response.alternatives.find(alt => alt.order === 4)?.explanation || '',
-        isCorrectD: response.alternatives.find(alt => alt.order === 4)?.isCorrect ? 4 : 0,
-        alternativaE: response.alternatives.find(alt => alt.order === 5)?.description || '',
-        explicacaoE: response.alternatives.find(alt => alt.order === 5)?.explanation || '',
-        isCorrectE: response.alternatives.find(alt => alt.order === 5)?.isCorrect ? 5 : 0,
+        alternativa: response.alternatives.find(alt => alt.alternativeOrder === 1)?.description || '',
+        explicacao: response.alternatives.find(alt => alt.alternativeOrder === 1)?.explanation || '',
+        isCorrectA: response.alternatives.find(alt => alt.alternativeOrder === 1)?.isCorrect ? 1 : 0,
+        alternativaB: response.alternatives.find(alt => alt.alternativeOrder === 2)?.description || '',
+        explicacaoB: response.alternatives.find(alt => alt.alternativeOrder === 2)?.explanation || '',
+        isCorrectB: response.alternatives.find(alt => alt.alternativeOrder === 2)?.isCorrect ? 2 : 0,
+        alternativaC: response.alternatives.find(alt => alt.alternativeOrder === 3)?.description || '',
+        explicacaoC: response.alternatives.find(alt => alt.alternativeOrder === 3)?.explanation || '',
+        isCorrectC: response.alternatives.find(alt => alt.alternativeOrder === 3)?.isCorrect ? 3 : 0,
+        alternativaD: response.alternatives.find(alt => alt.alternativeOrder === 4)?.description || '',
+        explicacaoD: response.alternatives.find(alt => alt.alternativeOrder === 4)?.explanation || '',
+        isCorrectD: response.alternatives.find(alt => alt.alternativeOrder === 4)?.isCorrect ? 4 : 0,
+        alternativaE: response.alternatives.find(alt => alt.alternativeOrder === 5)?.description || '',
+        explicacaoE: response.alternatives.find(alt => alt.alternativeOrder === 5)?.explanation || '',
+        isCorrectE: response.alternatives.find(alt => alt.alternativeOrder === 5)?.isCorrect ? 5 : 0,
       });
 
       const selectedCorrect = response.alternatives.find(alt => alt.isCorrect);
 
       if (selectedCorrect) {
         this.questionForm.patchValue({
-          isCorrect: selectedCorrect.order,
+          isCorrect: selectedCorrect.alternativeOrder,
         });
       }
     });
@@ -170,7 +173,7 @@ export class CreateQuestionComponent implements OnInit {
 
     this.showCorrectAlternativeError = false;
 
-    if (this.questionForm.get('isCorrect')?.value === null) {
+    if (this.questionForm.get('isCorrect')?.value === null && this.discursiva === false) {
       this.showCorrectAlternativeError = true;
       return;
     }
@@ -185,41 +188,39 @@ export class CreateQuestionComponent implements OnInit {
     const values = this.questionForm.value;
 
     const alternatives: Alternative[] = [
-      { id: this.question?.alternatives[0].id || null, description: values.alternativa!, imagePath: '', isCorrect: values.isCorrect! == 1, explanation: values.explicacao!, question_id: this.question?.id || null, order: 1 },
-      { id: this.question?.alternatives[1]?.id || null, description: values.alternativaB!, imagePath: '', isCorrect: values.isCorrect! == 2, explanation: values.explicacaoB!, question_id: this.question?.id || null, order: 2 },
-      { id: this.question?.alternatives[2]?.id || null, description: values.alternativaC!, imagePath: '', isCorrect: values.isCorrect! == 3, explanation: values.explicacaoC!, question_id: this.question?.id || null, order: 3 },
-      { id: this.question?.alternatives[3]?.id || null, description: values.alternativaD!, imagePath: '', isCorrect: values.isCorrect! == 4, explanation: values.explicacaoD!, question_id: this.question?.id || null, order: 4 },
-      { id: this.question?.alternatives[4]?.id || null, description: values.alternativaE!, imagePath: '', isCorrect: values.isCorrect! == 5, explanation: values.explicacaoE!, question_id: this.question?.id || null, order: 5 }
+      { id: this.question?.alternatives[0]?.id || null, description: values.alternativa!, imagePath: '', isCorrect: values.isCorrect! == 1 ? true : this.discursiva? true : false, explanation: values.explicacao!, question_id: this.question?.id || null, alternativeOrder: 1 },
+      { id: this.question?.alternatives[1]?.id || null, description: values.alternativaB!, imagePath: '', isCorrect: values.isCorrect! == 2, explanation: values.explicacaoB!, question_id: this.question?.id || null, alternativeOrder: 2 },
+      { id: this.question?.alternatives[2]?.id || null, description: values.alternativaC!, imagePath: '', isCorrect: values.isCorrect! == 3, explanation: values.explicacaoC!, question_id: this.question?.id || null, alternativeOrder: 3 },
+      { id: this.question?.alternatives[3]?.id || null, description: values.alternativaD!, imagePath: '', isCorrect: values.isCorrect! == 4, explanation: values.explicacaoD!, question_id: this.question?.id || null, alternativeOrder: 4 },
+      { id: this.question?.alternatives[4]?.id || null, description: values.alternativaE!, imagePath: '', isCorrect: values.isCorrect! == 5, explanation: values.explicacaoE!, question_id: this.question?.id || null, alternativeOrder: 5 }
     ];
 
     const question: Question = {
       id: this.questionId ?? 0,
       multipleChoice: !this.discursiva,
       numberLines: this.numberLines,
-      personId: this.userId,
       header: this.enunciado,
       header_image: this.header_image,
       answerId: 0,
-      difficultyLevel: 0,
       enable: true,
       // educationLevel: this.niveis.find(nivel => nivel.value === this.selectedNivel)?.name ?? 'ENSINO_FUNDAMENTAL',
       educationLevel: this.niveis.find(nivel => nivel.value === this.selectedNivel)?.name ?? '',
       accessLevel: this.access ? 1 : 0, //true == public, API 1 == publica
       tagIds: this.selectedCategorias,
-      alternatives: alternatives
+      alternatives: this.discursiva ? [] : alternatives
     };
 
     if (this.questionId) {
       this.questionService.updateQuestion(this.questionId, question).subscribe(response => {
         console.log('Questão atualizada com sucesso:', response);
         this.router.navigate([`/questions`]);
-      }, error => { console.log(error) });
+      }, error => { console.log(error); alert("Erro no servidor. Tente novamente.") });
     } else {
       console.log(question)
       this.questionService.createQuestion(question).subscribe(response => {
         console.log('Questão criada com sucesso:', response);
         this.router.navigate([`/questions`]);
-      });
+      }, error => { console.log(error); alert("Erro no servidor. Tente novamente.") });
     }
   }
 
@@ -265,32 +266,32 @@ export class CreateQuestionComponent implements OnInit {
 
     this.questionForm.patchValue({
       enunciado: question.header,
-      alternativa: question.alternatives.find(alt => alt.order === 1)?.description || '',
-      explicacao: question.alternatives.find(alt => alt.order === 1)?.explanation || '',
-      isCorrectA: question.alternatives.find(alt => alt.order === 1)?.isCorrect ? 1 : 0,
+      alternativa: question.alternatives.find(alt => alt.alternativeOrder === 1)?.description || '',
+      explicacao: question.alternatives.find(alt => alt.alternativeOrder === 1)?.explanation || '',
+      isCorrectA: question.alternatives.find(alt => alt.alternativeOrder === 1)?.isCorrect ? 1 : 0,
     })
 
     if (!this.discursiva) {
       this.questionForm.patchValue({
-        alternativaB: question.alternatives.find(alt => alt.order === 2)?.description || '',
-        explicacaoB: question.alternatives.find(alt => alt.order === 2)?.explanation || '',
-        isCorrectB: question.alternatives.find(alt => alt.order === 2)?.isCorrect ? 2 : 0,
-        alternativaC: question.alternatives.find(alt => alt.order === 3)?.description || '',
-        explicacaoC: question.alternatives.find(alt => alt.order === 3)?.explanation || '',
-        isCorrectC: question.alternatives.find(alt => alt.order === 3)?.isCorrect ? 3 : 0,
-        alternativaD: question.alternatives.find(alt => alt.order === 4)?.description || '',
-        explicacaoD: question.alternatives.find(alt => alt.order === 4)?.explanation || '',
-        isCorrectD: question.alternatives.find(alt => alt.order === 4)?.isCorrect ? 4 : 0,
-        alternativaE: question.alternatives.find(alt => alt.order === 5)?.description || '',
-        explicacaoE: question.alternatives.find(alt => alt.order === 5)?.explanation || '',
-        isCorrectE: question.alternatives.find(alt => alt.order === 5)?.isCorrect ? 5 : 0,
+        alternativaB: question.alternatives.find(alt => alt.alternativeOrder === 2)?.description || '',
+        explicacaoB: question.alternatives.find(alt => alt.alternativeOrder === 2)?.explanation || '',
+        isCorrectB: question.alternatives.find(alt => alt.alternativeOrder === 2)?.isCorrect ? 2 : 0,
+        alternativaC: question.alternatives.find(alt => alt.alternativeOrder === 3)?.description || '',
+        explicacaoC: question.alternatives.find(alt => alt.alternativeOrder === 3)?.explanation || '',
+        isCorrectC: question.alternatives.find(alt => alt.alternativeOrder === 3)?.isCorrect ? 3 : 0,
+        alternativaD: question.alternatives.find(alt => alt.alternativeOrder === 4)?.description || '',
+        explicacaoD: question.alternatives.find(alt => alt.alternativeOrder === 4)?.explanation || '',
+        isCorrectD: question.alternatives.find(alt => alt.alternativeOrder === 4)?.isCorrect ? 4 : 0,
+        alternativaE: question.alternatives.find(alt => alt.alternativeOrder === 5)?.description || '',
+        explicacaoE: question.alternatives.find(alt => alt.alternativeOrder === 5)?.explanation || '',
+        isCorrectE: question.alternatives.find(alt => alt.alternativeOrder === 5)?.isCorrect ? 5 : 0,
       })
     };
 
     const selectedCorrect = question.alternatives.find(alt => alt.isCorrect);
     if (selectedCorrect) {
       this.questionForm.patchValue({
-        isCorrect: selectedCorrect.order,
+        isCorrect: selectedCorrect.alternativeOrder,
       });
     }
 

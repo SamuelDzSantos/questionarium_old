@@ -17,9 +17,7 @@ import { Tag } from '../../../types/dto/Tag';
   styleUrl: './view-questions.component.css'
 })
 export class ViewQuestionsComponent implements OnInit {
-  user$!: Observable<UserInfo | null>;
   question$!: Observable<Question[]>;
-  userId = 0
   questions: Question[] = [];
 
   niveis = [
@@ -41,10 +39,10 @@ export class ViewQuestionsComponent implements OnInit {
   constructor(private questionService: QuestionService, private userService: UserService, private router: Router) { }
 
   ngOnInit() {
-    this.user$ = this.userService.getCurrentUser();
-    this.user$.subscribe((user) => this.userId = user == null ? 0 : user.id);
-    //TODO current userId
-    // this.question$ = this.questionService.filterQuestions(undefined,this.userId);
+    // this.user$ = this.userService.getCurrentUser();
+    // this.user$.subscribe((user) => this.userId = user == null ? 0 : user.id);
+    // //TODO current userId
+    // // this.question$ = this.questionService.filterQuestions(undefined,this.userId);
     this.question$ = this.questionService.getAllQuestions();
     this.question$.subscribe((question) => this.questions = question == null ? [] : question);
     this.questionService.getAllTags().subscribe(
@@ -57,6 +55,7 @@ export class ViewQuestionsComponent implements OnInit {
   }
 
   loadQuestions() {
+    
     //TODO current userId
     const labelNivel = this.niveis.find(nivel => nivel.value === this.selectedNivel)
 

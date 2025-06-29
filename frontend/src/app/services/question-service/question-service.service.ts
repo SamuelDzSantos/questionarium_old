@@ -8,7 +8,7 @@ import { Tag } from '../../types/dto/Tag';
   providedIn: 'root'
 })
 export class QuestionService {
-  private readonly baseUrl = 'http://127.0.0.1:14006/questions';
+  private readonly baseUrl = 'http://127.0.0.1:14000/questions';
 
   constructor(private http: HttpClient) { }
 

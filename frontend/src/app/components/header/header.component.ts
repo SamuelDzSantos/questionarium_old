@@ -53,8 +53,8 @@ export class HeaderComponent {
 
     let user = changes[0]
     let url = changes[1];
-    console.log(user)
-    console.log(url)
+    // console.log(user)
+    // console.log(url)
     if (url == "/login" || url == "/cadastro") {
       return PageTypes.LogoOnly;
     }
