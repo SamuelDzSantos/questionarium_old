@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.github.questionarium.config.exception.BusinessException;
+import com.github.questionarium.interfaces.DTOs.AssessmentResultDTO;
 import com.github.questionarium.model.AlternativeSnapshot;
 import com.github.questionarium.model.AppliedAssessment;
 import com.github.questionarium.model.QuestionSnapshot;
@@ -212,6 +213,28 @@ public class RecordAssessmentService {
 
         repository.save(rec);
         return score;
+    }
+
+    @Transactional(readOnly = true)
+    public AssessmentResultDTO getAssessmentResult(Long id) {
+        
+        RecordAssessment record = repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Registro de avaliação não encontrado: " + id));
+
+        AppliedAssessment applied = record.getAppliedAssessment();
+
+        return new AssessmentResultDTO(
+                applied.getInstitution(),
+                applied.getDepartment(),
+                applied.getCourse(),
+                applied.getClassroom(),
+                applied.getProfessor(),
+                record.getStudentName(),
+                record.getTotalScore(),
+                record.getObtainedScore(),
+                record.getCorrectAnswerKeyLetter(),
+                record.getStudentAnswerKey()
+        );
     }
 
 }

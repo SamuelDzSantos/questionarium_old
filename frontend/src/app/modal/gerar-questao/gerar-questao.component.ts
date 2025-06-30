@@ -145,7 +145,7 @@ export class GerarQuestaoComponent implements OnInit {
         - "explanation": explicação da alternativa
         - "isCorrect": valor booleano (true ou false) indicando se é a alternativa correta
         - "order": valor inteiro entre 1 e 5 para indicar a ordem da alternativa.
-        Retorne tudo no formato JSON como o exemplo a seguir, seja estrito nos nomes de atributos:
+        Retorne tudo no formato JSON como o exemplo a seguir, seja estrito nos nomes de atributos, não substitua alternativeOrder por order:
         {
           "tagIds": [1, 2], //pode estar vazio
           "accessLevel": this.accessLevel,

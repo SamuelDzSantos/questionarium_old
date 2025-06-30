@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.github.questionarium.interfaces.DTOs.AssessmentResultDTO;
 import com.github.questionarium.interfaces.DTOs.CreateRecordAssessmentRequestDTO;
 import com.github.questionarium.interfaces.DTOs.PatchRecordAssessmentRequestDTO;
 import com.github.questionarium.interfaces.DTOs.RecordAssessmentDTO;
@@ -129,6 +130,17 @@ public class RecordAssessmentController {
 
         // Retorna o DTO atualizado, já contendo studentAnswerKey e obtainedScore
         RecordAssessmentDTO out = mapper.toDto(recordService.findById(id, userId, isAdmin));
+        return ResponseEntity.ok(out);
+    }
+
+    /**
+     * 9) GET /record-assessments/result/{id}
+     * Consulta dados da Record e Applied.
+     */
+    @GetMapping("/result/{id}")
+    public ResponseEntity<AssessmentResultDTO> getResult(@PathVariable Long id) {
+        log.info("GET /record-assessments/result/{} – resultado da avaliação", id);
+        AssessmentResultDTO out = recordService.getAssessmentResult(id);
         return ResponseEntity.ok(out);
     }
 
