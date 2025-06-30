@@ -46,7 +46,7 @@ export class CreateQuestionComponent implements OnInit {
 
   niveis = [
     { label: 'ENSINO FUNDAMENTAL', value: 0, name: 'ENSINO_FUNDAMENTAL' },
-    { label: 'ENSINO MÉDIO', value: 1, name: 'ENSINO_MÉDIO' },
+    { label: 'ENSINO MÉDIO', value: 1, name: 'ENSINO_MEDIO' },
     { label: 'ENSINO SUPERIOR', value: 2, name: 'ENSINO_SUPERIOR' }
   ];
 
@@ -189,7 +189,7 @@ export class CreateQuestionComponent implements OnInit {
     const values = this.questionForm.value;
 
     const alternatives: Alternative[] = [
-      { id: this.question?.alternatives[0]?.id || null, description: values.alternativa!, imagePath: '', isCorrect: values.isCorrect! == 1 ? true : this.discursiva? true : false, explanation: values.explicacao!, question_id: this.question?.id || null, alternativeOrder: 1 },
+      { id: this.question?.alternatives[0]?.id || null, description: values.alternativa!, imagePath: '', isCorrect: values.isCorrect! == 1 ? true : this.discursiva ? true : false, explanation: values.explicacao!, question_id: this.question?.id || null, alternativeOrder: 1 },
       { id: this.question?.alternatives[1]?.id || null, description: values.alternativaB!, imagePath: '', isCorrect: values.isCorrect! == 2, explanation: values.explicacaoB!, question_id: this.question?.id || null, alternativeOrder: 2 },
       { id: this.question?.alternatives[2]?.id || null, description: values.alternativaC!, imagePath: '', isCorrect: values.isCorrect! == 3, explanation: values.explicacaoC!, question_id: this.question?.id || null, alternativeOrder: 3 },
       { id: this.question?.alternatives[3]?.id || null, description: values.alternativaD!, imagePath: '', isCorrect: values.isCorrect! == 4, explanation: values.explicacaoD!, question_id: this.question?.id || null, alternativeOrder: 4 },
@@ -300,45 +300,45 @@ export class CreateQuestionComponent implements OnInit {
   }
 
   spellCheck() {
-      this.oldQuestionForm = this.questionForm.value;
-      this.enunciado = "Corrigindo texto ..."
-      const values = this.questionForm.value;
-      const prompt = this.getSpellCheckPrompt(values);
-      console.log(prompt)
-            
-      this.openAiService.generateText(prompt).subscribe((response) => {
-        
-        try {
-          this.corrigido = true;
-          const content = response.response;
-          console.log(content)
-          const parsedResponse = JSON.parse(content);
-          console.log(parsedResponse)
+    this.oldQuestionForm = this.questionForm.value;
+    this.enunciado = "Corrigindo texto ..."
+    const values = this.questionForm.value;
+    const prompt = this.getSpellCheckPrompt(values);
+    console.log(prompt)
 
+    this.openAiService.generateText(prompt).subscribe((response) => {
+
+      try {
+        this.corrigido = true;
+        const content = response.response;
+        console.log(content)
+        const parsedResponse = JSON.parse(content);
+        console.log(parsedResponse)
+
+        this.questionForm.patchValue({
+          enunciado: parsedResponse.enunciado,
+          alternativa: parsedResponse.alternativa,
+          explicacao: parsedResponse.explicacao,
+        })
+
+        if (!this.discursiva) {
           this.questionForm.patchValue({
-            enunciado: parsedResponse.enunciado,
-            alternativa: parsedResponse.alternativa,
-            explicacao: parsedResponse.explicacao,
-          })
-
-          if(!this.discursiva) {
-            this.questionForm.patchValue({      
-              alternativaB: parsedResponse.alternativaB,
-              explicacaoB: parsedResponse.explicacaoB,
-              alternativaC: parsedResponse.alternativaC,
-              explicacaoC: parsedResponse.explicacaoC,
-              alternativaD: parsedResponse.alternativaD,
-              explicacaoD: parsedResponse.explicacaoD,
-              alternativaE: parsedResponse.alternativaE,
-              explicacaoE: parsedResponse.explicacaoE,
-            });
-          }
-
-        } catch (error) {
-          console.error("Error parsing JSON:", error);
-          alert("Erro ao corrigir textos.")
+            alternativaB: parsedResponse.alternativaB,
+            explicacaoB: parsedResponse.explicacaoB,
+            alternativaC: parsedResponse.alternativaC,
+            explicacaoC: parsedResponse.explicacaoC,
+            alternativaD: parsedResponse.alternativaD,
+            explicacaoD: parsedResponse.explicacaoD,
+            alternativaE: parsedResponse.alternativaE,
+            explicacaoE: parsedResponse.explicacaoE,
+          });
         }
-      });
+
+      } catch (error) {
+        console.error("Error parsing JSON:", error);
+        alert("Erro ao corrigir textos.")
+      }
+    });
   }
 
   revertSpellCheck() {
@@ -350,8 +350,8 @@ export class CreateQuestionComponent implements OnInit {
       explicacao: values.explicacao,
     })
 
-    if(!this.discursiva) {
-      this.questionForm.patchValue({      
+    if (!this.discursiva) {
+      this.questionForm.patchValue({
         alternativaB: values.alternativaB,
         explicacaoB: values.explicacaoB,
         alternativaC: values.alternativaC,
@@ -364,7 +364,7 @@ export class CreateQuestionComponent implements OnInit {
     }
   }
 
-  getSpellCheckPrompt(values : any) {
+  getSpellCheckPrompt(values: any) {
 
     return `Realize a correção gramatical dos textos a seguir, sem perder informações ou contexto, 
     mude o mínimo de palavras possível. Siga a norma culta da língua portuguesa.

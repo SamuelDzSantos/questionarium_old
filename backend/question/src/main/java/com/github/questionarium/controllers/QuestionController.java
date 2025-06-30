@@ -55,6 +55,11 @@ public class QuestionController {
             @RequestParam(required = false) String header) {
         List<QuestionDTO> list = questionService.getFilteredQuestions(
                 userId, isAdmin, multipleChoice, tagIds, accessLevel, educationLevel, header);
+        System.out.println(accessLevel);
+        System.out.println(tagIds);
+        System.out.println(multipleChoice);
+        System.out.println(educationLevel);
+        System.out.println(header);
         return ResponseEntity.ok(list);
     }
 

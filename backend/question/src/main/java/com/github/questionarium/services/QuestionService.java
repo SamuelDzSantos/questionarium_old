@@ -144,8 +144,9 @@ public class QuestionService {
             spec = spec.and((root, query, cb) -> cb.equal(root.get("multipleChoice"), multipleChoice));
         }
         if (header != null) {
+
             spec = spec
-                    .and((root, query, cb) -> cb.like(cb.lower(root.get("header")), "%" + header.toLowerCase() + "%"));
+                    .and((root, query, cb) -> cb.like((root.get("header")), "%" + header.toLowerCase() + "%"));
         }
         if (tagIds != null && !tagIds.isEmpty()) {
             spec = spec.and((root, query, cb) -> {
@@ -162,8 +163,7 @@ public class QuestionService {
             spec = spec.and((root, query, cb) -> cb.equal(root.get("educationLevel"), ed));
         }
         System.out.println("--------------------------------------------------------");
-        // return questionRepository.findAll(spec).stream()
-        return questionRepository.findAll().stream()
+        return questionRepository.findAll(spec).stream()
                 .map(questionMapper::toDto)
                 .collect(Collectors.toList());
     }
@@ -220,7 +220,7 @@ public class QuestionService {
         q.setEducationLevel(questionDTO.getEducationLevel());
 
         // Limpa e adiciona novas alternativas (sem answerId ainda)
-        if(Boolean.TRUE.equals(questionDTO.getMultipleChoice())){
+        if (Boolean.TRUE.equals(questionDTO.getMultipleChoice())) {
             q.getAlternatives().clear();
             Set<Alternative> novos = questionDTO.getAlternatives().stream()
                     .map(dto -> Alternative.builder()
@@ -239,12 +239,12 @@ public class QuestionService {
         Question saved = questionRepository.save(q);
 
         // 2) Encontra a alternativa correta já com ID
-        if(Boolean.TRUE.equals(questionDTO.getMultipleChoice())){
+        if (Boolean.TRUE.equals(questionDTO.getMultipleChoice())) {
             Alternative corret = saved.getAlternatives().stream()
                     .filter(Alternative::getIsCorrect)
                     .findFirst()
                     .orElseThrow(() -> new IllegalArgumentException("Nenhuma alternativa correta fornecida."));
-    
+
             // 3) Atualiza o answerId no question e salva de novo
             saved.setAnswerId(corret.getId());
         }

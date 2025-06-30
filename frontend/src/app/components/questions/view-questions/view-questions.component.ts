@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { Observable } from 'rxjs';
@@ -32,17 +32,21 @@ export class ViewQuestionsComponent implements OnInit {
   selectedNivel: number | null = null;
 
   discursiva: boolean = false;
-  access: boolean = false;
+  accessPublic: boolean = false;
+  accessPrivate: boolean = false;
 
   enunciado: string | undefined = undefined;
+
+
+  @ViewChild('publicCheckbox') publicCheckbox!: ElementRef<HTMLInputElement>;
+  @ViewChild('privateCheckbox') privateCheckbox!: ElementRef<HTMLInputElement>;
+
 
   constructor(private questionService: QuestionService, private userService: UserService, private router: Router) { }
 
   ngOnInit() {
-    // this.user$ = this.userService.getCurrentUser();
-    // this.user$.subscribe((user) => this.userId = user == null ? 0 : user.id);
-    // //TODO current userId
-    // // this.question$ = this.questionService.filterQuestions(undefined,this.userId);
+
+
     this.question$ = this.questionService.getAllQuestions();
     this.question$.subscribe((question) => this.questions = question == null ? [] : question);
     this.questionService.getAllTags().subscribe(
@@ -55,16 +59,16 @@ export class ViewQuestionsComponent implements OnInit {
   }
 
   loadQuestions() {
-    
+
     //TODO current userId
     const labelNivel = this.niveis.find(nivel => nivel.value === this.selectedNivel)
+    console.log("LEvel")
 
     this.question$ = this.questionService.filterQuestions(
       !this.discursiva,
-      // this.userId,
       0,
       labelNivel?.value != -1 ? labelNivel?.value : undefined,
-      this.access ? 1 : 0,
+      this.handleAcess(),
       this.selectedCategorias,
       this.enunciado
     );
@@ -79,6 +83,19 @@ export class ViewQuestionsComponent implements OnInit {
         this.questions = [];
       }
     });
+  }
+
+  private handleAcess() {
+    if (this.accessPublic == false && this.accessPrivate == false) {
+      return undefined;
+    }
+    if (this.accessPublic) {
+      return 1;
+    }
+    else {
+      return 0;
+    }
+
   }
 
   viewQuestion(id: number) {
@@ -114,9 +131,14 @@ export class ViewQuestionsComponent implements OnInit {
     this.discursiva = checkbox.checked;
   }
 
-  onAccessChange(event: Event): void {
-    const checkbox = event.target as HTMLInputElement;
-    this.access = checkbox.checked;
+  onAccessChange(changed: 'public' | 'private'): void {
+    if (changed === 'public' && this.publicCheckbox.nativeElement.checked) {
+      this.privateCheckbox.nativeElement.checked = false;
+      this.accessPrivate = false;
+    } else if (changed === 'private' && this.privateCheckbox.nativeElement.checked) {
+      this.publicCheckbox.nativeElement.checked = false;
+      this.accessPublic = false;
+    }
   }
 
   onFilterClick() {
