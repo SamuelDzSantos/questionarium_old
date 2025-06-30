@@ -1,4 +1,4 @@
-import { ApplicationConfig, inject, provideAppInitializer, Provider, provideZoneChangeDetection } from '@angular/core';
+import { ApplicationConfig, inject, LOCALE_ID, provideAppInitializer, Provider, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter, withDebugTracing } from '@angular/router';
 
 import { routes } from './app.routes';

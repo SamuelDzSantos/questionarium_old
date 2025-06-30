@@ -16,10 +16,14 @@
   color: #ecf0f1;
   border-radius: 8px;
   padding: 20px;
-  width: 90%; /* Adjust width for responsiveness */
-  max-width: 500px; /* Set a max width */
-  max-height: 90vh; /* Limit max height */
-  overflow-y: auto; /* Make content scrollable if needed */
+  width: 90%;
+  /* Adjust width for responsiveness */
+  max-width: 500px;
+  /* Set a max width */
+  max-height: 90vh;
+  /* Limit max height */
+  overflow-y: auto;
+  /* Make content scrollable if needed */
 }
 
 .modal-header {
@@ -46,7 +50,8 @@
 }
 
 .form-group select,
-textarea, input {
+textarea,
+input {
   width: 100%;
   padding: 8px;
   margin-top: 5px;
@@ -55,18 +60,22 @@ textarea, input {
 /* New container for checkboxes */
 .checkbox-container {
   display: flex;
-  justify-content: space-between; /* Space out the checkboxes */
-  align-items: center; /* Align items vertically center */
+  justify-content: space-between;
+  /* Space out the checkboxes */
+  align-items: center;
+  /* Align items vertically center */
 }
 
 /* Ensure that both checkboxes are on the same line */
 .checkbox-group {
   display: flex;
-  align-items: center; /* Align checkbox and label horizontally */
+  align-items: center;
+  /* Align checkbox and label horizontally */
 }
 
 .checkbox-group input[type="checkbox"] {
-  margin-right: 10px; /* Add space between checkbox and label */
+  margin-right: 10px;
+  /* Add space between checkbox and label */
 }
 
 .modal-footer {
@@ -87,5 +96,3 @@ button {
 button:hover {
   background-color: #1abc9c;
 }
-
-

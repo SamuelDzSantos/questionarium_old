@@ -1,7 +1,27 @@
 <div class="modal-backdrop">
     <div class="modal-container">
         <div class="modal-header">
+            <h2>Alteração de Senha</h2>
+            <button (click)="closeModal()" class="close-button">X</button>
+        </div>
+        <div [style.display]="formHidden ? 'none' : 'block'" class="modal-body">
+            <form [formGroup]="emailForm">
+                <label>Digite o seu email:</label>
+                <input type="text" formControlName="email" />
+                <button (click)="submitEmail()">Enviar</button>
+            </form>
 
+        </div>
+
+        <div [style.display]="linkHidden ? 'none' : 'block'">
+            <span id="texto">Foi encaminhado um link de alteração para seu email!</span>
+            <a id="linka" (click)="enviar()">
+                @if(timeLeft > 0){
+                <span>{{timeLeft}} segundos</span>
+                }@else{
+                <span>Reenviar link?</span>
+                }
+            </a>
 
         </div>
     </div>

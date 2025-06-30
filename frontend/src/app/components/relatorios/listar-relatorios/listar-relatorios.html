@@ -13,9 +13,9 @@
             </tr>
             <tr *ngFor="let relatorio of relatorios">
                 <td>{{relatorio.id}}</td>
-                <td>{{relatorio.data}}</td>
-                <td>{{relatorio.turma}}</td>
-                <td>{{relatorio.disciplina}}</td>
+                <td>{{relatorio.creationDateTime | date:'dd/MM/yyyy'}}</td>
+                <td>{{relatorio.classroom}}</td>
+                <td>{{relatorio.course}}</td>
                 <td>
                     <button class="btn-view" (click)='viewRelatorio(relatorio.id!)'>Visualizar</button>
                 </td>

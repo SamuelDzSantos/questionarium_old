@@ -9,18 +9,17 @@
         <div class="info-box">
             <h2>Aplicação</h2>
             <div>
-                <p><strong>Data:</strong> {{ relatorio.data }}</p>
-                <p><strong>Turma:</strong> {{ relatorio.turma }}</p>
-                <p><strong>Disciplina:</strong> {{ relatorio.disciplina }}</p>
-                <p><strong>Hora:</strong> {{ relatorio.hora }}</p>
+                <p><strong>Data:</strong> {{ relatorio.date | date:'dd/MM/yyyy' }}</p>
+                <p><strong>Turma:</strong> {{ relatorio.classroom }}</p>
+                <p><strong>Disciplina:</strong> {{ relatorio.course }}</p>
                 <br />
-                <p><strong>Provas geradas:</strong> {{ relatorio.geradas }}</p>
-                <p><strong>Provas corrigidas:</strong> {{ relatorio.corrigidas }}</p>
+                <p><strong>Provas geradas:</strong> {{ relatorio.totalRecords }}</p>
+                <p><strong>Provas corrigidas:</strong> {{ relatorio.correctedRecords }}</p>
                 <p>
-                    <strong>Provas não corrigidas:</strong> {{ relatorio.nao_corrigidas }}
+                    <strong>Provas não corrigidas:</strong> {{ relatorio.pendingRecords }}
                 </p>
                 <p><strong>Assuntos:</strong></p>
-                <div *ngFor="let tag of relatorio.tags">
+                <div *ngFor="let tag of tags">
                     <p>> {{ tag }}</p>
                 </div>
             </div>
@@ -34,59 +33,12 @@
                     <th>Erros</th>
                     <th>Status</th>
                 </tr>
-                <tr *ngFor="let aplicacao of relatorio.aplicacoes">
-                    <td>{{ aplicacao.codigo }}</td>
-                    <td>{{ aplicacao.identificador }}</td>
-                    <td>{{ aplicacao.acertos }}</td>
-                    <td>{{ aplicacao.erros }}</td>
-                    <td>{{ aplicacao.status }}</td>
-                </tr>
-            </table>
-        </div>
-    </div>
-</div>
-<div class="body">
-    <div class="header">
-        <h1>Relatórios</h1>
-        <button type="button" (click)="cancel()">
-            Voltar
-        </button>
-    </div>
-    <div class="container">
-        <div class="info-box">
-            <h2>Aplicação</h2>
-            <div>
-                <p><strong>Data:</strong> {{ relatorio.data }}</p>
-                <p><strong>Turma:</strong> {{ relatorio.turma }}</p>
-                <p><strong>Disciplina:</strong> {{ relatorio.disciplina }}</p>
-                <p><strong>Hora:</strong> {{ relatorio.hora }}</p>
-                <br />
-                <p><strong>Provas geradas:</strong> {{ relatorio.geradas }}</p>
-                <p><strong>Provas corrigidas:</strong> {{ relatorio.corrigidas }}</p>
-                <p>
-                    <strong>Provas não corrigidas:</strong> {{ relatorio.nao_corrigidas }}
-                </p>
-                <p><strong>Assuntos:</strong></p>
-                <div *ngFor="let tag of relatorio.tags">
-                    <p>> {{ tag }}</p>
-                </div>
-            </div>
-        </div>
-        <div class="relatorio-table">
-            <table>
-                <tr>
-                    <th>Código</th>
-                    <th>Identificador</th>
-                    <th>Acertos</th>
-                    <th>Erros</th>
-                    <th>Status</th>
-                </tr>
-                <tr *ngFor="let aplicacao of relatorio.aplicacoes">
-                    <td>{{ aplicacao.codigo }}</td>
-                    <td>{{ aplicacao.identificador }}</td>
-                    <td>{{ aplicacao.acertos }}</td>
-                    <td>{{ aplicacao.erros }}</td>
-                    <td>{{ aplicacao.status }}</td>
+                <tr *ngFor="let aplicacao of relatorio.records">
+                    <td>{{ aplicacao.code }}</td>
+                    <td>{{ aplicacao.identifier }}</td>
+                    <td>{{ aplicacao.correctAnswers }}</td>
+                    <td>{{ aplicacao.incorrectAnswers }}</td>
+                    <td>{{ aplicacao.isGraded? "CORRIGIDO" : "NÃO CORRIGIDO" }}</td>
                 </tr>
             </table>
         </div>

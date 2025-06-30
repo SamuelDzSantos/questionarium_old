@@ -11,8 +11,10 @@
         </div>
         <button type="submit" (click)="submitLogin()">Entrar</button>
         <a routerLink="/cadastro">Crie sua conta aqui</a>
-        <a routerLink="#">Esqueceu a senha?</a>
+        <a id="aunder" style="text-decoration:underline;" (click)="mostrarModal()">Esqueceu a senha?</a>
     </form>
 
-    <!-- <app-redefinir-senha></app-redefinir-senha> -->
+    <app-redefinir-senha [style.display]="modalEnabled ? 'block' : 'none'"
+        (closeModalEvent)="fecharModal()"></app-redefinir-senha>
+
 </div>

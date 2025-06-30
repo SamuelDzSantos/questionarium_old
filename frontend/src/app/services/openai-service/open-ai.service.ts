@@ -8,34 +8,24 @@ import { environment } from '../../../environments/environment';
 })
 export class OpenAiService {
 
-  private apiUrl = 'https://api.openai.com/v1/chat/completions';
-  private apiKey = environment.openAiApiKey;
-  private aiServiceUrl = 'http://localhost:5001/chat'
+  private readonly backendUrl = environment.apiUrl;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   generateText(prompt: string): Observable<any> {
 
-    const body = {
-      model: 'gpt-3.5-turbo',
-      messages: [{ role: 'user', content: prompt }],
-      max_tokens: 1000,
-    };
+  return this.http.post(`${this.backendUrl}/ai/openai`, { prompt }, {
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    responseType: 'json'
+  });
+}
 
-    return this.http.post(this.apiUrl, body, {
-      headers: {
-        Authorization: `Bearer ${this.apiKey}`,
-        'Content-Type': 'application/json',
-      },
-    });
-  }
 
   chat(message: string): Observable<any> {
-
-    return this.http.post(this.aiServiceUrl, { message }, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
+    return this.http.post(`${this.backendUrl}/ai/chat`, { message }, {
+      headers: { 'Content-Type': 'application/json' }
     });
   }
 }

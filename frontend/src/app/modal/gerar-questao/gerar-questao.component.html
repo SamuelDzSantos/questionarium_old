@@ -8,7 +8,7 @@
 
       <div class="form-group">
         <label for="tema">Tema:</label>
-        <input type="text" id="tema" name="tema" [(ngModel)]="questionTheme"/>
+        <input type="text" id="tema" name="tema" [(ngModel)]="questionTheme" />
       </div>
 
       <div class="form-group">
@@ -34,14 +34,14 @@
       <div class="form-group checkbox-container">
         <div class="checkbox-group">
           <label for="tipo">Discursiva:</label>
-          <input type="checkbox" id="tipo" name="tipo" [(ngModel)]="discursiva"/>
+          <input type="checkbox" id="tipo" name="tipo" [(ngModel)]="discursiva" />
         </div>
-      
+
         <div class="checkbox-group">
           <label for="accessLevel">Pública:</label>
-          <input type="checkbox" id="accessLevel" name="accessLevel" [(ngModel)]="accessLevel"/>
+          <input type="checkbox" id="accessLevel" name="accessLevel" [(ngModel)]="accessLevel" />
         </div>
-      </div>     
+      </div>
 
       <button (click)="generateQuestion()">Gerar</button>
 

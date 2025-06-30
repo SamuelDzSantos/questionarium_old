@@ -18,6 +18,7 @@ type LoginForm = {
 export class LoginComponent implements OnInit {
 
   loginForm!: FormGroup;
+  modalEnabled = false;
 
   constructor(private formBuilder: FormBuilder, private userService: UserService) {
 
@@ -33,5 +34,14 @@ export class LoginComponent implements OnInit {
   submitLogin() {
     let values = this.loginForm.value as LoginForm;
     this.userService.login(values.email, values.password)
+  }
+
+
+  public mostrarModal() {
+    this.modalEnabled = true;
+  }
+
+  public fecharModal() {
+    this.modalEnabled = false;
   }
 }

@@ -48,13 +48,13 @@ export class GerarQuestaoComponent implements OnInit {
   }
 
   generateQuestion() {
-    this.generatedQuestion = 'Gerando questão...';
-    const prompt = this.getPromptJSON();
+  this.generatedQuestion = 'Gerando questão...';
+  const prompt = this.getPromptJSON();
 
-    this.openAIService.generateText(prompt).subscribe((response) => {
-
-      const content = response.choices[0].message.content;
-      console.log(content)
+  this.openAIService.generateText(prompt).subscribe(
+    (response) => {
+      const content = response.response;
+      console.log(content);
 
       try {
         const parsedQuestion = JSON.parse(content);
@@ -69,19 +69,21 @@ export class GerarQuestaoComponent implements OnInit {
         E)${this.question?.alternatives[4].description}
         Resposta correta: ${this.orderToLetter()}
         `;
+        } else {
+          this.generatedQuestion = `${this.question?.header}`;
         }
-        else {
-          this.generatedQuestion = `${this.question?.header}`
-        }
-
-
-
       } catch (error) {
         console.error("Error parsing JSON:", error);
         this.generatedQuestion = 'Erro ao gerar a questão.';
       }
-    });
-  }
+    },
+    (error) => {
+      console.error("API call failed:", error);
+      this.generatedQuestion = 'Erro ao gerar a questão.';
+    }
+  );
+}
+
 
   getSelectedTagsDescriptions(): string {
     return this.selectedCategorias
@@ -100,6 +102,7 @@ export class GerarQuestaoComponent implements OnInit {
   };
 
   acceptQuestion() {
+    console.log(this.question)
     this.generatedQuestionEvent.emit(this.question);
     this.closeModalEvent.emit()
   }
@@ -124,7 +127,7 @@ export class GerarQuestaoComponent implements OnInit {
       ${this.discursiva ?
         `Forneça apenas o enunciado da questão em formato JSON com as variáveis acima, 
         a resposta certa estará dentro de um objeto alternativa no atributo description como no exemplo abaixo,
-        os nomes dos atributos do json tem que ser estritamente iguais ao exemplo
+        os nomes dos atributos do json tem que ser ESTRITAMENTE iguais ao exemplo
         :
           {
             "tagIds": [1, 2], //pode estar vazio
@@ -132,14 +135,7 @@ export class GerarQuestaoComponent implements OnInit {
             "educationLevel": "ENSINO_FUNDAMENTAL",
             "header": "Seu enunciado gerado",
             "multipleChoice": false,
-            "alternatives": [
-            {
-              "id": null,
-              "description": "Resposta correta",
-              "explanation" : "",
-              "isCorrect": true,
-              "order": 1
-            }
+            "alternatives": []
           }`
         :
         `Inclua alternativas (A-E) de resposta, sendo apenas uma delas a correta. 
@@ -149,7 +145,7 @@ export class GerarQuestaoComponent implements OnInit {
         - "explanation": explicação da alternativa
         - "isCorrect": valor booleano (true ou false) indicando se é a alternativa correta
         - "order": valor inteiro entre 1 e 5 para indicar a ordem da alternativa.
-        Retorne tudo no formato JSON como o exemplo a seguir:
+        Retorne tudo no formato JSON como o exemplo a seguir, seja estrito nos nomes de atributos:
         {
           "tagIds": [1, 2], //pode estar vazio
           "accessLevel": this.accessLevel,
@@ -163,7 +159,7 @@ export class GerarQuestaoComponent implements OnInit {
               "description": "São Paulo",
               "explanation": "São Paulo não é a capital do Brasil.",
               "isCorrect": false,
-              "order": 1
+              "alternativeOrder": 1
             },
             ...
           ]

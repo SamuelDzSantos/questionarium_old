@@ -19,6 +19,9 @@ import { Observable } from 'rxjs';
 export class ListarRelatoriosComponent implements OnInit {
 
   reportList$!: Observable<AppliedAssessmentReportTs[]>;
+  relatorios!: AppliedAssessmentReportTs[];
+
+
 
   constructor(
     private router: Router, private reportService: ReportService
@@ -27,42 +30,46 @@ export class ListarRelatoriosComponent implements OnInit {
 
   ngOnInit(): void {
     this.reportList$ = this.reportService.getAssessmentReportList();
+    this.reportList$.subscribe((reports) => {
+      console.log(reports)
+      this.relatorios = reports;
+    })
   }
 
-
-  relatorios = [
-    {
-      id: 1,
-      data: new Date().toLocaleDateString("pt-br"),
-      turma: "DAC 5P 2022",
-      disciplina: "DAC",
-      geradas: 35,
-      corrigidas: 20,
-      num_questoes: 20,
-      tags: ["Desenvolvimento", "Aplicações", "Corporativas"]
-    },
-    {
-      id: 2,
-      data: new Date().toLocaleDateString("pt-br"),
-      turma: "DAC 5P 2022",
-      disciplina: "DAC",
-      geradas: 35,
-      corrigidas: 20,
-      num_questoes: 20,
-      tags: ["Desenvolvimento", "Aplicações", "Corporativas"]
-    },
-    {
-      id: 3,
-      data: new Date().toLocaleDateString("pt-br"),
-      turma: "DAC 5P 2022",
-      disciplina: "DAC",
-      geradas: 35,
-      corrigidas: 20,
-      num_questoes: 20,
-      tags: ["Desenvolvimento", "Aplicações", "Corporativas"]
-    },
-  ];
-
+  /*
+    relatorios = [
+      {
+        id: 1,
+        data: new Date().toLocaleDateString("pt-br"),
+        turma: "DAC 5P 2022",
+        disciplina: "DAC",
+        geradas: 35,
+        corrigidas: 20,
+        num_questoes: 20,
+        tags: ["Desenvolvimento", "Aplicações", "Corporativas"]
+      },
+      {
+        id: 2,
+        data: new Date().toLocaleDateString("pt-br"),
+        turma: "DAC 5P 2022",
+        disciplina: "DAC",
+        geradas: 35,
+        corrigidas: 20,
+        num_questoes: 20,
+        tags: ["Desenvolvimento", "Aplicações", "Corporativas"]
+      },
+      {
+        id: 3,
+        data: new Date().toLocaleDateString("pt-br"),
+        turma: "DAC 5P 2022",
+        disciplina: "DAC",
+        geradas: 35,
+        corrigidas: 20,
+        num_questoes: 20,
+        tags: ["Desenvolvimento", "Aplicações", "Corporativas"]
+      },
+    ];
+  */
   viewRelatorio(id: number) {
     this.router.navigate(['/relatorios/', id])
   }
