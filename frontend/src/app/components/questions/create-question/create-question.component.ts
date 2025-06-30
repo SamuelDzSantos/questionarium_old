@@ -46,7 +46,7 @@ export class CreateQuestionComponent implements OnInit {
 
   niveis = [
     { label: 'ENSINO FUNDAMENTAL', value: 0, name: 'ENSINO_FUNDAMENTAL' },
-    { label: 'ENSINO MÉDIO', value: 1, name: 'ENSINO_MÉDIO' },
+    { label: 'ENSINO MÉDIO', value: 1, name: 'ENSINO_MEDIO' },
     { label: 'ENSINO SUPERIOR', value: 2, name: 'ENSINO_SUPERIOR' }
   ];
 
