@@ -56,7 +56,8 @@ public class Question {
     @Column(name = "user_id", nullable = false)
     private Long userId;
 
-    @Column(name = "header", nullable = false, columnDefinition = "TEXT")
+    @Lob
+    @Column(name = "header", nullable = false)
     private String header;
 
     @Column(name = "header_image", nullable = true)

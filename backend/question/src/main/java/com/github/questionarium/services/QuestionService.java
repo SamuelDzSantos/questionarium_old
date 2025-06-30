@@ -144,7 +144,6 @@ public class QuestionService {
             spec = spec.and((root, query, cb) -> cb.equal(root.get("multipleChoice"), multipleChoice));
         }
         if (header != null) {
-
             spec = spec
                     .and((root, query, cb) -> cb.like((cb.lower(root.get("header"))),
                             "%" + header.toLowerCase() + "%"));
@@ -164,7 +163,8 @@ public class QuestionService {
             spec = spec.and((root, query, cb) -> cb.equal(root.get("educationLevel"), ed));
         }
         System.out.println("--------------------------------------------------------");
-        return questionRepository.findAll(spec).stream()
+        // return questionRepository.findAll(spec).stream()
+        return questionRepository.findAll().stream()
                 .map(questionMapper::toDto)
                 .collect(Collectors.toList());
     }
