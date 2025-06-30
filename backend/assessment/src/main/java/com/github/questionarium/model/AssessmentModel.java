@@ -16,6 +16,7 @@ public class AssessmentModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(columnDefinition = "TEXT")
     private String description;
 
     @ElementCollection(fetch = FetchType.LAZY)

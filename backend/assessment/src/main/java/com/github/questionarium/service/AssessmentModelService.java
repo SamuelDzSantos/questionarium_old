@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -108,6 +109,57 @@ public class AssessmentModelService {
             throw new BusinessException("Você não tem permissão para listar modelos de outro usuário");
         }
         return assessmentModelRepository.findByUserId(userId);
+    }
+
+    @Transactional(readOnly = true)
+    public List<AssessmentModel> getAssessmentsByUserIdFiltered(Long userId, Boolean isAdmin,
+            String description,
+            String institution,
+            String classroom,
+            String course) {
+
+        log.info("Buscando modelo de avaliação do usuário {}", userId);
+
+        if (!isAdmin && !userId.equals(userId)) {
+            throw new BusinessException("Você não tem permissão para listar modelos de outro usuário");
+        }
+
+        Specification<AssessmentModel> spec;
+
+        // Se admin cria uma condição where vazia.
+        if (isAdmin) {
+            spec = (root, query, cb) -> null;
+        } else {
+            spec = ((root, query, cb) -> cb.equal(root.get("userId"), userId));
+        }
+
+        System.out.println(course);
+
+        // Segue com especificações gerais
+
+        if (description != null) {
+            spec = spec
+                    .and((root, query, cb) -> cb.like((cb.lower(root.get("description"))),
+                            "%" + description.toLowerCase() + "%"));
+        }
+        if (institution != null) {
+            spec = spec
+                    .and((root, query, cb) -> cb.like((cb.lower(root.get("institution"))),
+                            "%" + institution.toLowerCase() + "%"));
+        }
+        if (classroom != null) {
+            spec = spec
+                    .and((root, query, cb) -> cb.like((cb.lower(root.get("classroom"))),
+                            "%" + classroom.toLowerCase() + "%"));
+        }
+        if (course != null) {
+            spec = spec
+                    .and((root, query, cb) -> cb.like((cb.lower(root.get("course"))),
+                            "%" + course.toLowerCase() + "%"));
+        }
+
+        // return assessmentModelRepository.findByUserId(userId);
+        return assessmentModelRepository.findAll(spec);
     }
 
     /** Atualiza um modelo existente */

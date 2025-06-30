@@ -19,7 +19,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
-import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
@@ -56,8 +55,7 @@ public class Question {
     @Column(name = "user_id", nullable = false)
     private Long userId;
 
-    @Lob
-    @Column(name = "header", nullable = false)
+    @Column(name = "header", nullable = false, columnDefinition = "TEXT")
     private String header;
 
     @Column(name = "header_image", nullable = true)

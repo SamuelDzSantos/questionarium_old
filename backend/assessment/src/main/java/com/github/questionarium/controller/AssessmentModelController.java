@@ -73,9 +73,17 @@ public class AssessmentModelController {
     /** Busca modelos do usuário logado */
     @GetMapping("/user")
     public ResponseEntity<List<AssessmentModelDTO>> getAssessmentsByUser(@RequestHeader("X-User-id") Long userId,
-            @RequestHeader("X-User-isAdmin") Boolean isAdmin) {
+            @RequestHeader("X-User-isAdmin") Boolean isAdmin,
+            @RequestParam(required = false) String description,
+            @RequestParam(required = false) String institution,
+            @RequestParam(required = false) String classroom,
+            @RequestParam(required = false) String course) {
+        System.out.println("-----------------------");
+        System.out.println(description);
         log.info("GET /assessment-models/user – buscando modelos de userId={}", userId);
-        List<AssessmentModelDTO> dtos = service.getAssessmentsByUserId(userId, isAdmin).stream()
+        List<AssessmentModelDTO> dtos = service
+                .getAssessmentsByUserIdFiltered(userId, isAdmin, description, institution, classroom, course)
+                .stream()
                 .map(mapper::toDto)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(dtos);
