@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { env } from '../../../environments/environment';
 import { AssessmentModel, CreateAssessmentModelRequest } from '../../types/dto';
@@ -21,11 +21,11 @@ export class AssessmentModelService {
     }
 
     getAll(userId: number, isAdmin: boolean): Observable<AssessmentModel[]> {
-        return this.http.get<AssessmentModel[]>(this.baseUrl, { headers: this.getHeaders(userId, isAdmin) });
+        return this.http.get<AssessmentModel[]>(`http://localhost:14000/assessment-models/user`);
     }
 
     getById(id: number, userId: number, isAdmin: boolean): Observable<AssessmentModel> {
-        return this.http.get<AssessmentModel>(`${this.baseUrl}/${id}`, { headers: this.getHeaders(userId, isAdmin) });
+        return this.http.get<AssessmentModel>(`${this.baseUrl} / ${id}`, { headers: this.getHeaders(userId, isAdmin) });
     }
 
     create(model: CreateAssessmentModelRequest, userId: number, isAdmin: boolean): Observable<AssessmentModel> {
@@ -33,14 +33,32 @@ export class AssessmentModelService {
     }
 
     update(id: number, model: CreateAssessmentModelRequest, userId: number, isAdmin: boolean): Observable<AssessmentModel> {
-        return this.http.put<AssessmentModel>(`${this.baseUrl}/${id}`, model, { headers: this.getHeaders(userId, isAdmin) });
+        return this.http.put<AssessmentModel>(`${this.baseUrl} / ${id}`, model, { headers: this.getHeaders(userId, isAdmin) });
     }
 
     delete(id: number, userId: number, isAdmin: boolean): Observable<void> {
-        return this.http.delete<void>(`${this.baseUrl}/${id}`, { headers: this.getHeaders(userId, isAdmin) });
+        return this.http.delete<void>(`${this.baseUrl} / ${id}`, { headers: this.getHeaders(userId, isAdmin) });
     }
 
-    getByUser(userId: number, isAdmin: boolean): Observable<AssessmentModel[]> {
-        return this.http.get<AssessmentModel[]>(`${this.baseUrl}/user`, { headers: this.getHeaders(userId, isAdmin) });
+    getByUser(): Observable<AssessmentModel[]> {
+        return this.http.get<AssessmentModel[]>(`${this.baseUrl}/user`);
     }
+
+    findWithFilter(
+        description?: string,
+        institution?: string,
+        classroom?: string,
+        course?: string,
+
+    ): Observable<AssessmentModel[]> {
+        let params = new HttpParams();
+        if (description !== undefined) params = params.set('description', description);
+        if (institution !== undefined) params = params.set('institution', institution);
+        if (classroom != null) params = params.set('classroom', classroom);
+        if (course != null) params = params.set('course', course);
+        return this.http.get<AssessmentModel[]>(`${this.baseUrl}/user`, { params });
+
+    }
+
+
 }

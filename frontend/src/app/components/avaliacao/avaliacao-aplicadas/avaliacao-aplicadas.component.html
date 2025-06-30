@@ -1,3 +1,4 @@
+<!-- 
 <h2 #titulo>Suas Avaliações Aplicadas</h2>
 <div class="topArea">
     <div class="inputArea">
@@ -7,8 +8,7 @@
 
 </div>
 <div class="gridArea">
-    <div *ngFor="let appliedAssessment of appliedAssessments; let i = index"
-        class="avaliacaoElement">
+    <div *ngFor="let appliedAssessment of appliedAssessments; let i = index" class="avaliacaoElement">
         <span>{{appliedAssessment.department}} {{appliedAssessment.institution}}</span>
         <span>{{appliedAssessment.course}}</span>
         <span>{{appliedAssessment.classroom}}</span>
@@ -18,3 +18,47 @@
     </div>
 </div>
 
+
+-->
+
+<div class="container">
+    <div class="header" style="text-align: center;">
+        <h1>Aplicações</h1>
+    </div>
+
+    <div class="filters">
+        <div class="filter-group" style="flex:3;max-width: 1000px;">
+            <label for="">Descrição: </label>
+            <input [(ngModel)]="searchDescricao" (input)="search()" class="form-select"
+                placeholder="Pesquisar avaliações..." aria-label="Pesquisar avaliações" style="width: 100%;" />
+        </div>
+        <div class="filter-group" style="flex:1;max-width: 300px;">
+            <label for="data">Escolha uma data:</label>
+            <input class="form-select" id="data" type="text" placeholder="dd/mm/aaaa" mask="d0/M0/0000"
+                [(ngModel)]="data" name="data" />
+        </div>
+        <div class="search">
+            <button class="btn-search" (click)="onFilterClick()">Pesquisar</button>
+        </div>
+
+    </div>
+
+    <div class="add-question-form">
+        <div class="assessment-list-header">
+            <span class="assessment-col">ID</span>
+            <span class="assessment-col">Data Aplicação</span>
+            <span class="assessment-col">Descrição</span>
+            <span class="assessment-col">Quantidade</span>
+            <span class="assessment-col" style="text-align:right;">Ações</span>
+        </div>
+        <div *ngFor="let assessment of filteredAssessments" class="assessment-row">
+            <span class="assessment-col">{{ assessment.id }}</span>
+            <span class="assessment-col">{{ assessment.applicationDate }}</span>
+            <span class="assessment-col">{{ assessment.description }}</span>
+            <span class="assessment-col">{{ assessment.quantity }}</span>
+            <span class="assessment-col actions" style="text-align:right;">
+                <button class="btn-generate" (click)="showReport(assessment)">Ver Relatório</button>
+            </span>
+        </div>
+    </div>
+</div>

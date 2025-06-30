@@ -8,105 +8,87 @@ import { UserService } from '../../../services/user.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { UserInfo } from '../../../interfaces/user/user-info.data';
+import { AppliedAssessmentService } from '../../../services/assessment-service/applied-assessment.service';
+import { NgxMaskDirective, provideNgxMask } from 'ngx-mask'
 
 @Component({
   selector: 'app-avaliacao-aplicadas',
   standalone: true,
-  imports: [RouterModule, CommonModule, FormsModule],
+  imports: [RouterModule, CommonModule, FormsModule, NgxMaskDirective],
+  providers: [provideNgxMask()],
   templateUrl: './avaliacao-aplicadas.component.html',
   styleUrl: './avaliacao-aplicadas.component.css'
 })
 export class AvaliacaoAplicadasComponent implements OnInit {
+
+
   user$!: Observable<UserInfo | null>;
   userId = 0;
+  data: string = '';
 
   modalEnabled = false;
 
   @ViewChild('titulo') titulo!: ElementRef<HTMLElement>;
 
+  searchDescricao = "";
+  searchData = "";
 
-  appliedAssessments = [
-    {
-      id: 1,
-      originalAssessmentId: 1,
-      userId: 1,
-      institution: 'UFPR',
-      department: 'SEPT',
-      course: 'TADS',
-      classroom: 'IHC',
-      professor: 'Sandra',
-      instructions: 'Responda as questões com atenção',
-      image: '',
-      creationDate: '2024-12-01',
-      appliedDate: '2024-12-01',
-      status: true,
-      shuffle: false,
-      quantity: 10,
-      AppliedQuestion: []
-    },
-    {
-      id: 1,
-      originalAssessmentId: 1,
-      userId: 1,
-      institution: 'UFPR',
-      department: 'SEPT',
-      course: 'TADS',
-      classroom: 'IHC',
-      professor: 'Sandra',
-      instructions: 'Responda as questões com atenção',
-      image: '',
-      creationDate: '2024-12-01',
-      appliedDate: '2024-12-01',
-      status: true,
-      shuffle: false,
-      quantity: 10,
-      AppliedQuestion: []
-    }, {
-      id: 1,
-      originalAssessmentId: 1,
-      userId: 1,
-      institution: 'UFPR',
-      department: 'SEPT',
-      course: 'TADS',
-      classroom: 'IHC',
-      professor: 'Sandra',
-      instructions: 'Responda as questões com atenção',
-      image: '',
-      creationDate: '2024-12-01',
-      appliedDate: '2024-12-01',
-      status: true,
-      shuffle: false,
-      quantity: 10,
-      AppliedQuestion: []
-    }, {
-      id: 1,
-      originalAssessmentId: 1,
-      userId: 1,
-      institution: 'UFPR',
-      department: 'SEPT',
-      course: 'TADS',
-      classroom: 'IHC',
-      professor: 'Sandra',
-      instructions: 'Responda as questões com atenção',
-      image: '',
-      creationDate: '2024-12-01',
-      appliedDate: '2024-12-01',
-      status: true,
-      shuffle: false,
-      quantity: 10,
-      AppliedQuestion: []
-    },
-
-  ];
-
+  appliedAssessments: AppliedAssessment[] = [];
+  filteredAssessments: AppliedAssessment[] = [];
 
   constructor(
     private router: Router,
-    private userService: UserService) {
+    private userService: UserService,
+    private appliedAssessmentService: AppliedAssessmentService
+  ) { }
 
-  }
   ngOnInit(): void {
     this.user$ = this.userService.getCurrentUser();
+    this.user$.subscribe(user => {
+      if (user) {
+        // Busca apenas avaliações do usuário logado (mude para .getAll se for admin)
+        this.appliedAssessmentService.getByUser().subscribe(data => {
+          this.appliedAssessments = data;
+          this.filteredAssessments = data;
+        });
+      }
+    });
+  }
+
+  select_assessment(id: number) {
+    this.router.navigateByUrl("/avaliacao/aplicar", { state: { "id": id } })
+  }
+
+  search() {
+
+    this.appliedAssessmentService.findWithFilter(this.searchDescricao).subscribe(
+      (assessments) => {
+        this.filteredAssessments = assessments;
+        console.log(this.filteredAssessments);
+      }
+    );
+
+  }
+
+  onFilterClick() {
+    console.log(this.data);
+    console.log(this.searchDescricao)
+  }
+
+  showReport(assessment: AppliedAssessment) {
+
+  }
+
+  montar() {
+    this.titulo.nativeElement.textContent = "Selecione uma avaliação para montagem";
+  }
+
+  public mostrarModal() {
+    this.modalEnabled = true;
+  }
+
+  public fecharModal() {
+    this.modalEnabled = false;
   }
 
   select_relatorio(id: number) {

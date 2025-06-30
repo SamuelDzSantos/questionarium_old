@@ -91,15 +91,22 @@ export class CreateQuestionComponent implements OnInit {
     });
   }
 
+  private handleAcessLevel(level: any) {
+    if (level == "PRIVATE") {
+      return true;
+    }
+    return false;
+  }
+
   loadQuestion(id: number): void {
     this.questionService.getQuestionById(id).subscribe((response) => {
       this.question = response;
       this.selectedCategorias = response.tagIds!;
       this.selectedNivel = this.niveis.find(nivel => nivel.name === response.educationLevel)?.value;
       this.discursiva = !response.multipleChoice;
-      this.access = response.accessLevel == 1 ? true : false;
+      this.access = this.handleAcessLevel(response.accessLevel)
       this.numberLines = response.numberLines ?? 0;
-
+      console.log(response.accessLevel);
       this.questionForm.patchValue({
         enunciado: response.header,
         alternativa: response.alternatives.find(alt => alt.alternativeOrder === 1)?.description || '',

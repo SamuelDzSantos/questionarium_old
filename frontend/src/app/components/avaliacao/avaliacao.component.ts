@@ -19,7 +19,10 @@ import { UserInfo } from '../../interfaces/user/user-info.data';
 })
 export class AvaliacaoComponent implements OnInit {
   user$!: Observable<UserInfo | null>;
-  searchValue = "";
+  searchDescricao = "";
+  searchInstituicao = "";
+  searchDisciplina = "";
+  searchClasse = "";
   assessments: AssessmentModel[] = [];
   filteredAssessments: AssessmentModel[] = [];
   modalEnabled = false;
@@ -37,7 +40,7 @@ export class AvaliacaoComponent implements OnInit {
     this.user$.subscribe(user => {
       if (user) {
         // Busca apenas avaliações do usuário logado (mude para .getAll se for admin)
-        this.assessmentModelService.getByUser(user.id, false).subscribe(data => {
+        this.assessmentModelService.getByUser().subscribe(data => {
           this.assessments = data;
           this.filteredAssessments = data;
         });
@@ -50,16 +53,26 @@ export class AvaliacaoComponent implements OnInit {
   }
 
   search() {
-    if (this.searchValue?.trim()) {
-      const value = this.searchValue.toLowerCase();
-      this.filteredAssessments = this.assessments.filter(a =>
-        (a.course ?? '').toLowerCase().includes(value) ||
-        (a.department ?? '').toLowerCase().includes(value) ||
-        (a.institution ?? '').toLowerCase().includes(value)
-      );
-    } else {
-      this.filteredAssessments = this.assessments;
-    }
+
+    this.assessmentModelService.findWithFilter(this.searchDescricao, this.searchInstituicao, this.searchClasse, this.searchDisciplina).subscribe(
+      (assessments) => {
+        this.filteredAssessments = assessments;
+        console.log(this.filteredAssessments);
+      }
+    );
+
+    /*
+        if (this.searchDescricao?.trim()) {
+          const value = this.searchDescricao.toLowerCase();
+          this.filteredAssessments = this.assessments.filter(a =>
+            (a.course ?? '').toLowerCase().includes(value) ||
+            (a.department ?? '').toLowerCase().includes(value) ||
+            (a.institution ?? '').toLowerCase().includes(value)
+          );
+        } else {
+          this.filteredAssessments = this.assessments;
+        }
+        */
   }
 
   montar() {

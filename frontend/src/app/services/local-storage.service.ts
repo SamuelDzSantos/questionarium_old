@@ -23,4 +23,20 @@ export class LocalStorageService {
     return Number(localStorage.getItem("userId"));
   }
 
+  public setToken(key: string, value: any) {
+    localStorage.setItem(key, value);
+  }
+
+  public getToken(key: string): any {
+    return localStorage.getItem(key)
+  }
+
+  public clearToken(key: string) {
+    localStorage.removeItem(key)
+  }
+
+  public clearAll() {
+    localStorage.clear()
+  }
+
 }

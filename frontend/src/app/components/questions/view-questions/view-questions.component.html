@@ -19,8 +19,14 @@
       </div>
     </div>
     <div class="filter-group">
-      <label for="tipo">Discursiva: </label>
-      <input type="checkbox" id="tipo" name="tipo" (change)="onDiscursivaChange($event)" [(ngModel)]="discursiva" />
+      <label for="tipo1">Discursiva: </label>
+      <input #discursivaCheckbox type="checkbox" id="tipo1" name="tipo" (change)="onDiscursivaChange('DISCURSIVA')"
+        [(ngModel)]="discursiva" />
+    </div>
+    <div class="filter-group">
+      <label for="tipo2">Multipla Escolha: </label>
+      <input #escolhaCheckbox type="checkbox" id="tipo2" name="tipo" (change)="onDiscursivaChange('ESCOLHA')"
+        [(ngModel)]="escolha" />
     </div>
     <div class="filter-group">
       <label for="nivel">Nível:</label>

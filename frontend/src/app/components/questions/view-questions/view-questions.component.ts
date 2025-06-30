@@ -1,13 +1,14 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
+import { NavigationStart, Router, RouterModule } from '@angular/router';
 import { Observable } from 'rxjs';
 import { UserInfo } from '../../../interfaces/user/user-info.data';
 import { QuestionService } from '../../../services/question-service/question-service.service';
 import { UserService } from '../../../services/user.service';
 import { Question } from '../../../types/dto/Question';
 import { Tag } from '../../../types/dto/Tag';
+import { LocalStorageService } from '../../../services/local-storage.service';
 
 @Component({
   selector: 'app-view-questions',
@@ -16,13 +17,13 @@ import { Tag } from '../../../types/dto/Tag';
   templateUrl: './view-questions.component.html',
   styleUrl: './view-questions.component.css'
 })
-export class ViewQuestionsComponent implements OnInit {
+export class ViewQuestionsComponent implements OnInit, AfterViewInit {
   question$!: Observable<Question[]>;
   questions: Question[] = [];
 
   niveis = [
     { label: 'Ensino Fundamental', value: 0 },
-    { label: 'Ensino Méidio', value: 1 },
+    { label: 'Ensino Médio', value: 1 },
     { label: 'Ensino Superior', value: 2 }
   ];
 
@@ -32,6 +33,7 @@ export class ViewQuestionsComponent implements OnInit {
   selectedNivel: number | null = null;
 
   discursiva: boolean = false;
+  escolha: boolean = false;
   accessPublic: boolean = false;
   accessPrivate: boolean = false;
 
@@ -41,10 +43,27 @@ export class ViewQuestionsComponent implements OnInit {
   @ViewChild('publicCheckbox') publicCheckbox!: ElementRef<HTMLInputElement>;
   @ViewChild('privateCheckbox') privateCheckbox!: ElementRef<HTMLInputElement>;
 
+  @ViewChild('discursivaCheckbox') discursivaCheckbox!: ElementRef<HTMLInputElement>;
+  @ViewChild('escolhaCheckbox') escolhaCheckbox!: ElementRef<HTMLInputElement>;
 
-  constructor(private questionService: QuestionService, private userService: UserService, private router: Router) { }
+
+  constructor(private questionService: QuestionService, private userService: UserService, private router: Router, private localStorageService: LocalStorageService) {
+
+  }
+
+
+  ngAfterViewInit(): void {
+    /*
+       
+    */
+  }
 
   ngOnInit() {
+
+    if (this.localStorageService.getToken("isMultipleChoice") != null) {
+      this.discursiva = !this.localStorageService.getToken("isMultipleChoice")!;
+      this.escolha = this.localStorageService.getToken("isMultipleChoice");
+    }
 
 
     this.question$ = this.questionService.getAllQuestions();
@@ -75,7 +94,7 @@ export class ViewQuestionsComponent implements OnInit {
 
     this.question$ = this.questionService.filterQuestions(
       !this.discursiva,
-      0,
+      this.handleIsMultipleChoice(),
       labelNivel?.value != -1 ? labelNivel?.value : undefined,
       this.handleAcess(),
       this.selectedCategorias,
@@ -104,7 +123,16 @@ export class ViewQuestionsComponent implements OnInit {
     else {
       return 0;
     }
+  }
 
+  private handleIsMultipleChoice() {
+    if (this.discursiva == false && this.escolha == false) {
+      return undefined;
+    }
+    if (this.discursiva) {
+      return 0;
+    }
+    return 1;
   }
 
   viewQuestion(id: number) {
@@ -135,9 +163,18 @@ export class ViewQuestionsComponent implements OnInit {
     }
   }
 
-  onDiscursivaChange(event: Event): void {
-    const checkbox = event.target as HTMLInputElement;
-    this.discursiva = checkbox.checked;
+  onDiscursivaChange(changed: 'DISCURSIVA' | 'ESCOLHA'): void {
+
+
+
+    if (changed === 'DISCURSIVA' && this.discursivaCheckbox.nativeElement.checked) {
+      this.escolhaCheckbox.nativeElement.checked = false;
+      this.escolha = false;
+    } else if (changed === 'ESCOLHA' && this.escolhaCheckbox.nativeElement.checked) {
+      this.discursivaCheckbox.nativeElement.checked = false;
+      this.discursiva = false;
+    }
+
   }
 
   onAccessChange(changed: 'public' | 'private'): void {

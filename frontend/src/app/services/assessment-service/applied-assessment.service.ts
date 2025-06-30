@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { env } from '../../../environments/environment';
 import { AppliedAssessment, ApplyAssessmentRequest } from '../../types/dto';
@@ -35,12 +35,22 @@ export class AppliedAssessmentService {
     }
 
     /** 4. Listar aplicações do usuário logado */
-    getByUser(userId: number, isAdmin: boolean): Observable<AppliedAssessment[]> {
-        return this.http.get<AppliedAssessment[]>(`${this.baseUrl}/user`, { headers: this.getHeaders(userId, isAdmin) });
+    getByUser(): Observable<AppliedAssessment[]> {
+        return this.http.get<AppliedAssessment[]>(`${this.baseUrl}/user`);
     }
 
     /** 5. Inativar (soft delete) uma aplicação */
     delete(id: number, userId: number, isAdmin: boolean): Observable<void> {
         return this.http.delete<void>(`${this.baseUrl}/${id}`, { headers: this.getHeaders(userId, isAdmin) });
     }
+
+    findWithFilter(
+        description?: string
+    ): Observable<AppliedAssessment[]> {
+        let params = new HttpParams();
+        if (description !== undefined) params = params.set('description', description);
+        return this.http.get<AppliedAssessment[]>(`${this.baseUrl}/user`, { params });
+
+    }
+
 }

@@ -3,6 +3,7 @@ import { AppliedQuestion } from "./AppliedQuestion";
 export interface AppliedAssessment {
     id: number;
     originalAssessmentId: number;
+    description: string;
     userId: number;
     institution?: string;
     department?: string;
@@ -11,7 +12,7 @@ export interface AppliedAssessment {
     professor?: string;
     instructions?: string;
     image?: string;
-    creationDate: string; 
+    creationDate: string;
     applicationDate: string;
     quantity: number;
     status: boolean;

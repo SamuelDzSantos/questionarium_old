@@ -49,6 +49,9 @@ export class UserService {
 
 
   public initialize() {
+
+    this.localStorageService.clearToken("isMultipleChoice");
+
     return this.http.get<UserInfo>(this.methodUrls.getUserData).pipe(
       map((user) => {
         this.setCurrentUser(user)
