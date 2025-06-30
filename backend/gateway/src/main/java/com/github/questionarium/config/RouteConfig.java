@@ -64,6 +64,16 @@ public class RouteConfig {
                                                                 .setFallbackUri("forward:/fallback/assessment")))
                                                 .uri("http://localhost:14005"))
 
+                                // AI Service
+                                .route("ai-service", r -> r
+                                                .path("/ai/**")
+                                                .uri("http://localhost:14011"))
+                                
+                                // Detecção Service
+                                .route("deteccao-service", r -> r
+                                                .path("/deteccao/**")
+                                                .uri("http://localhost:14010"))
+
                                 .build();
         }
 
