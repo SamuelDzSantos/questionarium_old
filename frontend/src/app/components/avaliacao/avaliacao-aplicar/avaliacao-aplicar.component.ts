@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { map, Observable, switchMap } from 'rxjs';
@@ -239,4 +239,22 @@ export class AvaliacaoAplicarComponent {
     tagIds: [1, 2],
     alternatives: this.alternativesQuestion
   }];
+
+  @Output() closeModalEvent = new EventEmitter<void>();
+  @Output() applyEvent = new EventEmitter<any>();
+
+  applicationData = {
+    date: '',
+    count: 1,
+    shuffle: false
+  };
+
+  closeModal() {
+    this.closeModalEvent.emit();
+  }
+
+  applyAssessment() {
+    this.applyEvent.emit(this.applicationData);
+    this.closeModal();
+  }
 }

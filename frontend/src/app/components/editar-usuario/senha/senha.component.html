@@ -14,4 +14,22 @@
         </div>
         <button [disabled]="!senhaForm.valid" type="submit">Salvar</button>
     </form>
+
+    <div class="dois-fatores-container">
+        <div class="titulo-topico">Autenticação em dois fatores</div>
+        <hr class="divisor" />
+
+        <p class="titulo-status">
+            <strong>A autenticação de dois fatores ainda não está habilitada.</strong>
+        </p>
+
+        <p class="descricao">
+            A autenticação de dois fatores adiciona uma camada adicional de segurança à sua conta,
+            exigindo mais do que apenas uma senha para fazer login.
+        </p>
+
+        <button class="btn-habilitar">
+            Habilitar autenticação em dois fatores
+        </button>
+    </div>
 </div>
