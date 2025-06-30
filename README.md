@@ -343,7 +343,7 @@ O frontend do Questionarium é uma aplicação Angular moderna, estruturada por 
 | /relatorios          | ListarRelatoriosComponent   |
 | /relatorios/\:id     | VerRelatorioComponent       |
 
-> Todas as rotas são protegidas pelo `defaultCanActivateGuard`, exceto talvez algumas públicas (ajuste conforme necessário).
+> Todas as rotas são protegidas pelo `defaultCanActivateGuard`
 
 ---
 
