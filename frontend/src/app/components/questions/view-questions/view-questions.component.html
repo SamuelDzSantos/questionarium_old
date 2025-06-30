@@ -48,16 +48,29 @@
     </div>
   </div>
 
-  <div class="questions">
-    <div class="question-card" *ngFor="let question of questions">
-      <!-- <h3>Disciplina</h3>
+  <div class="add-question-form">
+    <div class="assessment-list-header">
+      <span class="assessment-col">Texto</span>
+      <span class="assessment-col">Discursiva</span>
+      <span class="assessment-col">Nível de Acesso</span>
+      <span class="assessment-col">Nível</span>
+      <span class="assessment-col"></span>
+    </div>
+    <div class="questions">
+      <div class="assessment-row" *ngFor="let question of questions">
+        <!-- <h3>Disciplina</h3>
         <div class="assuntos">
           <span>Assuntos</span>
         </div> -->
-      <p>{{ question.header }}</p>
-      <button class="btn-view" (click)='viewQuestion(question.id!)'>Visualizar</button>
+        <p class="assessment-col-question">{{ question.header }}</p>
+        <p class="assessment-col-question">{{ question.multipleChoice ? "Não" : "Sim"}}</p>
+        <p class="assessment-col-question">{{ getAcessLevel(question.accessLevel)}}</p>
+        <p class="assessment-col-question">{{ question.educationLevel }}</p>
+        <button class="btn-view assessment-col" (click)='viewQuestion(question.id!)'>Visualizar</button>
+      </div>
     </div>
   </div>
+
   <span *ngIf="questions.length===0">Nenhuma questão encontrada</span>
   <div style="margin-bottom: 70px;"></div>
 </div>

@@ -58,6 +58,15 @@ export class ViewQuestionsComponent implements OnInit {
     );
   }
 
+  getAcessLevel(level: number) {
+    let lev: any = level;
+    if (lev == "PRIVATE") {
+      return "Privado";
+    } else {
+      return "Público"
+    }
+  }
+
   loadQuestions() {
 
     //TODO current userId
