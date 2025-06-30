@@ -1,11 +1,15 @@
 .main {
     background-color: #EEFCFF;
     width: 100%;
-    height: 86vh;
+    height: 87vh;
     flex-direction: column;
     box-sizing: border-box;
     padding-left: 4%;
     padding-top: 2%;
+    background-image: url('/resources/suporte.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
 }
 
 h1 {

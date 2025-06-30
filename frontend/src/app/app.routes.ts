@@ -14,6 +14,7 @@ import { AvaliacaoComponent } from './components/avaliacao/avaliacao.component';
 import { AvaliacaoCriarComponent } from './components/avaliacao/avaliacao-criar/avaliacao-criar.component';
 import { AvaliacaoAplicarComponent } from './components/avaliacao/avaliacao-aplicar/avaliacao-aplicar.component';
 import { AvaliacaoAplicadasComponent } from './components/avaliacao/avaliacao-aplicadas/avaliacao-aplicadas.component';
+import { RecuperarSenha } from './components/recuperar-senha/recuperar-senha';
 
 export const routes: Routes = [
     {
@@ -25,6 +26,7 @@ export const routes: Routes = [
             { path: "home", component: HomeComponent },
             { path: "sobre", component: SobreComponent },
             { path: "devs", component: DevsComponent },
+            { path: "recuperar-senha", component: RecuperarSenha },
             {
                 path: "edicao",
                 children: [

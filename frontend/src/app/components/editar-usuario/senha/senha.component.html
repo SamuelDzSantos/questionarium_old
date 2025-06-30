@@ -12,6 +12,7 @@
             <label for="confirmaSenha"> Confirma Senha</label>
             <input id="confirmaSenha" type="password" formControlName="confirmaSenha" required />
         </div>
+        <a id="aunder" style="text-decoration:underline;">Esqueceu a senha?</a>
         <button [disabled]="!senhaForm.valid" type="submit">Salvar</button>
     </form>
 
@@ -28,7 +29,7 @@
             exigindo mais do que apenas uma senha para fazer login.
         </p>
 
-        <button class="btn-habilitar">
+        <button class=" btn-habilitar">
             Habilitar autenticação em dois fatores
         </button>
     </div>

@@ -1,0 +1,16 @@
+<div>
+    <h1>Redefinição de Senha</h1>
+    <form [formGroup]="loginForm">
+        <div>
+            <label for="email"> Nova Senha *</label>
+            <input id="email" type="text" formControlName="email" />
+        </div>
+        <div>
+            <label for="senha"> Confirmar a Senha*</label>
+            <input id="senha" type="password" formControlName="password" />
+        </div>
+        <button type="submit" (click)="submitLogin()">Salvar</button>
+    </form>
+
+
+</div>
