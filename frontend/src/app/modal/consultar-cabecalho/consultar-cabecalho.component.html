@@ -1,0 +1,48 @@
+<div class="modal-backdrop" role="dialog" aria-modal="true">
+    <div class="modal-container">
+        <div class="header-list-container">
+            <div class="modal-header">
+                <label for="search-header">Buscar Cabeçalho:</label>
+                <!-- <input id="search-header" type="text" [(ngModel)]="searchQuery" placeholder="Digite para buscar"> -->
+            </div>
+
+            <div class="header-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Instituição</th>
+                            <th>Departamento</th>
+                            <th>Curso</th>
+                            <th>Turma</th>
+                            <th>Professor</th>
+                            <!-- <th>Instruções</th> -->
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let header of headers; let i = index">
+                            <td>{{ header.institution }}</td>
+                            <td>{{ header.department }}</td>
+                            <td>{{ header.course }}</td>
+                            <td>{{ header.classroom }}</td>
+                            <td>{{ header.professor }}</td>
+                            <!-- <td>{{ header.instructions }}</td> -->
+                            <td>
+                                <button class="select-btn-icon" (click)="selectHeader(header); $event.stopPropagation()"
+                                    aria-label="Selecionar cabeçalho">
+                                    Selecionar
+                                </button>
+                                <!-- <button class="edit-btn">Editar</button> -->
+                                <button class="delete-btn" (click)="deleteHeader(header); $event.stopPropagation()"
+                                    aria-label="Excluir cabeçalho">
+                                    Excluir
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button type="button" class="cancel-btn" (click)="closeModal()">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>

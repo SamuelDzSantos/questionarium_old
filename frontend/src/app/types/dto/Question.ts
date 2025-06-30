@@ -11,5 +11,8 @@ export interface Question {
     educationLevel: string;
     accessLevel: number;
     tagIds: number[] | null;
+    personId?: number;
+    difficultyLevel?: number;
+
     alternatives: Alternative[];
 }

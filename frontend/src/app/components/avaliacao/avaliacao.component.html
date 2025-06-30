@@ -1,0 +1,28 @@
+<h2 #titulo>Avaliações</h2>
+<div class="topArea">
+    <div class="inputArea">
+        <input [(ngModel)]="searchValue" (input)="search()" placeholder="Pesquisar avaliações..."
+            aria-label="Pesquisar avaliações" />
+
+        <img src="/resources/magnifier.png" alt="Pesquisar" />
+    </div>
+    <button class="novaButton" routerLink="/avaliacao/criar">
+        <img src="/resources/cross.png" alt="Nova avaliação" />
+        Nova
+    </button>
+    <!-- 
+    <button class="montarButton" (click)="montar()">
+        <img src="/resources/gear.png" />
+        Aplicar Avaliação
+    </button>
+    -->
+</div>
+<div class="gridArea">
+    <div *ngFor="let assessment of filteredAssessments" (click)="select_assessment(assessment.id)"
+        class="avaliacaoElement">
+        <span>Aval {{assessment.course}}</span>
+        <span>{{assessment.department}} {{assessment.institution}}</span>
+        <div></div>
+        <span>{{assessment.creationDateTime | date:'dd/MM/yyyy'}}</span>
+    </div>
+</div>

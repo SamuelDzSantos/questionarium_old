@@ -1,0 +1,70 @@
+<div class="area">
+    <h1>Criação de Avaliação</h1>
+    <div class="cabecalho">
+        <h2>Cabeçalho da Avaliação</h2>
+        <p>Crie um novo ou utilize de cabeçalhos anteriores.</p>
+        <div class="button_area">
+            <button class="btn-generate" (click)="createHeader()">Criar Novo Cabeçalho</button>
+            <button class="btn-generate" (click)="loadHeader()">Carregar Cabeçalho</button>
+        </div>
+        <div class="cabeçalho_area">
+            <div class="input">
+                <span>Instituição</span>
+                <input [(ngModel)]="header.institution" placeholder="Instituição" aria-label="Instituição" />
+            </div>
+            <div class="input">
+                <span>Departamento</span>
+                <input [(ngModel)]="header.department" placeholder="Departamento" aria-label="Departamento" />
+            </div>
+            <div class="input">
+                <span>Curso</span>
+                <input [(ngModel)]="header.course" placeholder="Curso" aria-label="Curso" />
+            </div>
+            <div class="input">
+                <span>Turma</span>
+                <input [(ngModel)]="header.classroom" placeholder="Turma" aria-label="Turma" />
+            </div>
+            <div class="input">
+                <span>Professor</span>
+                <input [(ngModel)]="header.professor" placeholder="Professor" aria-label="Professor" />
+            </div>
+            <div class="input_text">
+                <span>Instruções</span>
+                <textarea [(ngModel)]="header.instructions" placeholder="Instruções" aria-label="Instruções"></textarea>
+            </div>
+        </div>
+    </div>
+
+    <div class="question_area">
+        <div *ngFor="let questao of questoes; let i = index; trackBy: trackByIndex">
+            <div class="question">
+                Questão {{pad((i + 1).toString(),2)}}
+                <div>
+                    <span>Instituição: {{questao.instituicao}}</span>
+                    <span>Enunciado: {{questao.enunciado}}</span>
+                    <div [ngStyle]="{'background-color': questao.tipo == 'Pública'  ? '#BBE8BA' : 'red'}">
+                        {{questao.tipo}}
+                    </div>
+                    <div>
+                        <button class="remover-btn">Remover</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bottom-button-area">
+        <button>Nova Questão</button>
+        <button (click)="return_assessment()">Cancelar</button>
+        <button (click)="saveHeader()">Salvar</button>
+    </div>
+    <a href="">Crie sua questão aqui</a>
+    <div>
+        <p></p>
+    </div>
+
+    <app-criar-cabecalho-modal *ngIf="modalCreateCabecalhoEnabled"
+        (closeModalEvent)="fecharCreateCabecalhoModal()"></app-criar-cabecalho-modal>
+    <app-consultar-cabecalho-modal *ngIf="modalGetCabecalhoEnabled" (closeModalEvent)="fecharGetCabecalhoModal()"
+        (clickedEvent)="setHeader($event)"></app-consultar-cabecalho-modal>
+</div>

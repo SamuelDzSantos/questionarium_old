@@ -173,6 +173,7 @@ img {
 
 #logo-container:hover>#dropdown {
     display: block;
+    margin-right: 10px;
 }
 
 

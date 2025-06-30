@@ -10,6 +10,10 @@ import { SobreComponent } from './components/sobre/sobre.component';
 import { defaultCanActivateGuard } from './guards/default-can-activate.guard';
 import { ListarRelatoriosComponent } from './components/relatorios/listar-relatorios/listar-relatorios';
 import { VerRelatorioComponent } from './components/relatorios/ver-relatorio/ver-relatorio';
+import { AvaliacaoComponent } from './components/avaliacao/avaliacao.component';
+import { AvaliacaoCriarComponent } from './components/avaliacao/avaliacao-criar/avaliacao-criar.component';
+import { AvaliacaoAplicarComponent } from './components/avaliacao/avaliacao-aplicar/avaliacao-aplicar.component';
+import { AvaliacaoAplicadasComponent } from './components/avaliacao/avaliacao-aplicadas/avaliacao-aplicadas.component';
 
 export const routes: Routes = [
     {
@@ -31,6 +35,15 @@ export const routes: Routes = [
                 ]
             },
             {
+                path: "avaliacao",
+                children: [
+                    { path: "", component: AvaliacaoComponent },
+                    { path: "criar", component: AvaliacaoCriarComponent },
+                    { path: "aplicar", component: AvaliacaoAplicarComponent },
+                    { path: "aplicadas", component: AvaliacaoAplicadasComponent }
+                ]
+            },
+            {
                 path: "questions",
                 children: [
                     { path: "", component: ViewQuestionsComponent },
@@ -45,6 +58,8 @@ export const routes: Routes = [
                     { path: ":id", component: VerRelatorioComponent }
                 ]
             },
+
+
         ],
         canActivateChild: [defaultCanActivateGuard]
     }

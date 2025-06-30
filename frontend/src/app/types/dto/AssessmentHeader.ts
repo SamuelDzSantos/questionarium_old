@@ -7,4 +7,6 @@ export interface AssessmentHeader {
     professor: string;
     instructions: string;
     userId: number;
+    creationDateTime?: '',
+    updateDateTime?: ''
 }
