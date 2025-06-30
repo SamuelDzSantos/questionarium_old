@@ -250,7 +250,7 @@ cd backend/gateway
 
 ## Frontend (Angular)
 
-O frontend do Questionarium é uma aplicação Angular moderna, estruturada por rotas e componentes, consumindo APIs dos microsserviços via Gateway.
+O frontend do Questionarium é uma aplicação Angular, estruturada por rotas e componentes, consumindo APIs dos microsserviços via Gateway.
 
 ---
 
@@ -295,7 +295,7 @@ O frontend do Questionarium é uma aplicação Angular moderna, estruturada por 
   };
   ```
 
-* **Importante:** Não coloque sua chave de API no repositório! O arquivo NÃO é versionado por motivos de segurança.
+* **Importante:** O github não aceita chaves, por isso é necessário colocar no próprio projeto.
 
 ---
 
