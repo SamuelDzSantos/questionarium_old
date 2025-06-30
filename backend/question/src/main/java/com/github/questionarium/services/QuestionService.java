@@ -146,7 +146,8 @@ public class QuestionService {
         if (header != null) {
 
             spec = spec
-                    .and((root, query, cb) -> cb.like((root.get("header")), "%" + header.toLowerCase() + "%"));
+                    .and((root, query, cb) -> cb.like((cb.lower(root.get("header"))),
+                            "%" + header.toLowerCase() + "%"));
         }
         if (tagIds != null && !tagIds.isEmpty()) {
             spec = spec.and((root, query, cb) -> {
