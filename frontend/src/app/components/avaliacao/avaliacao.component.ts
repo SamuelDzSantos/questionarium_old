@@ -83,4 +83,12 @@ export class AvaliacaoComponent implements OnInit {
       });
     }*/
   }
+
+  public mostrarModal() {
+    this.modalEnabled = true;
+  }
+
+  public fecharModal() {
+    this.modalEnabled = false;
+  }
 }
