@@ -196,13 +196,14 @@ public class RecordAssessmentService {
         if (!isAdmin && !rec.getAppliedAssessment().getUserId().equals(userId)) {
             throw new BusinessException("Você não tem permissão para corrigir este registro");
         }
-
+        /// A B C D 2 3 4 5
         // Armazena diretamente a lista de respostas do aluno
         rec.setStudentAnswerKey(new ArrayList<>(answerKey));
-
+        // Alternativas corretas A B C D
         // Calcula a pontuação obtida
         List<String> correct = rec.getCorrectAnswerKeyLetter();
         List<QuestionSnapshot> snaps = rec.getQuestionSnapshots();
+        // ++ 1
         double score = IntStream.range(0, correct.size())
                 .filter(i -> correct.get(i).equals(answerKey.get(i)))
                 .mapToDouble(i -> snaps.get(i).getWeight())

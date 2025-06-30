@@ -25,7 +25,7 @@ public class JwtUtils {
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuer("questionarium")
                 .issuedAt(now)
-                .expiresAt(now.plus(2, ChronoUnit.HOURS))
+                .expiresAt(now.plus(24, ChronoUnit.HOURS))
                 .subject(email)
                 .claim("id", id)
                 .claim("scope", role == UserRole.USER ? "USER" : "ADMIN")

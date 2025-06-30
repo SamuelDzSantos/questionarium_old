@@ -15,6 +15,7 @@ import com.github.questionarium.config.exception.UserNotConfirmedException;
 import com.github.questionarium.interfaces.DTOs.AuthDataDTO;
 import com.github.questionarium.interfaces.DTOs.AuthUserRegisterDTO;
 import com.github.questionarium.interfaces.DTOs.LoginFormDTO;
+import com.github.questionarium.interfaces.DTOs.PasswordUpdateForm;
 import com.github.questionarium.model.Token;
 import com.github.questionarium.model.User;
 import com.github.questionarium.repository.TokenRepository;
@@ -109,9 +110,31 @@ public class AuthService {
 
     }
 
+    public String resetPassword(String email) {
+        User user = getUser(email);
+        Token token = new Token(null, user.getId(), generateRandomString(), LocalDateTime.now().plusMinutes(60));
+        tokenRepository.save(token);
+        String confirmationURL = "http://localhost:4200/password/reset/" + token.getToken();
+        return confirmationURL;
+    }
+
+    public Boolean resetPasswordToken(String token, PasswordUpdateForm passwordUpdateForm) {
+        Token tok = tokenRepository.findByToken(token).orElse(null);
+        if (tok != null) {
+            User user = getUser(tok.getUserId());
+            if (passwordUpdateForm.newPassword().equals(passwordUpdateForm.confirmPassword())) {
+                user.setPassword(passwordEncoder.encode(passwordUpdateForm.newPassword()));
+                userRepository.save(user);
+                return true;
+            }
+            return false;
+        }
+        return false;
+    }
+
     public String generateConfirmationToken(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(null);
-        Token token = new Token(null, user.getId(), generateRandomString(), LocalDateTime.now().plusMinutes(10));
+        Token token = new Token(null, user.getId(), generateRandomString(), LocalDateTime.now().plusMinutes(60));
         tokenRepository.save(token);
         String confirmationURL = "http://localhost:14000/auth/token/" + token.getToken();
         System.out.println(confirmationURL);

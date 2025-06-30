@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.github.questionarium.interfaces.DTOs.AuthDataDTO;
@@ -17,6 +18,7 @@ import com.github.questionarium.interfaces.DTOs.LoginFormDTO;
 import com.github.questionarium.interfaces.DTOs.PasswordUpdateForm;
 import com.github.questionarium.service.AuthService;
 
+import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -74,9 +76,14 @@ public class AuthController {
         return ResponseEntity.ok(true);
     }
 
-    @PostMapping("/token/{token}")
-    public ResponseEntity<Void> refreshToken(@PathVariable String token) {
-        return null;
+    @PostMapping("/password/reset/{token}")
+    public Boolean resetPasswordToken(@PathVariable String token, @RequestBody PasswordUpdateForm passwordUpdateForm) {
+        return authService.resetPasswordToken(token, passwordUpdateForm);
+    }
+
+    @PostMapping("/password/reset")
+    public String resetPassword(@RequestParam String email) {
+        return authService.resetPassword(email);
     }
 
     /**

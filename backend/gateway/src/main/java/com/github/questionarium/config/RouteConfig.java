@@ -58,7 +58,8 @@ public class RouteConfig {
                                                                 "/assessment-models/**",
                                                                 "/applied-assessments/**",
                                                                 "/record-assessments/**",
-                                                                "/pdf/**")
+                                                                "/pdf/**",
+                                                                "/report/**")
                                                 .filters(f -> f.circuitBreaker(cb -> cb
                                                                 .setName("assessmentCircuitBreaker")
                                                                 .setFallbackUri("forward:/fallback/assessment")))
