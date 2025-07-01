@@ -1,12 +1,6 @@
 <div class="area">
     <h1>Criação de Avaliação</h1>
     <div class="cabecalho">
-        <h2>Cabeçalho da Avaliação</h2>
-        <p>Crie um novo ou utilize de cabeçalhos anteriores.</p>
-        <div class="button_area">
-            <button class="btn-generate" (click)="createHeader()">Criar Novo Cabeçalho</button>
-            <button class="btn-generate" (click)="mostrarModal()">Carregar Cabeçalho</button>
-        </div>
         <div class="cabeçalho_area">
             <div class="input">
                 <span>Instituição</span>
@@ -28,25 +22,34 @@
                 <span>Professor</span>
                 <input [(ngModel)]="header.professor" placeholder="Professor" aria-label="Professor" />
             </div>
-            <div class="input_text">
+            <div class="input_text instructions">
                 <span>Instruções</span>
                 <textarea [(ngModel)]="header.instructions" placeholder="Instruções" aria-label="Instruções"></textarea>
             </div>
         </div>
     </div>
 
+
+
+    <div class="button_area">
+        <button class="btn-generate" (click)="createHeader()">Criar Novo Cabeçalho</button>
+        <button class="btn-generate" (click)="mostrarModal()">Carregar Cabeçalho</button>
+    </div>
+
+
     <div class="question_area">
-        <div *ngFor="let questao of questoes; let i = index; trackBy: trackByIndex">
+        <div *ngFor="let questao of model.questions; let i = index; trackBy: trackByIndex">
             <div class="question">
                 Questão {{pad((i + 1).toString(),2)}}
                 <div>
-                    <span>Instituição: {{questao.instituicao}}</span>
-                    <span>Enunciado: {{questao.enunciado}}</span>
-                    <div [ngStyle]="{'background-color': questao.tipo == 'Pública'  ? '#BBE8BA' : 'red'}">
-                        {{questao.tipo}}
+                    <span>Instituição: {{model.institution}}</span>
+                    <span>Enunciado: {{questao.header}}</span>
+                    <div id="type-button"
+                        [ngStyle]="{'background-color': questao.accessLevel == 0  ? '#BBE8BA' : 'red'}">
+                        {{questao.accessLevel == 0 ? "Pública" : "Privada"}}
                     </div>
                     <div>
-                        <button class="remover-btn">Remover</button>
+                        <button class="remover-btn" (click)="removerQuestao()">Remover</button>
                     </div>
                 </div>
             </div>
@@ -54,7 +57,7 @@
     </div>
 
     <div class="bottom-button-area">
-        <button>Nova Questão</button>
+        <button (click)="mostrarModalQuestao()">Nova Questão</button>
         <button (click)="return_assessment()">Cancelar</button>
         <button (click)="saveHeader()">Salvar</button>
     </div>
@@ -67,4 +70,6 @@
         (closeModalEvent)="fecharCreateCabecalhoModal()"></app-criar-cabecalho-modal>
     <app-consultar-cabecalho-modal *ngIf="modalGetCabecalhoEnabled" (closeModalEvent)="fecharGetCabecalhoModal()"
         (clickedEvent)="setHeader($event)"></app-consultar-cabecalho-modal>
+    <app-escolher-questao-modal *ngIf="modalGetQuestionEnabled"
+        (closeModalEvent)="fecharModalQuestao()"></app-escolher-questao-modal>
 </div>

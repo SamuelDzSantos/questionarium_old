@@ -2,13 +2,12 @@ import { CommonModule } from '@angular/common';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { UserService } from '../../services/user.service';
-import { UserData } from '../../types/dto/UserData';
 import { Observable } from 'rxjs';
-import { AssessmentModelService } from '../../services/assessment-service/assessment-model.service';
-import { AssessmentModel } from '../../types/dto/AssessmentModel';
-import { CriarCabecalhoComponent } from '../../modal/criar-cabecalho/criar-cabecalho.component';
 import { UserInfo } from '../../interfaces/user/user-info.data';
+import { CriarCabecalhoComponent } from '../../modal/criar-cabecalho/criar-cabecalho.component';
+import { AssessmentModelService } from '../../services/assessment-service/assessment-model.service';
+import { UserService } from '../../services/user.service';
+import { AssessmentModel } from '../../types/dto/AssessmentModel';
 
 @Component({
   selector: 'app-avaliacao',
@@ -27,6 +26,7 @@ export class AvaliacaoComponent implements OnInit {
   filteredAssessments: AssessmentModel[] = [];
   modalEnabled = false;
 
+
   @ViewChild('titulo') titulo!: ElementRef<HTMLElement>;
 
   constructor(
@@ -37,6 +37,10 @@ export class AvaliacaoComponent implements OnInit {
 
   ngOnInit(): void {
     this.user$ = this.userService.getCurrentUser();
+    this.getAssessments();
+  }
+
+  private getAssessments() {
     this.user$.subscribe(user => {
       if (user) {
         // Busca apenas avaliações do usuário logado (mude para .getAll se for admin)
@@ -80,7 +84,8 @@ export class AvaliacaoComponent implements OnInit {
   }
 
   updateAssessment(assessment: AssessmentModel) {
-    this.router.navigate(['/avaliacao/editar', assessment.id]);
+
+    this.router.navigate(['/avaliacao', assessment.id]);
   }
 
   applyAssessment(assessment: AssessmentModel) {
@@ -88,6 +93,16 @@ export class AvaliacaoComponent implements OnInit {
   }
 
   deleteAssessment(assessment: AssessmentModel) {
+
+    let id: number = assessment.id;
+    console.log(id)
+
+
+    this.assessmentModelService.delete(id).subscribe(() => {
+      this.getAssessments()
+    }
+    );
+
     /*
     if (confirm('Tem certeza que deseja deletar esta avaliação?')) {
       this.assessmentModelService.delete(assessment.id).subscribe(() => {
@@ -104,4 +119,5 @@ export class AvaliacaoComponent implements OnInit {
   public fecharModal() {
     this.modalEnabled = false;
   }
+
 }

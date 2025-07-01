@@ -10,27 +10,56 @@ import { UserService } from '../../../services/user.service';
 import { UserData } from '../../../types/dto/UserData';
 import { Observable } from 'rxjs';
 import { UserInfo } from '../../../interfaces/user/user-info.data';
+import { CreateAssessmentModelRequest } from '../../../types/dto';
+import { QuestionDTO } from '../../../types/dto/QuestionDTO';
+import { EscolherQuestao } from "../../../modal/escolher-questao/escolher-questao";
 
-interface Question {
-  instituicao: string,
-  enunciado: string,
-  tipo: string
+
+
+interface customQuestion extends QuestionDTO {
+  weight: number
+}
+
+interface customModel {
+  description: string,
+  institution: string,
+  department: string,
+  course: string,
+  classroom: string,
+  professor: string,
+  instructions: string,
+  image: string,
+  questions: customQuestion[]
 }
 
 @Component({
   selector: 'app-avaliacao-criar',
   standalone: true,
-  imports: [FormsModule, CommonModule, CriarCabecalhoComponent, ConsultarCabecalhoComponent],
+  imports: [FormsModule, CommonModule, CriarCabecalhoComponent, ConsultarCabecalhoComponent, EscolherQuestao],
   templateUrl: './avaliacao-criar.component.html',
   styleUrl: './avaliacao-criar.component.css'
 })
 export class AvaliacaoCriarComponent {
   modalCreateCabecalhoEnabled = false;
   modalGetCabecalhoEnabled = false;
+  modalGetQuestionEnabled = false;
+
 
   user$!: Observable<UserInfo | null>;
   userId: number = 0;
   isAdmin: boolean = false;
+
+  model: customModel = {
+    description: '',
+    institution: '',
+    department: '',
+    course: '',
+    classroom: '',
+    professor: '',
+    instructions: '',
+    image: '',
+    questions: []
+  }
 
   header: AssessmentHeader = {
     id: 0,
@@ -45,10 +74,7 @@ export class AvaliacaoCriarComponent {
     updateDateTime: ''
   };
 
-  questoes: Question[] = [
-    { instituicao: "InstituiçãoXX", enunciado: "Lorem ipsum...", tipo: "Pública" },
-    { instituicao: "InstituiçãoYY", enunciado: "Outra questão...", tipo: "Privada" }
-  ];
+
 
   constructor(
     private headerService: AssessmentHeaderService,
@@ -130,12 +156,27 @@ export class AvaliacaoCriarComponent {
     this.modalGetCabecalhoEnabled = false;
   }
 
+
+  public mostrarModalQuestao() {
+    this.modalGetQuestionEnabled = true;
+  }
+
+  public fecharModalQuestao() {
+    this.modalGetQuestionEnabled = false;
+  }
+
   return_assessment() {
     this.router.navigateByUrl("/avaliacao");
   }
 
-  trackByIndex(index: number, item: Question): number {
+  trackByIndex(index: number, item: customQuestion): number {
     return index;
   }
+
+  public removerQuestao() {
+
+  }
+
+
 
 }

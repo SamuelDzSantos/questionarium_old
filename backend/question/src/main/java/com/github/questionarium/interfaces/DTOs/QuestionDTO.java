@@ -30,4 +30,5 @@ public class QuestionDTO {
     private List<AlternativeDTO> alternatives;
     private LocalDateTime creationDateTime;
     private LocalDateTime updateDateTime;
+
 }

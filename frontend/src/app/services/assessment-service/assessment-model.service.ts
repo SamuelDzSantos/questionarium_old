@@ -36,8 +36,9 @@ export class AssessmentModelService {
         return this.http.put<AssessmentModel>(`${this.baseUrl} / ${id}`, model, { headers: this.getHeaders(userId, isAdmin) });
     }
 
-    delete(id: number, userId: number, isAdmin: boolean): Observable<void> {
-        return this.http.delete<void>(`${this.baseUrl} / ${id}`, { headers: this.getHeaders(userId, isAdmin) });
+    delete(id: number): Observable<void> {
+        console.log(`${this.baseUrl}`)
+        return this.http.delete<void>(this.baseUrl + "/" + id);
     }
 
     getByUser(): Observable<AssessmentModel[]> {

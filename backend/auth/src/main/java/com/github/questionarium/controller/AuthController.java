@@ -18,7 +18,6 @@ import com.github.questionarium.interfaces.DTOs.LoginFormDTO;
 import com.github.questionarium.interfaces.DTOs.PasswordUpdateForm;
 import com.github.questionarium.service.AuthService;
 
-import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

@@ -1,0 +1,31 @@
+<div class="modal-backdrop" role="dialog" aria-modal="true">
+    <div class="modal-container">
+        <div class="modal-header">
+            <h2 id="modal-title">Questões</h2>
+            <div class="filters">
+            </div>
+            <div class="table-container hide-scrollbar">
+                <table class="question-table">
+                    <tr>
+                        <th>Nível</th>
+                        <th>Acesso</th>
+                        <th>Texto</th>
+                        <th>Data criação</th>
+                        <th> </th>
+                    </tr>
+                    <tr *ngFor="let question of questions">
+                        <td>{{question.educationLevel}}</td>
+                        <td>{{question.accessLevel}}</td>
+                        <td class="texto">{{question.header}}</td>
+                        <td>{{question.creationDateTime | date:'dd/MM/yyyy'}}</td>
+                        <td><img src="" /></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="form-actions">
+            <a href="/questions/criar" type="submit" class="link">Crie uma nova questão aqui!</a>
+            <button type="button" class="cancel-btn" (click)="closeModal()">Cancelar</button>
+        </div>
+    </div>
+</div>

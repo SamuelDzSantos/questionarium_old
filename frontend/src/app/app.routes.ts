@@ -33,7 +33,7 @@ export const routes: Routes = [
                     { path: "conta", component: EdicaoComponent },
                     { path: "senha", component: EdicaoComponent },
                     { path: "perfil", component: EdicaoComponent },
-                    { path: "", redirectTo: "perfil", pathMatch: "prefix" }
+                    { path: "", redirectTo: "conta", pathMatch: "prefix" }
                 ]
             },
             {
@@ -42,7 +42,8 @@ export const routes: Routes = [
                     { path: "", component: AvaliacaoComponent },
                     { path: "criar", component: AvaliacaoCriarComponent },
                     { path: "aplicar", component: AvaliacaoAplicarComponent },
-                    { path: "aplicadas", component: AvaliacaoAplicadasComponent }
+                    { path: "aplicadas", component: AvaliacaoAplicadasComponent },
+                    { path: ":id", component: AvaliacaoCriarComponent }
                 ]
             },
             {

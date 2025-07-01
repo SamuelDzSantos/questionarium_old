@@ -25,7 +25,9 @@ public class AssessmentHeaderService {
     public AssessmentHeader createHeader(AssessmentHeader header, Long userId) {
         Long currentUserId = userId;
         header.setUserId(currentUserId);
+        header.setId(null);
         log.info("Criando novo AssessmentHeader para usuário {}", currentUserId);
+
         return assessmentHeaderRepository.save(header);
     }
 
