@@ -9,11 +9,19 @@ import { AssessmentModelService } from '../../services/assessment-service/assess
 import { AssessmentModel } from '../../types/dto/AssessmentModel';
 import { CriarCabecalhoComponent } from '../../modal/criar-cabecalho/criar-cabecalho.component';
 import { UserInfo } from '../../interfaces/user/user-info.data';
+import { AppliedAssessmentService } from '../../services/assessment-service/applied-assessment.service';
+import { AplicarAvaliacao } from '../../modal/aplicar-avaliacao/aplicar-avaliacao';
 
 @Component({
   selector: 'app-avaliacao',
   standalone: true,
-  imports: [RouterModule, CommonModule, FormsModule, CriarCabecalhoComponent],
+  imports: [
+    RouterModule,
+    CommonModule,
+    FormsModule,
+    CriarCabecalhoComponent,
+    AplicarAvaliacao
+  ],
   templateUrl: './avaliacao.component.html',
   styleUrl: './avaliacao.component.css'
 })
@@ -25,6 +33,7 @@ export class AvaliacaoComponent implements OnInit {
   searchClasse = "";
   assessments: AssessmentModel[] = [];
   filteredAssessments: AssessmentModel[] = [];
+  selectedAssessment: AssessmentModel | null = null;
   modalEnabled = false;
 
   @ViewChild('titulo') titulo!: ElementRef<HTMLElement>;
@@ -32,13 +41,16 @@ export class AvaliacaoComponent implements OnInit {
   constructor(
     private router: Router,
     private userService: UserService,
-    private assessmentModelService: AssessmentModelService
+    private assessmentModelService: AssessmentModelService,
+    private appliedAssessmentService: AppliedAssessmentService // <--- FALTAVA AQUI
   ) { }
+
 
   ngOnInit(): void {
     this.user$ = this.userService.getCurrentUser();
     this.user$.subscribe(user => {
       if (user) {
+
         // Busca apenas avaliações do usuário logado (mude para .getAll se for admin)
         this.assessmentModelService.getByUser().subscribe(data => {
           this.assessments = data;
@@ -83,8 +95,10 @@ export class AvaliacaoComponent implements OnInit {
     this.router.navigate(['/avaliacao/editar', assessment.id]);
   }
 
+  // Para abrir o modal com a avaliação escolhida
   applyAssessment(assessment: AssessmentModel) {
-    this.router.navigate(['/avaliacao/aplicar'], { state: { id: assessment.id } });
+    this.selectedAssessment = assessment;
+    this.modalEnabled = true;
   }
 
   deleteAssessment(assessment: AssessmentModel) {
@@ -97,11 +111,40 @@ export class AvaliacaoComponent implements OnInit {
     }*/
   }
 
+  // Quando o modal disparar o applyEvent (com dados preenchidos pelo usuário)
+  onApplyAssessment(formData: { date: string; count: number; shuffle: boolean }) {
+    if (!this.selectedAssessment) return;
+
+    // DTO para o backend
+    const payload = {
+      modelId: this.selectedAssessment.id,
+      quantity: Number(formData.count),
+      applicationDate: formData.date, // string "YYYY-MM-DD"
+      shuffleQuestions: formData.shuffle,
+    };
+    // user (observable user$ ou localstorage)
+    this.user$.subscribe(user => {
+      if (!user) return;
+      const isAdmin = (user as any).isAdmin || false;
+      this.appliedAssessmentService.apply(payload, user.id, isAdmin).subscribe({
+        next: (response) => {
+          this.fecharModal();
+          this.router.navigate(['/avaliacao/aplicadas']);
+        },
+        error: (err) => {
+          alert('Erro ao aplicar avaliação!');
+        }
+      });
+    });
+  }
+
   public mostrarModal() {
     this.modalEnabled = true;
   }
 
-  public fecharModal() {
+  // Para fechar o modal
+  fecharModal() {
     this.modalEnabled = false;
+    this.selectedAssessment = null;
   }
 }
