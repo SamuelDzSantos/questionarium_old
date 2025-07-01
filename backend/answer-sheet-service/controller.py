@@ -40,8 +40,8 @@ def process():
     #print(debug_answers)
     #return debug_answers, 200
 
-    answers = process_answer_sheet(image, num_rows, 6, marked_threshold=0.7)
-    print(answers)
+    answers = process_answer_sheet(image, num_rows+1, 6, marked_threshold=0.7)
+    #print(answers)
     return answers
 
 

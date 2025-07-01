@@ -65,7 +65,7 @@ def process_answer_sheet(image, num_rows, num_cols=6, marked_threshold=0.6, debu
     results = []
 
     # Process each row
-    for row in range(0, num_rows):
+    for row in range(1, num_rows): # 1 for skipping header
         question_number = row
         marked_answers = []
 
@@ -90,11 +90,11 @@ def process_answer_sheet(image, num_rows, num_cols=6, marked_threshold=0.6, debu
         if len(marked_answers) == 1:
             final_answer = marked_answers[0]
         elif len(marked_answers) > 1:
-            final_answer = 'X'
+            final_answer = 'X' # Inválido
         else:
-            final_answer = 'X'
+            final_answer = 'X' # Em Branco
 
-        results.append((question_number+1, final_answer))
+        results.append((question_number, final_answer))
 
         if debug:
             print(f"Question {question_number}: Marked answers: {marked_answers}, Final answer: {final_answer}")
@@ -103,6 +103,7 @@ def process_answer_sheet(image, num_rows, num_cols=6, marked_threshold=0.6, debu
 
 #Testing
 #image = cv2.imread(r'C:\Users\--\--\good_angle_good_light_c_mk.png', cv2.IMREAD_COLOR)
-#option = input('Insert debug mode: 0 for no debug 1 for debug \n')
-#answers = process_answer_sheet(image, 15, 6, marked_threshold=0.7, debug=int(option))
+#image = cv2.imread(r'./assets/img.png', cv2.IMREAD_COLOR)
+#image = cv2.imread(r'C:\Users\--\--\prophet_of_truth.jpeg', cv2.IMREAD_COLOR)
+#answers = process_answer_sheet(image, 5, 6, marked_threshold=0.7, debug=True)
 #print(answers)

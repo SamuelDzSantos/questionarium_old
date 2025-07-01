@@ -4,7 +4,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 # Reading images
-img_reference = cv2.imread(r'./assets/img_reference_tg.png', cv2.IMREAD_COLOR)
+img_reference = cv2.imread(r'./assets/img.png', cv2.IMREAD_COLOR)
 img_reference = cv2.cvtColor(img_reference, cv2.COLOR_BGR2RGB)
 assert img_reference is not None, "file could not be read, check with os.path.exists()"
 
@@ -13,9 +13,9 @@ def homography(img_to_align, debug=False):
     img_to_align = cv2.cvtColor(img_to_align, cv2.COLOR_BGR2RGB)
     assert img_to_align is not None, "file could not be read"
 
-    # Resizing to reference image size
-    img_to_align = cv2.resize(img_to_align, (img_reference.shape[1], img_reference.shape[0]),
-                              interpolation=cv2.INTER_AREA)
+    # Resizing to reference image size -> might introduce unwanted behavior
+    #img_to_align = cv2.resize(img_to_align, (img_reference.shape[1], img_reference.shape[0]),
+    #                          interpolation=cv2.INTER_AREA)
 
     if debug:
         # Printing original images
@@ -105,5 +105,7 @@ def homography(img_to_align, debug=False):
     return im2_reg
 
 # Testing
-#img_to_align = cv2.imread(r'C:\Users\aalex\Downloads\good_angle_good_light_c_mk.png', cv2.IMREAD_COLOR)
+#img_to_align = cv2.imread(r'C:\Users\--\--\good_angle_good_light_c_mk.png', cv2.IMREAD_COLOR)
+#img_to_align = cv2.imread(r'./assets/img.png', cv2.IMREAD_COLOR)
+#img_to_align = cv2.imread(r'C:\Users\--\--\zoom_in.jpeg', cv2.IMREAD_COLOR)
 #homography(img_to_align, True)
