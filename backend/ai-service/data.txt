@@ -1,0 +1,38 @@
+Este é o Questionarium, um site inovador para montagem e correção de avaliações.
+
+Suas funcionalidades incluem: repositório de questões, gestão de cabeçalhos, gestão de avaliações, aplicação de avaliações,
+correção pela câmera do celular e relatórios personalizados.
+
+Os desenvolvedores são Alexandre Yukio de Sousa Sembo , André Alex Jankoski e Samuel Dominguez Santos, graduandos do curso
+de Tecnologia de Análise e Desenvolvimento de Sistemas
+
+Este trabalho propõe o desenvolvimento de uma plataforma online e um aplicativo móvel multiplataforma que apoiam docentes
+na criação, organização e gestão de bancos de questões, além da elaboração e correção automática de avaliações. O sistema
+é desenvolvido utilizando a linguagem de programação Java, em conjunto com os frameworks Spring Boot para o backend e
+Angular para o frontend, seguindo a metodologia ágil Scrum. A plataforma visa otimizar o tempo docente, reduzir a carga
+administrativa e promover uma abordagem mais personalizada e eficaz no processo de ensino e aprendizagem. Os objetivos
+específicos incluem facilitar a criação de questões, organizar e gerenciar bancos de dados, elaborar avaliações ágeis,
+automatizar a correção, promover a personalização do ensino e reduzir a carga administrativa dos professores.
+
+Objetivos específicos da plataforma:
+
+Facilitar a criação de questões: Proporcionar uma interface intuitiva e de fácil navegação, permitindo a realização das ações de forma ágil e com o mínimo de etapas necessárias, que possibilite aos professores criar e categorizar questões de maneira simples e rápida, integrando diferentes tipos de questões (objetivas, dissertativas, etc.) e conteúdo das disciplinas.
+
+Organizar e gerenciar bancos de questões: Desenvolver funcionalidades que possibilitem a organização eficiente das questões em bancos de dados, permitindo a fácil recuperação e reutilização para a elaboração de novas avaliações.
+
+Elaborar avaliações de forma ágil: Implementar ferramentas que auxiliem na construção de avaliações a partir das questões armazenadas, incluindo a capacidade de personalização das avaliações de acordo com as necessidades pedagógicas e os objetivos de aprendizagem.
+
+Automatizar a correção de avaliações: Integrar um sistema de correção automática que permita a avaliação rápida e precisa das respostas dos alunos, com feedback instantâneo e relatórios detalhados para os professores.
+
+Promover a personalização do ensino: Oferecer recursos que possibilitem ajustes nas avaliações e nas questões com base no desempenho e nas necessidades individuais dos alunos, permitindo uma abordagem mais personalizada e eficaz no processo educativo.
+
+Reduzir a carga administrativa dos professores: Desenvolver soluções que diminuam o tempo e o esforço necessários para a criação, organização e correção de avaliações, permitindo que os professores se concentrem mais em atividades pedagógicas e no desenvolvimento de estratégias de ensino.
+
+Gerar relatórios de desempenho de alunos, classes, avaliações e até mesmo de questões específicas, sendo utilizada como uma ferramenta que possibilita o aprimoramento do conteúdo dos profissionais do ensino.
+
+Como adicionar uma questão:
+- Na tela de Questões, clique no botão Nova Questão
+- Insira os dados de enunciado, cabeçalho existente, alternativas
+- Não esqueça de marcar uma alternativa como correta
+
+Email para contato: questionarium@gmail.com
