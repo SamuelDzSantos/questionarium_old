@@ -1,8 +1,10 @@
 package com.github.questionarium.controller;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -86,4 +88,22 @@ public class AppliedAssessmentController {
                 service.softDelete(id, userId, isAdmin);
                 return ResponseEntity.noContent().build();
         }
+
+        /** 6) Lista aplicações do usuário logado (sempre ativas) e filtradas por descrição e data*/
+        @GetMapping("/user/filter")
+        public ResponseEntity<List<AppliedAssessmentDTO>> getFilteredByUser(
+                @RequestHeader("X-User-id") Long userId,
+                @RequestHeader("X-User-isAdmin") Boolean isAdmin,
+                @RequestParam(required = false) String description,
+                @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate applicationDate) {
+
+                log.info("GET /applied-assessments/user/filter – listando aplicações filtradas de userId={}, isAdmin={}", userId, isAdmin);
+
+                List<AppliedAssessmentDTO> list = service.getFilteredAppliedAssessments(userId, isAdmin, description, applicationDate).stream()
+                        .map(mapper::toDto)
+                        .collect(Collectors.toList());
+
+                return ResponseEntity.ok(list);
+        }
+
 }

@@ -16,6 +16,7 @@ import com.github.questionarium.interfaces.DTOs.AppliedAssessmentReport;
 import com.github.questionarium.interfaces.DTOs.AppliedReport;
 import com.github.questionarium.interfaces.DTOs.ReportRecords;
 import com.github.questionarium.model.AppliedAssessment;
+import com.github.questionarium.model.QuestionSnapshot;
 import com.github.questionarium.model.RecordAssessment;
 import com.github.questionarium.service.AppliedAssessmentService;
 import com.github.questionarium.service.RecordAssessmentService;
@@ -35,33 +36,75 @@ public class ReportController {
     public List<AppliedAssessmentReport> getAppliedAssessmentList(@RequestHeader("X-User-id") Long userId) {
 
         return appliedAssessmentService.findByUser(userId, userId, false).stream()
-                .map((assessment) -> new AppliedAssessmentReport(assessment.getId(), assessment.getCreationDateTime(),
+                .map((assessment) -> new AppliedAssessmentReport(assessment.getId(), assessment.getApplicationDate(),
                         assessment.getClassroom(), assessment.getCourse()))
                 .toList();
     }
 
-    @GetMapping("/assessment/{id}")
-    public AppliedReport getAppliedAssessmentReport(@PathVariable Long id,
-            @RequestHeader("X-User-id") Long userId) {
+	@GetMapping("/assessment/{id}")
+	public AppliedReport getAppliedAssessmentReport(@PathVariable Long id,
+			@RequestHeader("X-User-id") Long userId) {
 
-        AppliedAssessment appliedAssessment = appliedAssessmentService.findById(id, userId, false);
-        List<RecordAssessment> records = recordAssessmentService.findByAppliedAssessment(id, userId, true);
+		AppliedAssessment appliedAssessment = appliedAssessmentService.findById(id, userId, false);
+		List<RecordAssessment> records = recordAssessmentService.findByAppliedAssessment(id, userId, true);
 
-        Set<String> uniqueTags = appliedAssessment.getQuestionSnapshots().stream()
-                .map((question) -> question.getTags()).flatMap(List::stream)
-                .collect(Collectors.toCollection(HashSet::new));
+		Set<String> uniqueTags = appliedAssessment.getQuestionSnapshots().stream()
+				.map(QuestionSnapshot::getTags)
+				.flatMap(List::stream)
+				.collect(Collectors.toCollection(HashSet::new));
 
-        System.out.println(uniqueTags);
+		List<ReportRecords> reportRecords = records.stream().map(record -> {
+			boolean isGraded = record.getObtainedScore() != null
+					|| (record.getStudentAnswerKey() != null && !record.getStudentAnswerKey().isEmpty());
 
-        // TODO 0L quantidade de questões corretas ,
-        List<ReportRecords> reportRecords = records.stream()
-                .map((record) -> new ReportRecords(record.getId().toString(), record.getStudentName(), 0L, 0L,
-                        true))
-                .toList();
+			long correctCount = 0L;
+			long incorrectCount = 0L;
 
-        return new AppliedReport(appliedAssessment.getCreationDateTime(), appliedAssessment.getClassroom(),
-                appliedAssessment.getCourse(), (long) records.size(), (long) records.size(), 0L,
-                new ArrayList<>(uniqueTags), reportRecords);
-    }
+			if (isGraded) {
+				List<String> correctAnswers = record.getCorrectAnswerKeyLetter();
+				List<String> studentAnswers = record.getStudentAnswerKey();
+
+				int minSize = Math.min(correctAnswers.size(), studentAnswers.size());
+				for (int i = 0; i < minSize; i++) {
+					if (studentAnswers.get(i).equalsIgnoreCase(correctAnswers.get(i))) {
+						correctCount++;
+					} else {
+						incorrectCount++;
+					}
+				}
+
+				incorrectCount += correctAnswers.size() - minSize;
+			}
+
+			return new ReportRecords(
+					record.getId().toString(),
+					record.getStudentName(),
+					correctCount,
+					incorrectCount,
+					isGraded);
+		}).toList();
+
+		long totalCorrectAnswers = reportRecords.stream()
+				.filter(ReportRecords::isGraded)
+				.mapToLong(ReportRecords::correctAnswers)
+				.sum();
+
+		long totalIncorrectAnswers = reportRecords.stream()
+				.filter(ReportRecords::isGraded)
+				.mapToLong(ReportRecords::incorrectAnswers)
+				.sum();
+
+		return new AppliedReport(
+				appliedAssessment.getApplicationDate(),
+				appliedAssessment.getClassroom(),
+				appliedAssessment.getCourse(),
+				(long) records.size(),
+				totalCorrectAnswers,
+				totalIncorrectAnswers,
+				new ArrayList<>(uniqueTags),
+				reportRecords);
+	}
+
+
 
 }

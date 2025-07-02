@@ -32,9 +32,14 @@ export class AppliedAssessmentService {
         return this.http.delete<void>(`${this.baseUrl}/${id}`);
     }
 
-    findWithFilter(description?: string): Observable<AppliedAssessment[]> {
+    findWithFilter(description?: string, date?: string): Observable<AppliedAssessment[]> {
         let params = new HttpParams();
-        if (description !== undefined) params = params.set('description', description);
-        return this.http.get<AppliedAssessment[]>(`${this.baseUrl}/user`, { params });
+        if (description !== undefined && description.trim() !== '') {
+            params = params.set('description', description);
+        }
+        if (date !== undefined && date.trim() !== '') {
+            params = params.set('applicationDate', date);
+        }
+        return this.http.get<AppliedAssessment[]>(`${this.baseUrl}/user/filter`, { params });
     }
 }

@@ -96,16 +96,20 @@ public class RecordAssessmentService {
             rec.setTotalScore(total);
 
             // Geração de gabarito em letras
+            // Z - Questão Discursiva
             List<String> letters = IntStream.range(0, clones.size())
                     .mapToObj(idx -> {
-                        List<AlternativeSnapshot> alts = clones.get(idx).getAlternatives();
-                        int correctIdx = IntStream.range(0, alts.size())
-                                .filter(j -> Boolean.TRUE.equals(alts.get(j).getIsCorrect()))
-                                .findFirst()
-                                .orElseThrow(() -> new BusinessException(
-                                        "Alternativa correta não encontrada na questão " +
-                                                clones.get(idx).getQuestion()));
-                        return String.valueOf((char) ('A' + correctIdx));
+                        if(Boolean.TRUE.equals(clones.get(idx).getMultipleChoice())){
+                            List<AlternativeSnapshot> alts = clones.get(idx).getAlternatives();
+                            int correctIdx = IntStream.range(0, alts.size())
+                                    .filter(j -> Boolean.TRUE.equals(alts.get(j).getIsCorrect()))
+                                    .findFirst()
+                                    .orElseThrow(() -> new BusinessException(
+                                            "Alternativa correta não encontrada na questão " +
+                                                    clones.get(idx).getQuestion()));
+                            return String.valueOf((char) ('A' + correctIdx));
+                        }
+                        return "Z"; // Discursiva
                     })
                     .collect(Collectors.toList());
             rec.setCorrectAnswerKeyLetter(letters);
@@ -205,8 +209,23 @@ public class RecordAssessmentService {
         List<String> correct = rec.getCorrectAnswerKeyLetter();
         List<QuestionSnapshot> snaps = rec.getQuestionSnapshots();
         // ++ 1
+        // X - Em branco, invalido
+        // Y - Discursiva correta
+        // N - Discursiva incorreta
+        // P - Discursiva não corrigida  
         double score = IntStream.range(0, correct.size())
-                .filter(i -> correct.get(i).equals(answerKey.get(i)))
+                .filter(i -> {
+                    if(Boolean.TRUE.equals(snaps.get(i).getMultipleChoice())){
+                        return correct.get(i).equals(answerKey.get(i));
+                    }
+                    if (answerKey.get(i) == "Y") {
+                        return true;
+                    }
+                    if (answerKey.get(i) == "N" || answerKey.get(i) == "P") {
+                        return false;
+                    }
+                    return false;
+                })
                 .mapToDouble(i -> snaps.get(i).getWeight())
                 .sum();
         rec.setObtainedScore(score);
