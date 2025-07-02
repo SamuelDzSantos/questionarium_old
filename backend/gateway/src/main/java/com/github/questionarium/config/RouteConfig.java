@@ -27,6 +27,14 @@ public class RouteConfig {
                                                                 .setFallbackUri("forward:/fallback/users")))
                                                 .uri("forward:/user/data"))
 
+                                .route("gateway-serivce", r -> r.path("/assessment/model/**").filters(f ->
+
+                                f.circuitBreaker(cb -> cb.setName(("assessmentCircuitBreaker"))
+                                                .setFallbackUri("forward:/fallback/assessment")))
+                                                .uri("forward:/assessment/model")
+
+                                )
+
                                 // Auth Service
                                 .route("auth-service", r -> r
                                                 .path("/auth/**")
@@ -69,7 +77,7 @@ public class RouteConfig {
                                 .route("ai-service", r -> r
                                                 .path("/ai/**")
                                                 .uri("http://localhost:14011"))
-                                
+
                                 // Detecção Service
                                 .route("deteccao-service", r -> r
                                                 .path("/deteccao/**")
