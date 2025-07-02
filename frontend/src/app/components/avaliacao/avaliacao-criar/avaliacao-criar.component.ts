@@ -1,21 +1,22 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AssessmentHeader } from '../../../types/dto/AssessmentHeader';
 import { AssessmentHeaderService } from '../../../services/assessment-service/assessment-header.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { CriarCabecalhoComponent } from '../../../modal/criar-cabecalho/criar-cabecalho.component';
 import { ConsultarCabecalhoComponent } from '../../../modal/consultar-cabecalho/consultar-cabecalho.component';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from '../../../services/user.service';
 import { UserData } from '../../../types/dto/UserData';
-import { Observable } from 'rxjs';
+import { catchError, Observable } from 'rxjs';
 import { UserInfo } from '../../../interfaces/user/user-info.data';
-import { CreateAssessmentModelRequest, Question } from '../../../types/dto';
+import { CreateAssessmentModelRequest, Question, QuestionWeight } from '../../../types/dto';
 import { QuestionDTO } from '../../../types/dto/QuestionDTO';
 import { EscolherQuestao } from "../../../modal/escolher-questao/escolher-questao";
 import { QuestionService } from '../../../services/question-service/question-service.service';
 import { CdkDrag, CdkDragDrop, CdkDropList, CdkDropListGroup, moveItemInArray } from '@angular/cdk/drag-drop';
 import { CreateAssessmentModelRequestDTO } from '../../../types/dto/CreateAssessmentModelRequestDTO';
+import { AssessmentModelService } from '../../../services/assessment-service/assessment-model.service';
 
 
 
@@ -42,7 +43,7 @@ interface customModel {
   templateUrl: './avaliacao-criar.component.html',
   styleUrl: './avaliacao-criar.component.css'
 })
-export class AvaliacaoCriarComponent {
+export class AvaliacaoCriarComponent implements OnInit {
   modalCreateCabecalhoEnabled = false;
   modalGetCabecalhoEnabled = false;
   modalGetQuestionEnabled = false;
@@ -51,8 +52,9 @@ export class AvaliacaoCriarComponent {
   user$!: Observable<UserInfo | null>;
   userId: number = 0;
   isAdmin: boolean = false;
+  modelId!: number;
 
-  assessmentModel!: CreateAssessmentModelRequestDTO;
+  assessmentModel!: CreateAssessmentModelRequest;
 
   model: customModel = {
     description: '',
@@ -85,7 +87,9 @@ export class AvaliacaoCriarComponent {
     private headerService: AssessmentHeaderService,
     private router: Router,
     private userService: UserService,
-    private questionService: QuestionService
+    private questionService: QuestionService,
+    private assessmentService: AssessmentModelService,
+    private route: ActivatedRoute
   ) {
     this.user$ = this.userService.getCurrentUser();
     this.user$.subscribe(user => {
@@ -95,6 +99,21 @@ export class AvaliacaoCriarComponent {
         this.header.userId = user.id;
       }
     });
+  }
+  ngOnInit(): void {
+    this.route.paramMap.subscribe(params => {
+      this.modelId = +params.get('id')!;
+      if (this.modelId) {
+        this.loadAssessment(this.modelId);
+      }
+    })
+  }
+
+  private loadAssessment(modelId: number) {
+    this.assessmentService.getById(this.modelId).subscribe((assessment) => {
+      //assessment.questions
+      //this.model.questions = assessment;
+    })
   }
 
   pad(num: string, size: number) {
@@ -179,11 +198,38 @@ export class AvaliacaoCriarComponent {
     this.router.navigateByUrl("/avaliacao");
   }
 
+
+
   saveAssessment() {
-    /*    this.assessmentModel = {
-          'description' = this.model.description,
-    
-  }*/
+
+    let questions: QuestionWeight[] = this.model.questions.map((q) => {
+
+      let qw: QuestionWeight = {
+        "weight": q.weight,
+        "questionId": q.id || 0
+      };
+      return qw
+    });
+
+    this.assessmentModel = {
+      'description': this.model.description,
+      'classroom': this.header.classroom,
+      'image': '',
+      'course': this.header.course,
+      'institution': this.header.institution,
+      'instructions': this.header.instructions,
+      'professor': this.header.professor,
+      'questions': questions,
+      "department": this.header.department
+    }
+
+    this.assessmentService.create(this.assessmentModel).subscribe(() => {
+      console.log("OPA")
+      this.router.navigateByUrl("/avaliacao")
+    }, () => {
+      alert("Erro ao criar avaliação")
+    })
+
   }
 
   trackByIndex(index: number, item: customQuestion): number {

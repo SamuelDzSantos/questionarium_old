@@ -36,11 +36,19 @@ public class AssessmentModelController {
             @RequestHeader("X-User-isAdmin") Boolean isAdmin) {
         log.info("POST /assessment-models – criando AssessmentModel para userId={}", userId);
 
+        System.out.println(dto.getQuestions());
+
         AssessmentModel entity = mapper.toEntity(dto);
 
+        // List<QuestionWeight> weights = dto.getQuestions().stream()
+        // .map((question) -> new QuestionWeight(question.getQuestion(),
+        // question.getWeight())).toList();
+
         List<QuestionWeight> weights = dto.getQuestions().stream()
-                .map((question) -> new QuestionWeight(question.getQuestion(), question.getWeight())).toList();
+                .map((question) -> new QuestionWeight(question.getQuestionId(), question.getWeight())).toList();
+
         entity.setQuestions(weights);
+
         AssessmentModel saved = service.createAssessment(entity, userId);
         AssessmentModelDTO response = mapper.toDto(saved);
         URI location = URI.create("/assessment-models/" + saved.getId());

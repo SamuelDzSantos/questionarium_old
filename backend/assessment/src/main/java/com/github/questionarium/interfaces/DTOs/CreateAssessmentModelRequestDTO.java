@@ -21,5 +21,5 @@ public class CreateAssessmentModelRequestDTO {
     private String image;
 
     @NotNull
-    private List<QuestionDTO> questions;
+    private List<QuestionWeightDTO> questions;
 }

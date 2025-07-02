@@ -1,4 +1,5 @@
 import { QuestionDTO } from "./QuestionDTO";
+import { QuestionWeight } from "./QuestionWeight";
 
 export interface CreateAssessmentModelRequestDTO {
     description: string;
@@ -8,6 +9,6 @@ export interface CreateAssessmentModelRequestDTO {
     professor: string;
     instructions: string;
     image: string;
-    questions: QuestionDTO[]
+    questions: QuestionWeight[]
 
 }

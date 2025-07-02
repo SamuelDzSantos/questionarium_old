@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Observable } from 'rxjs';
 import { UserInfo } from '../../interfaces/user/user-info.data';
 import { CriarCabecalhoComponent } from '../../modal/criar-cabecalho/criar-cabecalho.component';
@@ -26,6 +26,7 @@ export class AvaliacaoComponent implements OnInit {
   searchClasse = "";
   assessments: AssessmentModel[] = [];
   filteredAssessments: AssessmentModel[] = [];
+
   modalEnabled = false;
   selectedModelId: number = 0;
 
@@ -35,13 +36,20 @@ export class AvaliacaoComponent implements OnInit {
     private router: Router,
     private userService: UserService,
     private assessmentModelService: AssessmentModelService,
-    private appliedAssessmentService: AppliedAssessmentService
+    private appliedAssessmentService: AppliedAssessmentService,
+
   ) { }
 
   ngOnInit(): void {
+
+
+
     this.user$ = this.userService.getCurrentUser();
     this.getAssessments();
   }
+
+
+
 
   private getAssessments() {
     this.user$.subscribe(user => {
@@ -100,7 +108,6 @@ export class AvaliacaoComponent implements OnInit {
   }
 
   updateAssessment(assessment: AssessmentModel) {
-
     this.router.navigate(['/avaliacao', assessment.id]);
   }
 
