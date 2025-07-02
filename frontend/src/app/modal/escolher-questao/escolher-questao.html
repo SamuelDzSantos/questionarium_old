@@ -3,22 +3,26 @@
         <div class="modal-header">
             <h2 id="modal-title">Questões</h2>
             <div class="filters">
+                <div class="search"><input [(ngModel)]="texto" /> <img (click)="search()" src="/resources/mag.png" />
+                </div>
             </div>
             <div class="table-container hide-scrollbar">
                 <table class="question-table">
-                    <tr>
-                        <th>Nível</th>
-                        <th>Acesso</th>
-                        <th>Texto</th>
-                        <th>Data criação</th>
-                        <th> </th>
+                    <tr class="header-row" style="border-radius: 30px;">
+                        <th class="th-header"><span>Nível</span><img src="/resources/up_down.png" />
+                        </th>
+                        <th class="th-header">Acesso<img src="/resources/up_down.png" /></th>
+                        <th class="th-header">Texto<img src="/resources/up_down.png" /></th>
+                        <th class="th-header">Data criação<img src="/resources/up_down.png" /></th>
+                        <th class="th-header"> </th>
                     </tr>
-                    <tr *ngFor="let question of questions">
+                    <tr class="header-row-loop" (click)="escolherQuestao(question.id)"
+                        *ngFor="let question of questions">
                         <td>{{question.educationLevel}}</td>
                         <td>{{question.accessLevel}}</td>
                         <td class="texto">{{question.header}}</td>
                         <td>{{question.creationDateTime | date:'dd/MM/yyyy'}}</td>
-                        <td><img src="" /></td>
+                        <td style="display: flex; justify-self: flex-end;"><img src="/resources/Eye.png" /></td>
                     </tr>
                 </table>
             </div>

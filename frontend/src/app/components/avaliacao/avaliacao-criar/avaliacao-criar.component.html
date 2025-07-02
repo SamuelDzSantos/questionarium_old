@@ -36,10 +36,37 @@
         <button class="btn-generate" (click)="mostrarModal()">Carregar Cabeçalho</button>
     </div>
 
+    <!--
+    <div cdkDropListGroup class="users-container">
+        <div cdkDropList [cdkDropListData]="model.questions" class="users-list" (cdkDropListDropped)="drop($event)">
+            <div *ngFor="let questao of model.questions;let i = index" class="user">
 
-    <div class="question_area">
-        <div *ngFor="let questao of model.questions; let i = index; trackBy: trackByIndex">
-            <div class="question">
+                <div class="question" cdkDrag>
+                    Questão {{pad((i + 1).toString(),2)}}
+                    <div>
+                        <span>Instituição: {{model.institution}}</span>
+                        <span>Enunciado: {{questao.header}}</span>
+                        <div id="type-button"
+                            [ngStyle]="{'background-color': questao.accessLevel == 0  ? '#BBE8BA' : 'red'}">
+                            {{questao.accessLevel == 0 ? "Pública" : "Privada"}}
+                        </div>
+                        <input [(ngModel)]="questao.weight" />
+                        <div>
+                            <button class="remover-btn" (click)="removerQuestao(questao.id)">Remover</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+-->
+
+
+    <div cdkDropListGroup class="question_area">
+        <div class="question-list" cdkDropList [cdkDropListData]="model.questions" (cdkDropListDropped)="drop($event)">
+            <div class="question" cdkDrag *ngFor="let questao of model.questions; let i = index; trackBy: trackByIndex">
                 Questão {{pad((i + 1).toString(),2)}}
                 <div>
                     <span>Instituição: {{model.institution}}</span>
@@ -48,11 +75,13 @@
                         [ngStyle]="{'background-color': questao.accessLevel == 0  ? '#BBE8BA' : 'red'}">
                         {{questao.accessLevel == 0 ? "Pública" : "Privada"}}
                     </div>
+                    <input [(ngModel)]="questao.weight" />
                     <div>
-                        <button class="remover-btn" (click)="removerQuestao()">Remover</button>
+                        <button class="remover-btn" (click)="removerQuestao(questao.id)">Remover</button>
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
 
@@ -70,6 +99,6 @@
         (closeModalEvent)="fecharCreateCabecalhoModal()"></app-criar-cabecalho-modal>
     <app-consultar-cabecalho-modal *ngIf="modalGetCabecalhoEnabled" (closeModalEvent)="fecharGetCabecalhoModal()"
         (clickedEvent)="setHeader($event)"></app-consultar-cabecalho-modal>
-    <app-escolher-questao-modal *ngIf="modalGetQuestionEnabled"
-        (closeModalEvent)="fecharModalQuestao()"></app-escolher-questao-modal>
+    <app-escolher-questao-modal *ngIf="modalGetQuestionEnabled" (closeModalEvent)="fecharModalQuestao()"
+        (chooseQuestionEvent)="escolherQuestao($event)"></app-escolher-questao-modal>
 </div>

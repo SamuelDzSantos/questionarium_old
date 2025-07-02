@@ -33,11 +33,13 @@ export class EscolherQuestao {
   escolha: boolean = false;
   accessPublic: boolean = false;
   accessPrivate: boolean = false;
-
   enunciado: string | undefined = undefined;
+
+  texto: string = ''
 
   @Output() closeModalEvent = new EventEmitter<void>();
 
+  @Output() chooseQuestionEvent = new EventEmitter<number | null>();
 
 
 
@@ -93,6 +95,13 @@ export class EscolherQuestao {
     });
   }
 
+  search() {
+    console.log(this.texto)
+    this.questionService.filterQuestions(undefined, undefined, undefined, undefined, undefined, this.texto).subscribe((q) => {
+      this.questions = q as [] as QuestionDTO[];
+    })
+  }
+
   private handleAcess() {
     if (this.accessPublic == false && this.accessPrivate == false) {
       return undefined;
@@ -119,6 +128,10 @@ export class EscolherQuestao {
   onNivelChange(event: Event): void {
     const selectElement = event.target as HTMLSelectElement;
     this.selectedNivel = Number(selectElement.value)
+  }
+
+  escolherQuestao(id: number | null) {
+    this.chooseQuestionEvent.emit(id);
   }
 
   onCategoriaChange(event: Event) {

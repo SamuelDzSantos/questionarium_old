@@ -10,9 +10,11 @@ import { UserService } from '../../../services/user.service';
 import { UserData } from '../../../types/dto/UserData';
 import { Observable } from 'rxjs';
 import { UserInfo } from '../../../interfaces/user/user-info.data';
-import { CreateAssessmentModelRequest } from '../../../types/dto';
+import { CreateAssessmentModelRequest, Question } from '../../../types/dto';
 import { QuestionDTO } from '../../../types/dto/QuestionDTO';
 import { EscolherQuestao } from "../../../modal/escolher-questao/escolher-questao";
+import { QuestionService } from '../../../services/question-service/question-service.service';
+import { CdkDrag, CdkDragDrop, CdkDropList, CdkDropListGroup, moveItemInArray } from '@angular/cdk/drag-drop';
 
 
 
@@ -35,7 +37,7 @@ interface customModel {
 @Component({
   selector: 'app-avaliacao-criar',
   standalone: true,
-  imports: [FormsModule, CommonModule, CriarCabecalhoComponent, ConsultarCabecalhoComponent, EscolherQuestao],
+  imports: [FormsModule, CommonModule, CriarCabecalhoComponent, ConsultarCabecalhoComponent, EscolherQuestao, CdkDropListGroup, CdkDropList, CdkDrag],
   templateUrl: './avaliacao-criar.component.html',
   styleUrl: './avaliacao-criar.component.css'
 })
@@ -79,7 +81,8 @@ export class AvaliacaoCriarComponent {
   constructor(
     private headerService: AssessmentHeaderService,
     private router: Router,
-    private userService: UserService
+    private userService: UserService,
+    private questionService: QuestionService
   ) {
     this.user$ = this.userService.getCurrentUser();
     this.user$.subscribe(user => {
@@ -165,6 +168,10 @@ export class AvaliacaoCriarComponent {
     this.modalGetQuestionEnabled = false;
   }
 
+  public drop(event: CdkDragDrop<customQuestion[]>) {
+    moveItemInArray(this.model.questions, event.previousIndex, event.currentIndex);
+  }
+
   return_assessment() {
     this.router.navigateByUrl("/avaliacao");
   }
@@ -173,8 +180,33 @@ export class AvaliacaoCriarComponent {
     return index;
   }
 
-  public removerQuestao() {
+  public removerQuestao(id: number | null) {
+    if (id != null) {
+      if (this.questionExists(id)) {
+        this.model.questions = this.model.questions.filter((q) => q.id !== id);
+      }
+    }
+  }
 
+  escolherQuestao(id: number | null) {
+    this.fecharModalQuestao();
+    if (id != null) {
+      this.questionService.getQuestionById(id).subscribe((q) => {
+        console.log(q)
+        let qDto = q as any as customQuestion;
+        qDto.weight = 0
+        if (!this.questionExists(id))
+          this.model.questions.push(qDto);
+        else
+          alert("Questões identicas não podem ser adicionadas!")
+      });
+    }
+  }
+
+  private questionExists(id: number): boolean {
+    return this.model.questions.filter((q) => {
+      return q.id == id
+    }).length != 0;
   }
 
 
