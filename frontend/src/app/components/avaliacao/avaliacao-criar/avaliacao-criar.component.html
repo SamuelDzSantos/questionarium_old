@@ -90,7 +90,12 @@
     <div class="bottom-button-area">
         <button id="nova-questao-button" (click)="mostrarModalQuestao()">Nova Questão</button>
         <button (click)="return_assessment()">Cancelar</button>
+        @if(this.modelId && this.modelId != 0){
+        <button (click)="updateAssessment()">Atualizar</button>
+        }@else {
         <button (click)="saveAssessment()">Salvar</button>
+        }
+
     </div>
     <a href="">Crie sua questão aqui</a>
     <div>

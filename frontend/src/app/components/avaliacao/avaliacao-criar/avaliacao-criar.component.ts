@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { AssessmentHeader } from '../../../types/dto/AssessmentHeader';
 import { AssessmentHeaderService } from '../../../services/assessment-service/assessment-header.service';
 import { FormsModule } from '@angular/forms';
@@ -17,24 +17,12 @@ import { QuestionService } from '../../../services/question-service/question-ser
 import { CdkDrag, CdkDragDrop, CdkDropList, CdkDropListGroup, moveItemInArray } from '@angular/cdk/drag-drop';
 import { CreateAssessmentModelRequestDTO } from '../../../types/dto/CreateAssessmentModelRequestDTO';
 import { AssessmentModelService } from '../../../services/assessment-service/assessment-model.service';
+import { CustomModel } from '../../../types/dto/CustomModel';
+import { CustomQuestion } from '../../../types/dto/CustomQuestion';
 
 
 
-interface customQuestion extends QuestionDTO {
-  weight: number
-}
 
-interface customModel {
-  description: string,
-  institution: string,
-  department: string,
-  course: string,
-  classroom: string,
-  professor: string,
-  instructions: string,
-  image: string,
-  questions: customQuestion[]
-}
 
 @Component({
   selector: 'app-avaliacao-criar',
@@ -48,7 +36,6 @@ export class AvaliacaoCriarComponent implements OnInit {
   modalGetCabecalhoEnabled = false;
   modalGetQuestionEnabled = false;
 
-
   user$!: Observable<UserInfo | null>;
   userId: number = 0;
   isAdmin: boolean = false;
@@ -56,7 +43,7 @@ export class AvaliacaoCriarComponent implements OnInit {
 
   assessmentModel!: CreateAssessmentModelRequest;
 
-  model: customModel = {
+  model: CustomModel = {
     description: '',
     institution: '',
     department: '',
@@ -89,7 +76,8 @@ export class AvaliacaoCriarComponent implements OnInit {
     private userService: UserService,
     private questionService: QuestionService,
     private assessmentService: AssessmentModelService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private cdr: ChangeDetectorRef
   ) {
     this.user$ = this.userService.getCurrentUser();
     this.user$.subscribe(user => {
@@ -100,6 +88,8 @@ export class AvaliacaoCriarComponent implements OnInit {
       }
     });
   }
+
+
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
       this.modelId = +params.get('id')!;
@@ -110,9 +100,11 @@ export class AvaliacaoCriarComponent implements OnInit {
   }
 
   private loadAssessment(modelId: number) {
-    this.assessmentService.getById(this.modelId).subscribe((assessment) => {
-      //assessment.questions
-      //this.model.questions = assessment;
+    this.assessmentService.getCreatedAssessment(modelId).subscribe((model) => {
+      this.model = model;
+      console.log("Após carga")
+      console.log(this.model)
+      this.cdr.detectChanges();
     })
   }
 
@@ -190,7 +182,7 @@ export class AvaliacaoCriarComponent implements OnInit {
     this.modalGetQuestionEnabled = false;
   }
 
-  public drop(event: CdkDragDrop<customQuestion[]>) {
+  public drop(event: CdkDragDrop<CustomQuestion[]>) {
     moveItemInArray(this.model.questions, event.previousIndex, event.currentIndex);
   }
 
@@ -232,7 +224,28 @@ export class AvaliacaoCriarComponent implements OnInit {
 
   }
 
-  trackByIndex(index: number, item: customQuestion): number {
+  updateAssessment() {
+
+    let questions: QuestionWeight[] = this.model.questions.map((question) => {
+      let questionWeight: QuestionWeight = { "questionId": question.id || 0, "weight": question.weight }
+      return questionWeight;
+    })
+
+    let model: CreateAssessmentModelRequest = {
+      "classroom": this.model.classroom,
+      "course": this.model.course,
+      "department": this.model.department,
+      "description": this.model.description,
+      "image": this.model.image,
+      "institution": this.model.institution,
+      "instructions": this.model.institution,
+      "professor": this.model.institution,
+      "questions": questions
+    };
+    this.assessmentService.update(this.modelId, model);
+  }
+
+  trackByIndex(index: number, item: CustomQuestion): number {
     return index;
   }
 
@@ -249,7 +262,7 @@ export class AvaliacaoCriarComponent implements OnInit {
     if (id != null) {
       this.questionService.getQuestionById(id).subscribe((q) => {
         console.log(q)
-        let qDto = q as any as customQuestion;
+        let qDto = q as any as CustomQuestion;
         qDto.weight = 0
         if (!this.questionExists(id))
           this.model.questions.push(qDto);
@@ -267,10 +280,19 @@ export class AvaliacaoCriarComponent implements OnInit {
 
 
   protected getTotalWeight() {
+
+    console.log("OPADPWJADPOjwaodwij")
+    let s = this.model as unknown as CustomModel[]
+    console.log(s[0].questions)
     let totalWeight = 0;
-    this.model.questions.forEach((q) => { totalWeight += q.weight });
+
+    if (this.model.questions) {
+      this.model.questions.forEach((q) => { totalWeight += q.weight });
+    }
     return totalWeight;
   }
 
 
 }
+
+ChangeDetectorRef
