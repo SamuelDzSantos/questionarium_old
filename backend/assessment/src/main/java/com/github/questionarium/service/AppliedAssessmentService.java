@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -191,5 +192,33 @@ public class AppliedAssessmentService {
                 applied.setActive(false);
                 appliedRepo.save(applied);
         }
+
+        public List<AppliedAssessment> getFilteredAppliedAssessments(
+                        Long userId,
+                        Boolean isAdmin,
+                        String description,
+                        LocalDate applicationDate) {
+
+                Specification<AppliedAssessment> spec;
+
+                log.info("Buscando aplicações filtradas para userId={}, isAdmin={}", userId, isAdmin);
+
+                spec = (root, query, cb) -> cb.isTrue(root.get("active"));
+
+                if (!Boolean.TRUE.equals(isAdmin)) {
+                        spec = spec.and((root, query, cb) -> cb.equal(root.get("userId"), userId));
+                }
+
+                if (description != null && !description.trim().isEmpty()) {
+                        spec = spec.and((root, query, cb) -> cb.like(cb.lower(root.get("description")), "%" + description.toLowerCase() + "%"));
+                }
+
+                if (applicationDate != null) {
+                        spec = spec.and((root, query, cb) -> cb.equal(root.get("applicationDate"), applicationDate));
+                }
+
+                return appliedRepo.findAll(spec);
+                }
+
 
 }

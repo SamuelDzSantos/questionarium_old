@@ -1,4 +1,5 @@
 import { CommonModule } from '@angular/common';
+import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRouteSnapshot, Router } from '@angular/router';
 import { AppliedReport } from '../../../shared/interfaces/applied-report';
@@ -16,7 +17,7 @@ export class VerRelatorioComponent implements OnInit {
   id: number;
   relatorio!: AppliedReport;
   tags: string[] = [];
-  constructor(private router: Router, private reportService: ReportService) {
+  constructor(private router: Router, private reportService: ReportService, private location: Location) {
 
     const root = this.router.routerState.snapshot.root;
     const routeParam = this.getRouteParam(root, 'id');
@@ -100,7 +101,7 @@ export class VerRelatorioComponent implements OnInit {
       }
   */
   cancel() {
-    this.router.navigate(["relatorios"])
+    this.location.back(); // same behavior as pressing the browser back button
   }
 
 }
