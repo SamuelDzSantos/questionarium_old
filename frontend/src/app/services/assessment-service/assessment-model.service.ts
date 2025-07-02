@@ -69,12 +69,14 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { env } from '../../../environments/environment';
 import { AssessmentModel, CreateAssessmentModelRequest } from '../../types/dto';
+import { CustomModel } from '../../types/dto/CustomModel';
 
 @Injectable({
     providedIn: 'root'
 })
 export class AssessmentModelService {
     private baseUrl = `${env.baseUrl}/assessment-models`;
+    private baseUrl2 = `${env.baseUrl}/assessment/model`
 
     constructor(private http: HttpClient) { }
 
@@ -100,6 +102,10 @@ export class AssessmentModelService {
 
     getByUser(): Observable<AssessmentModel[]> {
         return this.http.get<AssessmentModel[]>(`${this.baseUrl}/user`);
+    }
+
+    getCreatedAssessment(id: number) {
+        return this.http.get<CustomModel>(`${this.baseUrl2}/${id}`);
     }
 
     findWithFilter(
