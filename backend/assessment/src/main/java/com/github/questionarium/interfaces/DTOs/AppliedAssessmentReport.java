@@ -1,7 +1,7 @@
 package com.github.questionarium.interfaces.DTOs;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
-public record AppliedAssessmentReport(Long id, LocalDateTime creationDateTime, String classroom, String course) {
+public record AppliedAssessmentReport(Long id, LocalDate applicationDate, String classroom, String course) {
 
 }

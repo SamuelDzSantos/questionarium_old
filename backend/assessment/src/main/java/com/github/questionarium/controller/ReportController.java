@@ -36,7 +36,7 @@ public class ReportController {
     public List<AppliedAssessmentReport> getAppliedAssessmentList(@RequestHeader("X-User-id") Long userId) {
 
         return appliedAssessmentService.findByUser(userId, userId, false).stream()
-                .map((assessment) -> new AppliedAssessmentReport(assessment.getId(), assessment.getCreationDateTime(),
+                .map((assessment) -> new AppliedAssessmentReport(assessment.getId(), assessment.getApplicationDate(),
                         assessment.getClassroom(), assessment.getCourse()))
                 .toList();
     }

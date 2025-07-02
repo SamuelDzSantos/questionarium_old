@@ -13,7 +13,7 @@
             </tr>
             <tr *ngFor="let relatorio of relatorios">
                 <td>{{relatorio.id}}</td>
-                <td>{{relatorio.creationDateTime | date:'dd/MM/yyyy'}}</td>
+                <td>{{relatorio.applicationDate | date:'dd/MM/yyyy'}}</td>
                 <td>{{relatorio.classroom}}</td>
                 <td>{{relatorio.course}}</td>
                 <td>

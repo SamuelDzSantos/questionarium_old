@@ -1,6 +1,6 @@
 export interface AppliedAssessmentReportTs {
     id: number,
-    creationDateTime: Date,
+    applicationDate: Date,
     classroom: string,
     course: string
 }
