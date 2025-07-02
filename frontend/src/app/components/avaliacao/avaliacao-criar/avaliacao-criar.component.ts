@@ -15,6 +15,7 @@ import { QuestionDTO } from '../../../types/dto/QuestionDTO';
 import { EscolherQuestao } from "../../../modal/escolher-questao/escolher-questao";
 import { QuestionService } from '../../../services/question-service/question-service.service';
 import { CdkDrag, CdkDragDrop, CdkDropList, CdkDropListGroup, moveItemInArray } from '@angular/cdk/drag-drop';
+import { CreateAssessmentModelRequestDTO } from '../../../types/dto/CreateAssessmentModelRequestDTO';
 
 
 
@@ -50,6 +51,8 @@ export class AvaliacaoCriarComponent {
   user$!: Observable<UserInfo | null>;
   userId: number = 0;
   isAdmin: boolean = false;
+
+  assessmentModel!: CreateAssessmentModelRequestDTO;
 
   model: customModel = {
     description: '',
@@ -121,7 +124,7 @@ export class AvaliacaoCriarComponent {
   }
 
   saveHeader(): void {
-    this.headerService.create(this.header, this.userId, this.isAdmin).subscribe({
+    this.headerService.create(this.header).subscribe({
       next: (response) => {
         console.log('Cabeçalho salvo:', response);
         this.header = response;
@@ -135,7 +138,7 @@ export class AvaliacaoCriarComponent {
   }
 
   loadHeader(): void {
-    this.headerService.getByUser(this.userId, this.isAdmin).subscribe({
+    this.headerService.getByUser().subscribe({
       next: (headers) => {
         if (headers.length > 0) {
           this.header = headers[0];
@@ -176,6 +179,13 @@ export class AvaliacaoCriarComponent {
     this.router.navigateByUrl("/avaliacao");
   }
 
+  saveAssessment() {
+    /*    this.assessmentModel = {
+          'description' = this.model.description,
+    
+  }*/
+  }
+
   trackByIndex(index: number, item: customQuestion): number {
     return index;
   }
@@ -209,6 +219,12 @@ export class AvaliacaoCriarComponent {
     }).length != 0;
   }
 
+
+  protected getTotalWeight() {
+    let totalWeight = 0;
+    this.model.questions.forEach((q) => { totalWeight += q.weight });
+    return totalWeight;
+  }
 
 
 }

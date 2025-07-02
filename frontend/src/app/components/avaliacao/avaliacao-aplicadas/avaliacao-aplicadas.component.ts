@@ -8,8 +8,8 @@ import { UserService } from '../../../services/user.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { UserInfo } from '../../../interfaces/user/user-info.data';
-import { AppliedAssessmentService } from '../../../services/assessment-service/applied-assessment.service';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask'
+import { AppliedAssessmentService } from '../../../services/assessment-service/applied-assessment.service';
 
 @Component({
   selector: 'app-avaliacao-aplicadas',

@@ -41,6 +41,20 @@ h2 {
     font-family: 'Arial', sans-serif;
 }
 
+.peso {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.enunciado {
+    min-width: 400px;
+    max-width: 400px;
+    max-height: 120px;
+    overflow-x: hidden;
+    white-space: nowrap;
+}
+
 .cabecalho {
     background-color: #324A5F;
     /* Cinza claro padronizado */
@@ -59,6 +73,11 @@ h2 {
     font-family: 'Arial', sans-serif;
     margin-bottom: 20px;
 }
+
+/*
+.bottom-button-area {
+    justify-content: space-between;
+}*/
 
 h1 {
     padding-bottom: 10px;
@@ -199,6 +218,7 @@ button:hover {
     cursor: pointer;
 }
 
+
 .question span {
     font-size: 1em;
     margin-bottom: 5px;
@@ -284,6 +304,7 @@ a:hover {
     vertical-align: top;
 }
 
+
 .question-list {
     display: flex;
     flex-direction: column;
@@ -308,6 +329,14 @@ a:hover {
     cursor: move;
     background: white;
     font-size: 14px;
+}
+
+.input-weight {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1em;
+    outline: none;
 }
 
 .user:last-child {

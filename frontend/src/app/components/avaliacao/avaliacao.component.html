@@ -81,4 +81,7 @@
             </span>
         </div>
     </div>
+    <app-aplicar-avaliacao *ngIf="modalEnabled" [modelId]="selectedModelId" (applied)="onAplicarAssessment($event)"
+        (cancelled)="fecharModal()"></app-aplicar-avaliacao>
+
 </div>

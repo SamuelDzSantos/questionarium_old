@@ -63,32 +63,34 @@
 
 -->
 
-
     <div cdkDropListGroup class="question_area">
         <div class="question-list" cdkDropList [cdkDropListData]="model.questions" (cdkDropListDropped)="drop($event)">
             <div class="question" cdkDrag *ngFor="let questao of model.questions; let i = index; trackBy: trackByIndex">
                 Questão {{pad((i + 1).toString(),2)}}
-                <div>
+                <div class="elements">
                     <span>Instituição: {{model.institution}}</span>
-                    <span>Enunciado: {{questao.header}}</span>
+                    <span class="enunciado">Enunciado: {{questao.header}}</span>
                     <div id="type-button"
                         [ngStyle]="{'background-color': questao.accessLevel == 0  ? '#BBE8BA' : 'red'}">
                         {{questao.accessLevel == 0 ? "Pública" : "Privada"}}
                     </div>
-                    <input [(ngModel)]="questao.weight" />
+                    <div class="peso">
+                        Digite o peso da questão:
+                        <input type="number" class="input-weight" [(ngModel)]="questao.weight" />
+                    </div>
                     <div>
                         <button class="remover-btn" (click)="removerQuestao(questao.id)">Remover</button>
                     </div>
                 </div>
             </div>
-
         </div>
+        <div>Peso total da avaliação:{{getTotalWeight() | number:'1.2-2'}}</div>
     </div>
 
     <div class="bottom-button-area">
-        <button (click)="mostrarModalQuestao()">Nova Questão</button>
+        <button id="nova-questao-button" (click)="mostrarModalQuestao()">Nova Questão</button>
         <button (click)="return_assessment()">Cancelar</button>
-        <button (click)="saveHeader()">Salvar</button>
+        <button (click)="saveAssessment()">Salvar</button>
     </div>
     <a href="">Crie sua questão aqui</a>
     <div>

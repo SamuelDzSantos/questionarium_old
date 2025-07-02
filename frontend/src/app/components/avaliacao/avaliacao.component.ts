@@ -8,11 +8,13 @@ import { CriarCabecalhoComponent } from '../../modal/criar-cabecalho/criar-cabec
 import { AssessmentModelService } from '../../services/assessment-service/assessment-model.service';
 import { UserService } from '../../services/user.service';
 import { AssessmentModel } from '../../types/dto/AssessmentModel';
+import { AppliedAssessmentService } from '../../services/assessment-service/applied-assessment.service';
+import { AplicarAvaliacaoComponent } from '../../modal/aplicar-avaliacao/aplicar-avaliacao';
 
 @Component({
   selector: 'app-avaliacao',
   standalone: true,
-  imports: [RouterModule, CommonModule, FormsModule, CriarCabecalhoComponent],
+  imports: [RouterModule, CommonModule, FormsModule, AplicarAvaliacaoComponent],
   templateUrl: './avaliacao.component.html',
   styleUrl: './avaliacao.component.css'
 })
@@ -25,14 +27,15 @@ export class AvaliacaoComponent implements OnInit {
   assessments: AssessmentModel[] = [];
   filteredAssessments: AssessmentModel[] = [];
   modalEnabled = false;
-
+  selectedModelId: number = 0;
 
   @ViewChild('titulo') titulo!: ElementRef<HTMLElement>;
 
   constructor(
     private router: Router,
     private userService: UserService,
-    private assessmentModelService: AssessmentModelService
+    private assessmentModelService: AssessmentModelService,
+    private appliedAssessmentService: AppliedAssessmentService
   ) { }
 
   ngOnInit(): void {
@@ -79,6 +82,19 @@ export class AvaliacaoComponent implements OnInit {
         */
   }
 
+  onAplicarAssessment(payload: any) {
+    console.log("hi")
+
+    this.appliedAssessmentService.apply(payload).subscribe({
+      next: () => {
+        this.fecharModal();
+      },
+      error: () => {
+        alert('Erro ao aplicar avaliação');
+      }
+    });
+  }
+
   montar() {
     this.titulo.nativeElement.textContent = "Selecione uma avaliação para montagem";
   }
@@ -89,14 +105,13 @@ export class AvaliacaoComponent implements OnInit {
   }
 
   applyAssessment(assessment: AssessmentModel) {
-    this.router.navigate(['/avaliacao/aplicar'], { state: { id: assessment.id } });
+    this.selectedModelId = assessment.id
+    this.modalEnabled = true;
   }
 
   deleteAssessment(assessment: AssessmentModel) {
 
     let id: number = assessment.id;
-    console.log(id)
-
 
     this.assessmentModelService.delete(id).subscribe(() => {
       this.getAssessments()
@@ -118,6 +133,7 @@ export class AvaliacaoComponent implements OnInit {
 
   public fecharModal() {
     this.modalEnabled = false;
+    this.selectedModelId = 0;
   }
 
 }

@@ -12,7 +12,6 @@ import { ListarRelatoriosComponent } from './components/relatorios/listar-relato
 import { VerRelatorioComponent } from './components/relatorios/ver-relatorio/ver-relatorio';
 import { AvaliacaoComponent } from './components/avaliacao/avaliacao.component';
 import { AvaliacaoCriarComponent } from './components/avaliacao/avaliacao-criar/avaliacao-criar.component';
-import { AvaliacaoAplicarComponent } from './components/avaliacao/avaliacao-aplicar/avaliacao-aplicar.component';
 import { AvaliacaoAplicadasComponent } from './components/avaliacao/avaliacao-aplicadas/avaliacao-aplicadas.component';
 import { RecuperarSenha } from './components/recuperar-senha/recuperar-senha';
 
@@ -41,7 +40,7 @@ export const routes: Routes = [
                 children: [
                     { path: "", component: AvaliacaoComponent },
                     { path: "criar", component: AvaliacaoCriarComponent },
-                    { path: "aplicar", component: AvaliacaoAplicarComponent },
+                    /*   { path: "aplicar", component: AvaliacaoAplicarComponent },*/
                     { path: "aplicadas", component: AvaliacaoAplicadasComponent },
                     { path: ":id", component: AvaliacaoCriarComponent }
                 ]
