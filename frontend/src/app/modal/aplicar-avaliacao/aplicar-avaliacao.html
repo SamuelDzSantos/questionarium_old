@@ -8,6 +8,12 @@
         <div class="modal-body">
             <form (ngSubmit)="applyAssessment()" autocomplete="off">
                 <div class="form-group">
+                    <label for="description">Descrição da Aplicação:</label>
+                    <input id="description" type="text" [(ngModel)]="form.description" name="description" required
+                        maxlength="255" placeholder="Ex: Avaliação 1º Bimestre 2025 - turma A" aria-required="true" />
+                </div>
+
+                <div class="form-group">
                     <label for="applicationDate">Data de Aplicação:</label>
                     <input id="applicationDate" type="date" [(ngModel)]="form.applicationDate" name="applicationDate"
                         required aria-required="true" />
