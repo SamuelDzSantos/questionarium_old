@@ -8,7 +8,10 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.imageio.ImageIO;
 
@@ -105,11 +108,16 @@ public class PdfService {
         System.out.println("Questions");
 
         List<QuestionSnapshot> ordered = new ArrayList<>();
+        List<Long> order = new ArrayList<>();
+
+        Long x = 0L;
 
         for (Long orderId : record.getQuestionOrder()) {
-
             QuestionSnapshot q = questions.stream().filter(q2 -> q2.getQuestion().equals(orderId)).findFirst()
                     .orElse(null);
+            x = x + 1;
+            order.add(x);
+            q.setQuestion(x);
             ordered.add(q);
         }
 
@@ -127,6 +135,29 @@ public class PdfService {
 
         String imagemBase64 = Base64.getEncoder().encodeToString(baos.toByteArray());
 
+        ordered.stream().forEach(((q) -> {
+            System.out.println("\n--------------------------------------------------\n");
+            System.out.println(q.getQuestion());
+            System.out.println("OPA2");
+        }));
+
+        ordered = ordered.stream().filter((q) -> q.getMultipleChoice()).collect(Collectors.toList());
+        System.out.println(ordered);
+        if (ordered != null) {
+            Collections.sort(ordered, new Comparator<QuestionSnapshot>() {
+                @Override
+                public int compare(QuestionSnapshot q1, QuestionSnapshot q2) {
+                    return q1.getQuestion().compareTo(q2.getQuestion());
+                }
+            });
+        }
+
+        ordered.stream().forEach((b) -> {
+            System.out.println("Ordered\n");
+            System.out.println("--------------------------------");
+            System.out.println(b);
+            ;
+        });
         model.addAttribute("qrcode", imagemBase64);
         model.addAttribute("quantidade", ordered.size());
         model.addAttribute("logoUrl", "https://picsum.photos/200/300");
@@ -140,6 +171,7 @@ public class PdfService {
         model.addAttribute("instrucoes_footer", "Boa prova!");
         model.addAttribute("questoes", ordered);
         model.addAttribute("codigo", codigo);
+
         String html = renderHtml("Footer", model);
 
         return html;
