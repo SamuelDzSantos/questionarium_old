@@ -33,7 +33,6 @@ export const routes: Routes = [
                 children: [
                     { path: "conta", component: EdicaoComponent },
                     { path: "senha", component: EdicaoComponent },
-                    { path: "perfil", component: EdicaoComponent },
                     { path: "", redirectTo: "conta", pathMatch: "prefix" }
                 ]
             },

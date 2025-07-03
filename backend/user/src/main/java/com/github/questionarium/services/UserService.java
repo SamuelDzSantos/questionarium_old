@@ -40,7 +40,9 @@ public class UserService {
         log.info("Atualizando imagem para user: {}", user);
         if (user != null) {
             user.setImage(data);
-            return userRepository.save(user);
+            user = userRepository.save(user);
+            log.info("Novo user: {}", user);
+            return user;
         }
         return user;
     }
