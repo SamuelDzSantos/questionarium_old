@@ -17,6 +17,7 @@ import com.github.questionarium.model.QuestionWeight;
 import com.github.questionarium.repository.AssessmentModelRepository;
 
 import jakarta.persistence.EntityNotFoundException;
+import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -24,6 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Transactional
 @RequiredArgsConstructor
+@Builder
 public class AssessmentModelService {
 
     private final AssessmentModelRepository assessmentModelRepository;
