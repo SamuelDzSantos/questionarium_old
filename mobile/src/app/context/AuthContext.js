@@ -21,12 +21,16 @@ export const AuthProvider = ({ children }) => {
         const loadToken = async () => {
             const token = await SecureStore.getItemAsync(TOKEN_KEY);
 
-            // try {
-            //     const result = await axios.post(`${API_URL}/auth`, { token });
-            // } catch (error) {
-            //     await logout();
-            //     return;
-            // }
+            try {
+                const result = await axios.get(`${API_URL}/auth`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+            } catch (error) {
+                await logout();
+                return;
+            }
 
             if (token) {
                 axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
@@ -43,7 +47,12 @@ export const AuthProvider = ({ children }) => {
     const login = async (email, password) => {
 
         try {
-            const result = await axios.post(`${API_URL}/auth/login`, { login: email, password: password });
+            const result = await axios.post(`${API_URL}/auth/login`, { login: email, password: password }, {
+                headers: {
+                        Authorization: null
+                    }
+            }
+            );
             setAuthState({
                 token: result.data.token,
                 authenticated: true
