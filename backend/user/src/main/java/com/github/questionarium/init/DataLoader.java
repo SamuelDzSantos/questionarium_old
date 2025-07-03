@@ -21,12 +21,12 @@ public class DataLoader implements ApplicationRunner {
         userRepository.deleteAll();
 
         // Usuários Admin
-        userRepository.save(new User(1L, "Admin 1", null, null));
-        userRepository.save(new User(2L, "Admin 2", null, null));
+        userRepository.save(new User(1L, "Admin 1", null, null, null));
+        userRepository.save(new User(2L, "Admin 2", null, null, null));
         // Usuários comuns
-        userRepository.save(new User(3L, "User 1", null, null));
-        userRepository.save(new User(4L, "User 2", null, null));
-        userRepository.save(new User(5L, "João", null, null));
+        userRepository.save(new User(3L, "User 1", null, null, null));
+        userRepository.save(new User(4L, "User 2", null, null, null));
+        userRepository.save(new User(5L, "João", null, null, null));
 
     }
 

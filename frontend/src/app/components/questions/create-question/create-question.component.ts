@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { GerarQuestaoComponent } from '../../../modal/gerar-questao/gerar-questao.component';
@@ -27,7 +27,8 @@ export class CreateQuestionComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private cdr: ChangeDetectorRef,
-    private openAiService: OpenAiService
+    private openAiService: OpenAiService,
+    private location : Location
   ) { }
 
   user$!: Observable<UserInfo | null>;
@@ -143,7 +144,7 @@ export class CreateQuestionComponent implements OnInit {
   }
 
   cancel() {
-    this.router.navigate(['/questions']);
+    this.location.back();
   }
 
   onNivelChange(event: Event): void {

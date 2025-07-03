@@ -54,6 +54,9 @@ public class QuestionService {
     public QuestionDTO createQuestion(QuestionDTO questionDTO) {
         logger.info("Criando nova questão para usuário {}", questionDTO.getUserId());
 
+        System.out.println(questionDTO);
+        System.out.println("\n-------\n");
+
         var correctAlternatives = questionDTO.getAlternatives().stream()
                 .filter(AlternativeDTO::getIsCorrect)
                 .collect(Collectors.toList());
@@ -189,7 +192,7 @@ public class QuestionService {
             questionRepository.findById(id).ifPresent(q -> {
                 if (q.getUserId().equals(userId) ||
                         QuestionAccessLevel.PUBLIC.equals(q.getAccessLevel())) {
-                    if(Boolean.TRUE.equals(q.isMultipleChoice())){
+                    if (Boolean.TRUE.equals(q.isMultipleChoice())) {
                         keys.add(new AnswerKeyDTO(q.getId(), q.getAnswerId()));
                     } else {
                         keys.add(new AnswerKeyDTO(q.getId(), null));

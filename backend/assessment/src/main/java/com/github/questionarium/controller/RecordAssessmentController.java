@@ -125,7 +125,7 @@ public class RecordAssessmentController {
                 dto.getStudentAnswerKey());
 
         // Calcula e persiste score junto com o novo studentAnswerKey
-        double newScore = recordService.calculateScore(id, dto.getStudentAnswerKey(), userId, isAdmin);
+        double newScore = recordService.calculateScore(id, dto.getStudentAnswerKey(), dto.getStudentName(), userId, isAdmin);
         log.info("Novo obtainedScore para record {} = {}", id, newScore);
 
         // Retorna o DTO atualizado, já contendo studentAnswerKey e obtainedScore

@@ -193,9 +193,10 @@
     <!-- Header dinâmico -->
     <div class="header">
 
-        <!-- Logo -->
-        <img th:if="${logoUrl != null}" class="logo" th:src="@{${logoUrl}}" alt="Logo">
+        <!-- Logo 
 
+        <img th:if="${logoUrl != null}" class="logo" th:src="@{${logoUrl}}" alt="Logo">
+-->
         <!-- Nome da Instituição -->
         <div th:if="${instituicao != null}" th:text="${instituicao}" class=" instituicao">
         </div>

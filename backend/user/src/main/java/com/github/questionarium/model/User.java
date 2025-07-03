@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
@@ -29,6 +30,9 @@ public class User {
 
     @Column(nullable = false)
     private LocalDateTime updateDateTime;
+
+    @Lob
+    private byte[] image;
 
     @PrePersist
     protected void prePersist() {

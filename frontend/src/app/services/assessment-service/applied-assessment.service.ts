@@ -34,9 +34,9 @@ export class AppliedAssessmentService {
         return this.http.delete<void>(`${this.baseUrl}/${id}`);
     }
 
-    generatePdf(id: number): Observable<Blob> {
+    generatePdf(id: number) {
         const params = new HttpParams().set('appliedId', id);
-        return this.http.get<Blob>(`${this.baseUrl2}`, { params })
+        return this.http.get(`${this.baseUrl2}`, { params: params, responseType: 'blob' })
     }
 
     findWithFilter(description?: string, date?: string): Observable<AppliedAssessment[]> {

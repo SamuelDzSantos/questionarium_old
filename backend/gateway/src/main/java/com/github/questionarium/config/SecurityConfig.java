@@ -24,7 +24,9 @@ public class SecurityConfig {
     SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
         return http
                 .authorizeExchange(exchanges -> exchanges
-                        .pathMatchers("/auth/login", "/auth/register", "/auth/token/**", "/pdf/**").permitAll()
+                        .pathMatchers("/auth/login", "/auth/register", "/auth/token/**", "/pdf/**",
+                                "/auth/email/**", "/password/**", "/auth/password/reset/**")
+                        .permitAll()
                         .pathMatchers(HttpMethod.OPTIONS).permitAll()
                         .anyExchange().authenticated())
                 .csrf(csrf -> csrf.disable())

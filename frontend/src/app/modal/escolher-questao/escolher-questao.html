@@ -19,7 +19,7 @@
                     <tr class="header-row-loop" (click)="escolherQuestao(question.id)"
                         *ngFor="let question of questions">
                         <td>{{question.educationLevel}}</td>
-                        <td>{{question.accessLevel}}</td>
+                        <td>{{question.accessLevel ? "Público" : "Privado"}}</td>
                         <td class="texto">{{question.header}}</td>
                         <td>{{question.creationDateTime | date:'dd/MM/yyyy'}}</td>
                         <td style="display: flex; justify-self: flex-end;"><img src="/resources/Eye.png" /></td>

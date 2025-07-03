@@ -92,19 +92,19 @@ export class AvaliacaoAplicadasComponent implements OnInit {
 
   downloadPdf(assessment: AppliedAssessment) {
     this.appliedAssessmentService.generatePdf(assessment.id).subscribe((data) => {
-      var file = new Blob([data], { type: 'application/pdf' })
-      var fileURL = URL.createObjectURL(file);
-      window.open(fileURL);
-      var a = document.createElement('a');
-      a.href = fileURL;
-      a.target = '_blank';
-      a.download = 'bill.pdf';
-      document.body.appendChild(a);
-      a.click();
-    },
-      (error) => {
-        console.log('getPDF error: ', error);
+      const pdfBlob = new Blob([data], {
+        type: "application/pdf",
       });
+      const temporaryUrl =
+        window.URL.createObjectURL(pdfBlob);
+      console.log(temporaryUrl)
+      const temporaryAnchor = document.createElement("a");
+      temporaryAnchor.href = temporaryUrl;
+      temporaryAnchor.download = `arquivo-${Date.now()}.pdf`;
+      document.body.appendChild(temporaryAnchor);
+      temporaryAnchor.click();
+      temporaryAnchor.remove();
+    })
   }
 
   montar() {

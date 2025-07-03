@@ -11,4 +11,6 @@ public class PatchRecordAssessmentRequestDTO {
 
     @NotEmpty(message = "O gabarito do aluno não pode ser vazio")
     private List<@Size(min = 1, max = 1, message = "Cada resposta deve ser uma letra") String> studentAnswerKey;
+
+    private String studentName;
 }

@@ -216,8 +216,8 @@
             </thead>
             <tbody>
 
-                <tr th:each="i: ${#numbers.sequence(1,quantidade)}">
-                    <td th:text="${i}"></td>
+                <tr th:each="questao, stat : ${questoes}">
+                    <td th:text="${questao.getQuestion()}"> </td>
                     <td></td>
                     <td></td>
                     <td></td>

@@ -27,7 +27,7 @@ public class RouteConfig {
                                                                 .setFallbackUri("forward:/fallback/users")))
                                                 .uri("forward:/user/data"))
 
-                                .route("gateway-serivce", r -> r.path("/assessment/model/**").filters(f ->
+                                .route("gateway-service", r -> r.path("/assessment/model/**").filters(f ->
 
                                 f.circuitBreaker(cb -> cb.setName(("assessmentCircuitBreaker"))
                                                 .setFallbackUri("forward:/fallback/assessment")))
