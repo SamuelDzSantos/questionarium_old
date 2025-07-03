@@ -218,10 +218,10 @@ public class RecordAssessmentService {
                     if(Boolean.TRUE.equals(snaps.get(i).getMultipleChoice())){
                         return correct.get(i).equals(answerKey.get(i));
                     }
-                    if (answerKey.get(i) == "Y") {
+                    if (answerKey.get(i).equals("Y")) {
                         return true;
                     }
-                    if (answerKey.get(i) == "N" || answerKey.get(i) == "P") {
+                    if (answerKey.get(i).equals("N") || answerKey.get(i).equals("P")) {
                         return false;
                     }
                     return false;

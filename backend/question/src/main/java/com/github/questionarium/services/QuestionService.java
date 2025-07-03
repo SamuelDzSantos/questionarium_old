@@ -189,7 +189,11 @@ public class QuestionService {
             questionRepository.findById(id).ifPresent(q -> {
                 if (q.getUserId().equals(userId) ||
                         QuestionAccessLevel.PUBLIC.equals(q.getAccessLevel())) {
-                    keys.add(new AnswerKeyDTO(q.getId(), q.getAnswerId()));
+                    if(Boolean.TRUE.equals(q.isMultipleChoice())){
+                        keys.add(new AnswerKeyDTO(q.getId(), q.getAnswerId()));
+                    } else {
+                        keys.add(new AnswerKeyDTO(q.getId(), null));
+                    }
                 }
             });
         }

@@ -42,7 +42,11 @@ public class Consumer {
                     .map(dto -> {
                         RpcAnswerKeyDTO rpc = new RpcAnswerKeyDTO();
                         rpc.setQuestionId(dto.getQuestionId());
-                        rpc.setAnswerKey(dto.getAnswerKey().toString());
+                        if(dto.getAnswerKey() == null) {
+                            rpc.setAnswerKey("-1");
+                        } else {
+                            rpc.setAnswerKey(dto.getAnswerKey().toString());
+                        }
                         return rpc;
                     })
                     .collect(Collectors.toList());

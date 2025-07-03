@@ -8,41 +8,41 @@ import { Picker } from '@react-native-picker/picker';
 import { useFocusEffect } from '@react-navigation/native';
 
 export default function GabaritoEdicaoScreen({ route, navigation }) {
-
     const { imageUri, qr_data } = route.params;
-    const [gabaritoData, setGabaritoData] = useState({});
+
     const [recordData, setRecordData] = useState(null);
     const [numRows, setNumRows] = useState(null);
     const [studentName, setStudentName] = useState(null);
+    const [rawGabaritoData, setRawGabaritoData] = useState([]);
+    const [gabaritoData, setGabaritoData] = useState([]);
 
-    let recordService = new RecordService()
-    let deteccaoService = new DeteccaoService()
+    const recordService = new RecordService();
+    const deteccaoService = new DeteccaoService();
 
     useFocusEffect(
         useCallback(() => {
-            setGabaritoData({});
             setRecordData(null);
             setNumRows(null);
             setStudentName(null);
+            setRawGabaritoData([]);
+            setGabaritoData([]);
         }, [])
     );
 
     useEffect(() => {
         if (!qr_data) return;
         const getData = async () => {
-            if (qr_data) {
-                const response = await recordService.getRecordData(qr_data);
-                if (!response) {
-                    navigation.navigate('QRScanner');
-                    return;
-                }
-                setRecordData(response);
-                let questions = response['questionOrder']
-                const rowCount = Object.keys(questions).length;
-                setNumRows(rowCount);
-                setStudentName(response.studentName)
+            const response = await recordService.getRecordData(qr_data);
+            if (!response) {
+                navigation.navigate('QRScanner');
+                return;
             }
-        }
+
+            setRecordData(response);
+            setStudentName(response.studentName);
+            const rowCount = response.correctAnswerKeyLetter.length;
+            setNumRows(rowCount);
+        };
 
         getData();
     }, [qr_data]);
@@ -52,32 +52,51 @@ export default function GabaritoEdicaoScreen({ route, navigation }) {
 
         const uploadImage = async () => {
             const response = await deteccaoService.uploadImage(imageUri, numRows);
-            setGabaritoData(response);
+            setRawGabaritoData(response);
         };
 
         uploadImage();
     }, [imageUri, recordData, numRows]);
+
+    useEffect(() => {
+        if (!recordData || !Array.isArray(rawGabaritoData)) return;
+
+        const totalQuestions = recordData.correctAnswerKeyLetter.length;
+        const fullAnswers = Array(totalQuestions).fill("P");
+
+        let objectiveIndex = 0;
+        for (let i = 0; i < totalQuestions; i++) {
+            if (recordData.correctAnswerKeyLetter[i] !== "Z") {
+                if (rawGabaritoData[objectiveIndex]) {
+                    const [, answer] = rawGabaritoData[objectiveIndex];
+                    fullAnswers[i] = answer;
+                }
+                objectiveIndex++;
+            }
+        }
+
+        setGabaritoData(fullAnswers);
+    }, [recordData, rawGabaritoData]);
 
     const handleSubmit = async () => {
         Alert.alert(
             "Confirmar envio",
             "Tem certeza que deseja enviar suas respostas?",
             [
-                {
-                    text: "Cancelar",
-                    style: "cancel"
-                },
+                { text: "Cancelar", style: "cancel" },
                 {
                     text: "Confirmar",
                     onPress: async () => {
                         const id = Number(qr_data.qr_data);
-                        if (typeof id != 'number' || isNaN(id)) {
-                            Alert.alert("ID de avaliação inválido", "Tente novamente.")
+                        
+                        if (typeof id !== 'number' || isNaN(id)) {
+                            Alert.alert("ID de avaliação inválido", "Tente novamente.");
                             return;
                         }
+
                         const data = {
                             id,
-                            studentName: studentName ? studentName : "",
+                            studentName: studentName || "",
                             studentAnswerKey: gabaritoData,
                         };
 
@@ -86,13 +105,11 @@ export default function GabaritoEdicaoScreen({ route, navigation }) {
                             navigation.navigate('Resultado', id);
                         else
                             Alert.alert("Erro ao enviar respostas", "Confira preenchimento do gabarito.");
-
                     }
                 }
             ]
         );
     };
-
 
     return (
         <LinearGradient colors={gradientColors} style={styles.gradient}>
@@ -104,26 +121,50 @@ export default function GabaritoEdicaoScreen({ route, navigation }) {
                     value={studentName}
                 />
 
-                {Array.isArray(gabaritoData) && gabaritoData.map(([question, answer], index) => (
-                    <View key={index} style={styles.itemStyle}>
-                        <View style={styles.row}>
-                            <Text style={styles.questionLabel}>Questão {question}</Text>
-                            <Picker
-                                selectedValue={answer}
-                                style={styles.picker}
-                                onValueChange={(newValue) => {
-                                    const updatedData = [...gabaritoData];
-                                    updatedData[index] = [question, newValue];
-                                    setGabaritoData(updatedData);
-                                }}
-                            >
-                                {['A', 'B', 'C', 'D', 'E', 'X'].map((option) => (
-                                    <Picker.Item label={option} value={option} key={option} />
-                                ))}
-                            </Picker>
+                {recordData?.questionSnapshots?.map((question, index) => {
+                    const isDiscursive = recordData.correctAnswerKeyLetter[index] === "Z";
+                    const currentAnswer = gabaritoData?.[index] || 'X';
+
+                    return (
+                        <View key={index} style={styles.itemStyle}>
+                            <View style={styles.row}>
+                                <Text style={styles.questionLabel}>Questão {index + 1}</Text>
+                                <Picker
+                                    selectedValue={currentAnswer}
+                                    style={styles.picker}
+                                    onValueChange={(newValue) => {
+                                        const updated = [...gabaritoData];
+                                        updated[index] = newValue;
+                                        setGabaritoData(updated);
+                                    }}
+                                >
+                                    {isDiscursive ? (
+                                        ['X', 'Y', 'N', 'P'].map(option => {
+                                            const labelMap = {
+                                                X: "X - Em branco/inválido",
+                                                Y: "Y - Discursiva correta",
+                                                N: "N - Discursiva incorreta",
+                                                P: "P - Discursiva não corrigida"
+                                            };
+                                            return (
+                                                <Picker.Item
+                                                    label={labelMap[option]}
+                                                    value={option}
+                                                    key={option}
+                                                />
+                                            );
+                                        })
+                                    ) : (
+                                        ['A', 'B', 'C', 'D', 'E', 'X'].map(option => (
+                                            <Picker.Item label={option} value={option} key={option} />
+                                        ))
+                                    )}
+                                </Picker>
+                            </View>
                         </View>
-                    </View>
-                ))}
+                    );
+                })}
+
                 <View style={styles.buttonContainer}>
                     <TouchableOpacity style={styles.button} onPress={handleSubmit}>
                         <Text style={styles.buttonText}>Registrar</Text>

@@ -55,8 +55,7 @@ public class QuestionSnapshot {
     @Column(name = "header_image")
     private String headerImage;
 
-    @Column(name = "answer_id", nullable = false)
-    @NotNull
+    @Column(name = "answer_id")
     private Long answerId;
 
     @Column(name = "enable", nullable = false)
