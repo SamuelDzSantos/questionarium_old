@@ -74,6 +74,16 @@ h2 {
     margin-bottom: 20px;
 }
 
+.text-input {
+    height: 40px;
+    width: 200px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1em;
+    outline: none;
+}
+
 /*
 .bottom-button-area {
     justify-content: space-between;
