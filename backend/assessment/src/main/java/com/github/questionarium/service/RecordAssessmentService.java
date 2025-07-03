@@ -193,7 +193,7 @@ public class RecordAssessmentService {
      * @param answerKey Lista de letras com as respostas do aluno
      * @return Nota obtida (soma dos pesos das questões corretas)
      */
-    public double calculateScore(Long id, List<String> answerKey, Long userId, Boolean isAdmin) {
+    public double calculateScore(Long id, List<String> answerKey, String studentName, Long userId, Boolean isAdmin) {
         RecordAssessment rec = repository.findById(id)
                 .filter(RecordAssessment::getActive)
                 .orElseThrow(() -> new EntityNotFoundException(
@@ -204,6 +204,7 @@ public class RecordAssessmentService {
         /// A B C D 2 3 4 5
         // Armazena diretamente a lista de respostas do aluno
         rec.setStudentAnswerKey(new ArrayList<>(answerKey));
+        rec.setStudentName(studentName);
         // Alternativas corretas A B C D
         // Calcula a pontuação obtida
         List<String> correct = rec.getCorrectAnswerKeyLetter();
