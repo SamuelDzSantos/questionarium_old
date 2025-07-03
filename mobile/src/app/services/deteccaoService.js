@@ -25,7 +25,7 @@ export class DeteccaoService {
                 params: {
                     num_rows: num_rows
                 },
-                timeout: 3000,
+                timeout: 50000,
             });
             return response.data;
         } catch (error) {
@@ -34,6 +34,7 @@ export class DeteccaoService {
             } else {
                 Alert.alert('Erro', 'Erro interno do servidor. Por favor, tente novamente.');
             }
+            console.log("error", error)
         }
     };
 }
