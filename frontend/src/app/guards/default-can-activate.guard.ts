@@ -10,7 +10,7 @@ export const defaultCanActivateGuard: CanActivateFn = (route, state) => {
   // Adicionar uma nova url a essa lista caso ela seja liberada para todos os tipos de usuário (freeUrls) ou urls que devem ser
   // apenas acessadas por usuário não logados (unloggedUrls).
 
-  let freeUrls = ["", "/", "sobre", "manual", "blog", "novidades", "auth"]
+  let freeUrls = ["", "/", "sobre", "manual", "blog", "novidades", "auth", "password/reset", "password", "reset", "recuperar-senha"]
   let unloggedOnlyUrls = ["login", "cadastro", "recuperar-senha"]
 
   let router = inject(Router)

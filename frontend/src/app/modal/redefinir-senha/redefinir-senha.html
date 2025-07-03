@@ -22,7 +22,7 @@
                 @if(timeLeft > 0){
                 <span>{{timeLeft}} segundos</span>
                 }@else{
-                <span>Reenviar link?</span>
+                <span (click)="enviar()">Reenviar link?</span>
                 }
             </a>
         </div>

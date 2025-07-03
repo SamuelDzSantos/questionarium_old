@@ -27,6 +27,7 @@ export const routes: Routes = [
             { path: "devs", component: DevsComponent },
             { path: "recuperar-senha", component: RecuperarSenha },
             { path: "auth", component: LoginComponent },
+            { path: "password/reset", component: RecuperarSenha },
             {
                 path: "edicao",
                 children: [

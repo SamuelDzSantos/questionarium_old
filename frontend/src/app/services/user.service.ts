@@ -31,6 +31,7 @@ export class UserService {
     "signIn": `${this.apiUrl}/auth/login`,
     "register": `${this.apiUrl}/auth/register`,
     "passwordReset": `${this.apiUrl}/auth/password/reset`,
+    "updateTokenPassword": `${this.apiUrl}/auth/password/reset`,
     "passwordUpdate": `${this.apiUrl}/auth/password`,
     "getUserData": `${this.apiUrl}/user/data`,
     "validateEmailToken": `${this.apiUrl}/auth/email`,
@@ -91,6 +92,10 @@ export class UserService {
 
   public resetPassword(email: string) {
     return this.http.get(`${this.methodUrls.passwordReset}?email=${email}`);
+  }
+
+  public tokenUpdatePassword(form: PasswordUpdateForm, token: string) {
+    return this.http.post<void>(`${this.methodUrls.updateTokenPassword}/${token}`, form);
   }
 
   public validateToken(token: string) {

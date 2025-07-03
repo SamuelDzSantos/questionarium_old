@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -117,13 +118,19 @@ public class AuthService {
         User user = getUser(email);
         Token token = new Token(null, user.getId(), generateRandomString(), LocalDateTime.now().plusMinutes(60));
         tokenRepository.save(token);
-        String confirmationURL = "http://localhost:4200/password/reset?token=" + token.getToken();
+        String confirmationURL = "http://localhost:4200/recuperar-senha?token=" + token.getToken();
         Email mail = new Email(
                 "Confirme seu cadastro",
                 "Olá " + user.getLogin() + ", clique aqui para resetar o password: " + confirmationURL,
                 user.getLogin());
         try {
-            rabbitTemplate.convertAndSend("SEND_EMAIL_EVENT", mail);
+            var a = rabbitTemplate.convertSendAndReceiveAsType(
+                    // RabbitMQConfig.EXCHANGE,
+                    "SEND_EMAIL_EVENT",
+                    mail,
+                    new ParameterizedTypeReference<Boolean>() {
+                    });
+
         } catch (Exception ex) {
             log.error("Erro ao enviar email de confirmação", ex);
         }
