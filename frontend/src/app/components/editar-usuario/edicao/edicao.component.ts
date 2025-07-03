@@ -1,14 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { SenhaComponent } from '../senha/senha.component';
 import { ContaComponent } from '../conta/conta.component';
-import { PerfilComponent } from '../perfil/perfil.component';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { filter, map, Observable, startWith } from 'rxjs';
 import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-edicao',
-  imports: [SenhaComponent, ContaComponent, PerfilComponent, CommonModule, RouterModule],
+  imports: [SenhaComponent, ContaComponent, CommonModule, RouterModule],
   templateUrl: './edicao.component.html',
   styleUrl: './edicao.component.css'
 })

@@ -19,6 +19,10 @@ public class RouteConfig {
                                                 .uri("http://localhost:15000"))
                                 .route(r -> r.path("/auth/**").uri("http://localhost:14001"))
 
+                                .route(r -> r.path("/update")
+                                                .filters(f -> f.setPath("/saga/update"))
+                                                .uri("http://localhost:15000"))
+
                                 // Rotas gerenciadas diretamente pelo Gateway
                                 .route("gateway-service", r -> r
                                                 .path("/user/data")

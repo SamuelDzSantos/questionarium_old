@@ -1,5 +1,5 @@
 package com.github.questionarium.interfaces.DTOs;
 
-public record User(Long id, String name) {
+public record User(Long id, String name, byte[] image) {
 
 }

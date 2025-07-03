@@ -6,13 +6,10 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { LocalStorageService } from './local-storage.service';
 import { PasswordUpdateForm } from '../types/user/password-update-form';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
 
-type UserData = {
-  "id": number,
-  "name": string,
-  "email": string
-}
+
 
 type StringWrapper = {
   "token": string
@@ -40,10 +37,28 @@ export class UserService {
 
   user$ = new BehaviorSubject<UserInfo | null>(null);
 
-  constructor(private http: HttpClient, private router: Router, private localStorageService: LocalStorageService) { }
+  constructor(private http: HttpClient, private router: Router, private localStorageService: LocalStorageService, private sanitizer: DomSanitizer) { }
 
   getCurrentUser() {
     return this.user$;
+  }
+
+  getUserImageUrl() {
+    return this.user$.pipe(
+      map(user => {
+        const imageUrl = this.convertToImageUrl(user!.image);
+        return { imageUrl };
+      })
+    );
+  }
+
+  private convertToImageUrl(base64: string): SafeUrl {
+    const byteCharacters = atob(base64); // decodifica base64
+    const byteNumbers = new Array(byteCharacters.length).fill(0).map((_, i) => byteCharacters.charCodeAt(i));
+    const byteArray = new Uint8Array(byteNumbers);
+    const blob = new Blob([byteArray], { type: 'image/png' }); // ajuste o MIME type conforme necessário
+    const objectUrl = URL.createObjectURL(blob);
+    return this.sanitizer.bypassSecurityTrustUrl(objectUrl);
   }
 
   setCurrentUser(user: UserInfo | null) {
@@ -51,12 +66,21 @@ export class UserService {
   }
 
 
+  public patchUser(nome: string, email: string) {
+    return this.http.patch(`${this.apiUrl}/update`, { "email": email, "name": nome });
+  }
+
+  public refreshUser() {
+    this.initialize()
+  }
+
   public initialize() {
 
     this.localStorageService.clearToken("isMultipleChoice");
 
     return this.http.get<UserInfo>(this.methodUrls.getUserData).pipe(
       map((user) => {
+        console.log(user)
         this.setCurrentUser(user)
       }),
       catchError(() => {

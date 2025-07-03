@@ -311,6 +311,15 @@ export class AvaliacaoCriarComponent implements OnInit {
     return totalWeight;
   }
 
+  getAcessLevel(level: number) {
+    let lev: any = level;
+    if (lev == "PRIVATE") {
+      return "Privado";
+    } else {
+      return "Público"
+    }
+  }
+
 
 }
 

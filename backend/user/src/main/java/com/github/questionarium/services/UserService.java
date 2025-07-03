@@ -2,6 +2,7 @@ package com.github.questionarium.services;
 
 import org.springframework.stereotype.Service;
 
+import com.github.questionarium.interfaces.DTOs.UsernamePatch;
 import com.github.questionarium.model.User;
 import com.github.questionarium.repositories.UserRepository;
 
@@ -33,6 +34,18 @@ public class UserService {
         return userRepository.findById(userId).orElse(null);
     }
 
+    public boolean updateUsername(UsernamePatch patch) {
+        User user = userRepository.findById(patch.userId()).orElse(null);
+        if (user == null) {
+            return false;
+        }
+
+        user.setName(patch.name());
+
+        userRepository.save(user);
+        return true;
+    }
+
     public User saveImage(Long userId, byte[] data) {
 
         User user = userRepository.findById(userId).orElse(null);
@@ -40,7 +53,9 @@ public class UserService {
         log.info("Atualizando imagem para user: {}", user);
         if (user != null) {
             user.setImage(data);
-            return userRepository.save(user);
+            user = userRepository.save(user);
+            log.info("Novo user: {}", user);
+            return user;
         }
         return user;
     }

@@ -20,7 +20,12 @@
         </li>
         <li id="user-icon-container">
             <div id="logo-container">
-                <img src="./resources/default_user_logo.png" />
+                @if(imageUrl != null){
+                <img [src]="imageUrl" />
+                }@else {
+                <img src="/resources/default_user_logo.png" />
+                }
+
                 <span>Olá, <span>{{changes[0]?.name}} </span></span>
                 <div id="dropdown">
                     <ul>
@@ -37,7 +42,10 @@
 @default () {
 <nav>
     <ul>
-        <li routerLink="/"><img src="./resources/logo.png"></li>
+
+        <li routerLink="/"><img src="./resources/logo.png">
+
+        </li>
         <li id="option-list-container">
             <ul>
                 <li><a>Novidades</a></li>

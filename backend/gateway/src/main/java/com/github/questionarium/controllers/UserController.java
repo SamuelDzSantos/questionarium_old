@@ -22,7 +22,8 @@ public class UserController {
 
     @GetMapping("/data")
     public Mono<UserData> getUserData(@RequestHeader("X-User-Id") Long userId) {
-
+        System.out.println("OPa");
+        ;
         Mono<AuthDataDTO> authUserMono = webClient.get()
                 .uri("http://localhost:14001/auth")
                 .header("X-User-Id", userId.toString()).retrieve().bodyToMono(AuthDataDTO.class).doOnNext((value) -> {
@@ -43,8 +44,9 @@ public class UserController {
             User userData = tuple.getT2();
             System.out.println(authUserData.toString());
             System.out.println(authUserData);
+            System.out.println(userData);
             return new UserData(authUserData.id(), userData.name(),
-                    authUserData.email());
+                    authUserData.email(), userData.image());
         });
     }
 

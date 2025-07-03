@@ -17,6 +17,7 @@ import com.github.questionarium.config.exception.UserNotConfirmedException;
 import com.github.questionarium.interfaces.DTOs.AuthDataDTO;
 import com.github.questionarium.interfaces.DTOs.AuthUserRegisterDTO;
 import com.github.questionarium.interfaces.DTOs.Email;
+import com.github.questionarium.interfaces.DTOs.EmailPatch;
 import com.github.questionarium.interfaces.DTOs.LoginFormDTO;
 import com.github.questionarium.interfaces.DTOs.PasswordUpdateForm;
 import com.github.questionarium.model.Token;
@@ -64,6 +65,14 @@ public class AuthService {
         String token = jwtUtils.generateToken(user.getId(), loginForm.login(), user.getRole());
         log.info("Token: {} gerado!", token);
         return token;
+    }
+
+    public Long updateEmail(EmailPatch data) {
+        User user = getUser(data.userId());
+        user.setLogin(data.newEmail());
+        user = userRepository.save(user);
+        log.info("Novo email: {}", user.getLogin());
+        return user.getId();
     }
 
     public User register(AuthUserRegisterDTO register) {
@@ -124,7 +133,7 @@ public class AuthService {
                 "Olá " + user.getLogin() + ", clique aqui para resetar o password: " + confirmationURL,
                 user.getLogin());
         try {
-            var a = rabbitTemplate.convertSendAndReceiveAsType(
+            rabbitTemplate.convertSendAndReceiveAsType(
                     // RabbitMQConfig.EXCHANGE,
                     "SEND_EMAIL_EVENT",
                     mail,

@@ -5,5 +5,5 @@ export interface UserData {
     email: string,
     password: string,
     roles: string[]
-
+    image: ArrayBuffer
 }

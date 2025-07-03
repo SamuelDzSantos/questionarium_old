@@ -42,4 +42,9 @@ public class UserController {
         userService.saveImage(userId, file.getBytes());
         return ResponseEntity.status(HttpStatus.OK).body("Image uploaded successfully.");
     }
+
+    @GetMapping("/image")
+    public byte[] getImage(@RequestHeader("X-User-Id") Long userId) {
+        return userService.getUser(userId).getImage();
+    }
 }
