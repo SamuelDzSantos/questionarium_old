@@ -1,5 +1,6 @@
 package com.github.questionarium.init;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -122,7 +123,6 @@ public class DataLoader implements ApplicationRunner {
         modelo.setImage(null);
         assessmentModelService.createAssessment(modelo, 5L);
 
-
         AssessmentModel modelo2 = new AssessmentModel();
         modelo2.setDescription("Modelo de avaliação autoral do João");
         List<QuestionWeight> questoes2 = new ArrayList<>();
@@ -143,6 +143,28 @@ public class DataLoader implements ApplicationRunner {
         modelo2.setInstructions("Peso 0.5 cada. Boa prova!");
         modelo2.setImage(null);
         assessmentModelService.createAssessment(modelo2, 5L);
+
+        // Aplicação 1: Turma da Manhã de Petróleo (sem embaralhamento)
+        appliedAssessmentService.applyAssessment(
+                2L, // id do modelo
+                "Turma de Petróleo - 02/2025",
+                LocalDate.of(2025, 8, 1),
+                10, // quantity
+                false, // shuffleQuestions
+                5L, // userId (João)
+                false // isAdmin, se rodando como admin no DataLoader
+        );
+
+        // Aplicação 2: Turma de Secretariado (com embaralhamento)
+        appliedAssessmentService.applyAssessment(
+                2L, // id do modelo
+                "Turma de Secretariado - 02/2025",
+                LocalDate.of(2025, 8, 1),
+                5, // quantity
+                true, // shuffleQuestions
+                5L, // userId (João)
+                false // isAdmin
+        );
 
     }
 }
