@@ -1,10 +1,26 @@
-body {
-    font-family: 'Arial', sans-serif;
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
 
+/* Variáveis globais de fonte e cor */
+:root {
+    --font-family-base: 'Inter', Arial, sans-serif;
+
+    --color-primary: #002436;
+    /* azul escuro */
+    --color-secondary: #24B4FC;
+    /* azul claro */
+    --color-tertiary: #FF9040;
+    /* laranja (cor de destaque) */
+
+    --color-background: #F6FAFB;
+    --color-text: #002436;
+}
+
+body {
+    font-family: var(--font-family-base);
 }
 
 .menu-area {
-    font-family: 'Arial', sans-serif;
+    font-family: var(--font-family-base);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -14,14 +30,14 @@ body {
 }
 
 .menu-grid {
-    font-family: 'Arial', sans-serif;
+    font-family: var(--font-family-base);
     display: grid;
     grid-template-columns: 200px 200px 200px;
     gap: 50px 150px;
 }
 
 .menu-grid div {
-    font-family: 'Arial', sans-serif;
+    font-family: var(--font-family-base);
     display: flex;
     flex-direction: column;
     justify-content: center;
