@@ -39,6 +39,11 @@ public class RabbitMQConfig {
     }
 
     @Bean
+    Queue createUpdateEmailQueue() {
+        return new Queue(AuthEvents.UPDATE_AUTH_USER_EMAIL_EVENT.toString());
+    }
+
+    @Bean
     Queue createRevertCreateAuthUserQueue() {
         return new Queue(AuthEvents.REVERT_CREATE_AUTH_USER_EVENT.toString());
     }
@@ -51,6 +56,11 @@ public class RabbitMQConfig {
     @Bean
     Queue createUserQueue() {
         return new Queue(UserEvents.CREATE_USER_EVENT.toString());
+    }
+
+    @Bean
+    Queue updateUserQueue() {
+        return new Queue(UserEvents.UPDATE_USER_NAME_EVENT.toString());
     }
 
     @Bean

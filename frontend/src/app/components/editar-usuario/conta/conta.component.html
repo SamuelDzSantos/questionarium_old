@@ -1,14 +1,14 @@
 <div class="main_body">
-    <form [formGroup]="senhaForm" class="form_area" (ngSubmit)="submit()">
+    <form [formGroup]="senhaForm" class="form_area">
         <div class="input">
             <label for="senhaAtual"> Nome</label>
-            <input id="senhaAtual" type="password" formControlName="senhaAtual" required />
+            <input id="senhaAtual" formControlName="nome" required />
         </div>
         <div class="input">
             <label for="novaSenha"> Email</label>
-            <input id="novaSenha" type="password" formControlName="novaSenha" required />
+            <input id="novaSenha" formControlName="email" required />
         </div>
-        <button [disabled]="!senhaForm.valid" type="submit">Salvar</button>
+        <button [disabled]="!senhaForm.valid" (click)="updateData()" type="submit">Salvar</button>
     </form>
     <div id="container">
         Foto de Perfil:

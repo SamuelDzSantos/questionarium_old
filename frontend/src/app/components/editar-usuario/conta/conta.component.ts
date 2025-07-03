@@ -13,33 +13,43 @@ import { PasswordUpdateForm } from '../../../types/user/password-update-form';
 })
 export class ContaComponent {
 
+
+
   senhaForm!: FormGroup;
   file!: File;
   constructor(private formBuilder: FormBuilder, private userService: UserService, private validator: ObjectValidatorService, private router: Router) { }
 
   ngOnInit(): void {
     this.senhaForm = this.formBuilder.group({
-      senhaAtual: [''],
-      novaSenha: [''],
-      confirmaSenha: ['']
+      nome: [''],
+      email: [''],
     })
+
+    this.userService.getCurrentUser().subscribe((user) => {
+      this.senhaForm = this.formBuilder.group({
+        nome: [user?.name],
+        email: [user?.email],
+      })
+    })
+
   }
 
-  submit() {
-    let values = this.senhaForm.value;
-    if (this.validator.hasNonNullableProperties(values, 'senhaAtual', 'novaSenha', 'confirmaSenha')) {
-      let patch: PasswordUpdateForm = { "currentPassword": values.senhaAtual, "newPassword": values.novaSenha, "confirmPassword": values.confirmaSenha }
-      console.log(this.senhaForm.value)
-      this.userService.updatePassword(patch).subscribe((result) => {
-        if (result) {
-          alert("Senha atualizada com sucesso! ");
-          this.router.navigateByUrl("/edicao/perfil");
-        } else {
-          alert("Erro ao atualizar senha!")
-        }
-      });
-    }
+  updateData() {
+    console.log(this.senhaForm.value);
+
+    let nome = this.senhaForm.value.nome;
+    let email = this.senhaForm.value.email;
+
+    this.userService.patchUser(nome, email).subscribe(() => {
+      alert("Dados atualizados")
+      window.location.reload();
+    })
+
+
+
   }
+
+
 
   onFileSelected(event: Event) {
     const input = event.target as HTMLInputElement;

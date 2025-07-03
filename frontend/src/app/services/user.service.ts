@@ -66,6 +66,14 @@ export class UserService {
   }
 
 
+  public patchUser(nome: string, email: string) {
+    return this.http.patch(`${this.apiUrl}/update`, { "email": email, "name": nome });
+  }
+
+  public refreshUser() {
+    this.initialize()
+  }
+
   public initialize() {
 
     this.localStorageService.clearToken("isMultipleChoice");

@@ -33,12 +33,7 @@ export class HeaderComponent {
   ngOnInit(): void {
     this.user$ = this.userService.getCurrentUser();
 
-    this.userService.getUserImageUrl().subscribe((imageUrl) => {
-      console.log(imageUrl.imageUrl)
-      this.imageUrl = imageUrl
-    })
     this.http.get("http://localhost:14000/users/image", { responseType: 'blob' }).subscribe((a) => {
-
       const objectURL = URL.createObjectURL(a);
       this.imageUrl = this._sanitizer.bypassSecurityTrustUrl(objectURL);
 
