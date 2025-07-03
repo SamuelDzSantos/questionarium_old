@@ -71,8 +71,8 @@
                     <span>Instituição: {{model.institution}}</span>
                     <span class="enunciado">Enunciado: {{questao.header}}</span>
                     <div id="type-button"
-                        [ngStyle]="{'background-color': questao.accessLevel == 0  ? '#BBE8BA' : 'red'}">
-                        {{questao.accessLevel == 0 ? "Pública" : "Privada"}}
+                        [ngStyle]="{'background-color': getAcessLevel(questao.accessLevel) == 'Público'  ? '#BBE8BA' : 'red'}">
+                        {{getAcessLevel(questao.accessLevel)}}
                     </div>
                     <div class="peso">
                         Digite o peso da questão:

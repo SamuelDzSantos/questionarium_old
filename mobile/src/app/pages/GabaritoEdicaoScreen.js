@@ -15,6 +15,7 @@ export default function GabaritoEdicaoScreen({ route, navigation }) {
     const [studentName, setStudentName] = useState(null);
     const [rawGabaritoData, setRawGabaritoData] = useState([]);
     const [gabaritoData, setGabaritoData] = useState([]);
+    const [isLoadingImage, setIsLoadingImage] = useState(true);
 
     const recordService = new RecordService();
     const deteccaoService = new DeteccaoService();
@@ -51,9 +52,12 @@ export default function GabaritoEdicaoScreen({ route, navigation }) {
         if (!(imageUri && recordData && numRows)) return;
 
         const uploadImage = async () => {
+            setIsLoadingImage(true);
             const response = await deteccaoService.uploadImage(imageUri, numRows);
             setRawGabaritoData(response);
+            setIsLoadingImage(false);
         };
+
 
         uploadImage();
     }, [imageUri, recordData, numRows]);
@@ -88,7 +92,7 @@ export default function GabaritoEdicaoScreen({ route, navigation }) {
                     text: "Confirmar",
                     onPress: async () => {
                         const id = Number(qr_data.qr_data);
-                        
+
                         if (typeof id !== 'number' || isNaN(id)) {
                             Alert.alert("ID de avaliação inválido", "Tente novamente.");
                             return;
@@ -114,6 +118,9 @@ export default function GabaritoEdicaoScreen({ route, navigation }) {
     return (
         <LinearGradient colors={gradientColors} style={styles.gradient}>
             <ScrollView contentContainerStyle={styles.scrollContent}>
+                {isLoadingImage && (
+                    <Text style={{ marginTop: 10, fontStyle: 'italic' }}>Carregando respostas...</Text>
+                )}
                 <TextInput
                     style={styles.input}
                     placeholder='Aluno'
