@@ -16,7 +16,6 @@ public interface AssessmentModelMapper {
     @Mapping(target = "userId", ignore = true)
     @Mapping(target = "creationDateTime", ignore = true)
     @Mapping(target = "updateDateTime", ignore = true)
-    @Mapping(target = "questions", ignore = true)
     AssessmentModel toEntity(CreateAssessmentModelRequestDTO dto);
 
     AssessmentModelDTO toDto(AssessmentModel entity);

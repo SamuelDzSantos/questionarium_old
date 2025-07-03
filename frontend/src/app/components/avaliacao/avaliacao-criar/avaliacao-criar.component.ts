@@ -101,7 +101,7 @@ export class AvaliacaoCriarComponent implements OnInit {
 
   private loadAssessment(modelId: number) {
     this.assessmentService.getCreatedAssessment(modelId).subscribe((model) => {
-      this.model = model;
+      this.model = model[0];
       console.log("Após carga")
       console.log(this.model)
       this.cdr.detectChanges();
@@ -226,6 +226,8 @@ export class AvaliacaoCriarComponent implements OnInit {
 
   updateAssessment() {
 
+    console.log("OPA")
+
     let questions: QuestionWeight[] = this.model.questions.map((question) => {
       let questionWeight: QuestionWeight = { "questionId": question.id || 0, "weight": question.weight }
       return questionWeight;
@@ -281,9 +283,6 @@ export class AvaliacaoCriarComponent implements OnInit {
 
   protected getTotalWeight() {
 
-    console.log("OPADPWJADPOjwaodwij")
-    let s = this.model as unknown as CustomModel[]
-    console.log(s[0].questions)
     let totalWeight = 0;
 
     if (this.model.questions) {

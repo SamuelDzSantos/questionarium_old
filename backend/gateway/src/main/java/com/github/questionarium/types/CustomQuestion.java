@@ -26,4 +26,5 @@ public class CustomQuestion {
     private LocalDateTime creationDateTime;
     private LocalDateTime updateDateTime;
     private Double weight;
+    private Integer questionOrder;
 }

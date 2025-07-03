@@ -38,6 +38,7 @@ public class AppliedAssessmentService {
 
         public AppliedAssessment applyAssessment(
                         Long modelId,
+                        String description,
                         LocalDate applicationDate,
                         Integer quantity,
                         Boolean shuffleQuestions, Long loggedUserId, Boolean isAdmin) {
@@ -120,7 +121,7 @@ public class AppliedAssessmentService {
 
                 // 6) popula entidade AppliedAssessment
                 AppliedAssessment applied = new AppliedAssessment();
-                applied.setDescription(model.getDescription());
+                applied.setDescription(description);
                 applied.setQuestionSnapshots(snapshots);
                 applied.setTotalScore(snapshots.stream()
                                 .mapToDouble(QuestionSnapshot::getWeight).sum());
@@ -210,7 +211,8 @@ public class AppliedAssessmentService {
                 }
 
                 if (description != null && !description.trim().isEmpty()) {
-                        spec = spec.and((root, query, cb) -> cb.like(cb.lower(root.get("description")), "%" + description.toLowerCase() + "%"));
+                        spec = spec.and((root, query, cb) -> cb.like(cb.lower(root.get("description")),
+                                        "%" + description.toLowerCase() + "%"));
                 }
 
                 if (applicationDate != null) {
@@ -218,7 +220,6 @@ public class AppliedAssessmentService {
                 }
 
                 return appliedRepo.findAll(spec);
-                }
-
+        }
 
 }

@@ -43,14 +43,21 @@ public class AssessmentModelController {
         // List<QuestionWeight> weights = dto.getQuestions().stream()
         // .map((question) -> new QuestionWeight(question.getQuestion(),
         // question.getWeight())).toList();
-
         List<QuestionWeight> weights = dto.getQuestions().stream()
-                .map((question) -> new QuestionWeight(question.getQuestionId(), question.getWeight())).toList();
+                .map((question) -> {
+                    return new QuestionWeight(question.getQuestionId(), question.getWeight(), 0);
+                }).toList();
+
+        for (Integer x = 0; x < weights.size(); x++) {
+            weights.get(x).setQuestionOrder(x);
+        }
 
         entity.setQuestions(weights);
 
         AssessmentModel saved = service.createAssessment(entity, userId);
+
         AssessmentModelDTO response = mapper.toDto(saved);
+
         URI location = URI.create("/assessment-models/" + saved.getId());
         return ResponseEntity
                 .created(location)
@@ -64,6 +71,9 @@ public class AssessmentModelController {
             @RequestHeader("X-User-isAdmin") Boolean isAdmin) {
         log.info("GET /assessment-models/{} – buscando modelo", id);
         AssessmentModel model = service.getAssessmentById(id, userId, isAdmin);
+
+        System.out.println("Model----------------------------------------------" + model.toString());
+
         return ResponseEntity.ok(mapper.toDto(model));
     }
 
@@ -104,6 +114,8 @@ public class AssessmentModelController {
             @RequestBody @Valid CreateAssessmentModelRequestDTO dto, @RequestHeader("X-User-id") Long userId,
             @RequestHeader("X-User-isAdmin") Boolean isAdmin) {
         log.info("PUT /assessment-models/{} – atualizando modelo para userId={}", id, userId);
+
+        System.out.println(dto);
 
         AssessmentModel entity = mapper.toEntity(dto);
         entity.setId(id);

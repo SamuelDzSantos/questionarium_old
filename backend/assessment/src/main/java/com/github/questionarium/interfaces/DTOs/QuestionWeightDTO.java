@@ -14,4 +14,6 @@ public class QuestionWeightDTO {
 
     @NotNull
     private Double weight;
+    private Integer questionOrder;
+
 }
