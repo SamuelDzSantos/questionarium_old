@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { UserService } from '../../services/user.service';
 
@@ -8,14 +8,15 @@ import { UserService } from '../../services/user.service';
   templateUrl: './redefinir-senha.html',
   styleUrl: './redefinir-senha.css'
 })
-export class RedefinirSenha {
+export class RedefinirSenha implements OnInit {
 
   @Output() closeModalEvent = new EventEmitter<void>();
+  @Input() token!: string;
 
   emailForm!: FormGroup;
   formHidden = false;
   linkHidden = true;
-
+  validado = false;
   timeLeft: number = 10;
   interval: any;
 
@@ -23,6 +24,25 @@ export class RedefinirSenha {
   constructor(private formBuilder: FormBuilder, private userService: UserService) {
     this.formHidden = false;
   }
+
+
+  ngOnInit(): void {
+    if (this.token && this.token != '') {
+      this.userService.validateToken(this.token).subscribe((result) => {
+        if (result) {
+          console.log("OPA")
+          console.log(result)
+          this.validado = true;
+        }
+
+      });
+    }
+    this.formHidden = false;
+    this.emailForm = this.formBuilder.group({
+      email: ['']
+    })
+  }
+
 
 
   startTimer() {
@@ -42,26 +62,22 @@ export class RedefinirSenha {
   }
 
 
-  ngOnInit(): void {
-    this.formHidden = false;
-    this.emailForm = this.formBuilder.group({
-      email: ['']
-    })
-  }
-
   submitEmail() {
     this.startTimer();
+    let email: string = this.emailForm.value.email as string;
+
     console.log(this.emailForm.value);
     this.formHidden = true;
     this.linkHidden = false;
-    console.log(this.formHidden)
+    this.userService.resetPassword(email).subscribe();
   }
 
 
   enviar() {
 
+    let email: string = this.emailForm.value.email as string;
     if (this.timeLeft == 0) {
-      console.log("OPa")
+      this.userService.resetPassword(email).subscribe();
     }
     this.timeLeft = 10
     this.startTimer()

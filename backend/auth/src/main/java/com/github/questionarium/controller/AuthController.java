@@ -68,7 +68,7 @@ public class AuthController {
         return this.authService.getUserData(userId);
     }
 
-    @PatchMapping("/email/{token}")
+    @GetMapping("/email/{token}")
     public ResponseEntity<Boolean> confirmEmail(@PathVariable String token) {
         log.info("Recebido token {}", token);
         authService.validateEmail(token);
@@ -80,8 +80,9 @@ public class AuthController {
         return authService.resetPasswordToken(token, passwordUpdateForm);
     }
 
-    @PostMapping("/password/reset")
+    @GetMapping("/password/reset")
     public String resetPassword(@RequestParam String email) {
+        System.out.println("OPA");
         return authService.resetPassword(email);
     }
 

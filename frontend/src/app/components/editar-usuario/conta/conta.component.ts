@@ -14,7 +14,7 @@ import { PasswordUpdateForm } from '../../../types/user/password-update-form';
 export class ContaComponent {
 
   senhaForm!: FormGroup;
-
+  file!: File;
   constructor(private formBuilder: FormBuilder, private userService: UserService, private validator: ObjectValidatorService, private router: Router) { }
 
   ngOnInit(): void {
@@ -38,6 +38,18 @@ export class ContaComponent {
           alert("Erro ao atualizar senha!")
         }
       });
+    }
+  }
+
+  onFileSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input != null) {
+      let files = input!.files;
+      if (files) {
+        this.file = files[0];
+        console.log("Enviando imagem")
+        this.userService.updateImage(this.file).subscribe();
+      }
     }
   }
 

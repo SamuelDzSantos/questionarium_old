@@ -14,7 +14,7 @@
         <a id="aunder" style="text-decoration:underline;" (click)="mostrarModal()">Esqueceu a senha?</a>
     </form>
 
-    <app-redefinir-senha [style.display]="modalEnabled ? 'block' : 'none'"
-        (closeModalEvent)="fecharModal()"></app-redefinir-senha>
+    <app-redefinir-senha [style.display]="modalEnabled ? 'block' : 'none'" (closeModalEvent)="fecharModal()"
+        [token]="token"></app-redefinir-senha>
 
 </div>

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { UserService } from '../../services/user.service';
 import { RedefinirSenha } from '../../modal/redefinir-senha/redefinir-senha';
 
@@ -19,12 +19,20 @@ export class LoginComponent implements OnInit {
 
   loginForm!: FormGroup;
   modalEnabled = false;
+  token: string = '';
 
-  constructor(private formBuilder: FormBuilder, private userService: UserService) {
+
+  constructor(private formBuilder: FormBuilder, private userService: UserService, private route: ActivatedRoute) {
 
   }
 
   ngOnInit(): void {
+    let a = new URLSearchParams(window.location.search).get('token');
+    this.token = a?.toString() || '';
+    if (this.token != '') {
+      this.modalEnabled = true
+    }
+
     this.loginForm = this.formBuilder.group({
       email: [''],
       password: ['']

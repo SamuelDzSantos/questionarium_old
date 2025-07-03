@@ -18,7 +18,7 @@
             <label for="upload-foto" class="botao-upload">
                 Enviar nova foto
             </label>
-            <input type="file" id="upload-foto" accept="image/*" hidden />
+            <input type="file" (change)="onFileSelected($event)" id="upload-foto" accept="image/*" hidden />
         </div>
     </div>
 </div>

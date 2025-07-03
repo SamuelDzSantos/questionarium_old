@@ -4,6 +4,9 @@
             <h2>Alteração de Senha</h2>
             <button (click)="closeModal()" class="close-button">X</button>
         </div>
+
+        @if(!this.validado){
+
         <div [style.display]="formHidden ? 'none' : 'block'" class="modal-body">
             <form [formGroup]="emailForm">
                 <label>Digite o seu email:</label>
@@ -22,7 +25,9 @@
                 <span>Reenviar link?</span>
                 }
             </a>
-
         </div>
+        }@else {
+        <div>Seu email foi validado com sucesso!</div>
+        }
     </div>
 </div>

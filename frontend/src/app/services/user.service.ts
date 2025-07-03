@@ -30,9 +30,11 @@ export class UserService {
     "addUser": `${this.apiUrl}/users`,
     "signIn": `${this.apiUrl}/auth/login`,
     "register": `${this.apiUrl}/auth/register`,
-    "passwordReset": `${this.apiUrl}/users/password-reset`,
+    "passwordReset": `${this.apiUrl}/auth/password/reset`,
     "passwordUpdate": `${this.apiUrl}/auth/password`,
     "getUserData": `${this.apiUrl}/user/data`,
+    "validateEmailToken": `${this.apiUrl}/auth/email`,
+    "updateImage": `${this.apiUrl}/users/upload`
   }
 
   user$ = new BehaviorSubject<UserInfo | null>(null);
@@ -87,8 +89,22 @@ export class UserService {
     });
   }
 
+  public resetPassword(email: string) {
+    return this.http.get(`${this.methodUrls.passwordReset}?email=${email}`);
+  }
+
+  public validateToken(token: string) {
+    return this.http.get<boolean>(`${this.methodUrls.validateEmailToken}/${token}`);
+  }
+
   public updatePassword(patch: PasswordUpdateForm) {
     return this.http.patch<boolean>(this.methodUrls.passwordUpdate, patch);
+  }
+
+  public updateImage(file: File) {
+    const formData = new FormData();
+    formData.append('file', file);
+    return this.http.post<string>(this.methodUrls.updateImage, formData);
   }
 
   public logout() {

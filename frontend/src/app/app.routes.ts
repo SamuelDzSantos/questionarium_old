@@ -26,6 +26,7 @@ export const routes: Routes = [
             { path: "sobre", component: SobreComponent },
             { path: "devs", component: DevsComponent },
             { path: "recuperar-senha", component: RecuperarSenha },
+            { path: "auth", component: LoginComponent },
             {
                 path: "edicao",
                 children: [
@@ -60,6 +61,7 @@ export const routes: Routes = [
                     { path: ":id", component: VerRelatorioComponent }
                 ]
             },
+
 
 
         ],
