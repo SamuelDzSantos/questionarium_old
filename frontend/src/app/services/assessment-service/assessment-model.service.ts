@@ -105,7 +105,7 @@ export class AssessmentModelService {
     }
 
     getCreatedAssessment(id: number) {
-        return this.http.get<CustomModel>(`${this.baseUrl2}/${id}`);
+        return this.http.get<CustomModel[]>(`${this.baseUrl2}/${id}`);
     }
 
     findWithFilter(

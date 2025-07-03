@@ -37,9 +37,9 @@ export class AvaliacaoAplicadasComponent implements OnInit {
     private router: Router,
     private userService: UserService,
     private appliedAssessmentService: AppliedAssessmentService
-  ) {}
+  ) { }
 
-   ngOnInit(): void {
+  ngOnInit(): void {
     this.user$ = this.userService.getCurrentUser();
     this.user$.subscribe(user => {
       if (user) {
@@ -88,6 +88,23 @@ export class AvaliacaoAplicadasComponent implements OnInit {
 
   showReport(assessment: AppliedAssessment) {
     this.router.navigate(['/relatorios/', assessment.id]);
+  }
+
+  downloadPdf(assessment: AppliedAssessment) {
+    this.appliedAssessmentService.generatePdf(assessment.id).subscribe((data) => {
+      var file = new Blob([data], { type: 'application/pdf' })
+      var fileURL = URL.createObjectURL(file);
+      window.open(fileURL);
+      var a = document.createElement('a');
+      a.href = fileURL;
+      a.target = '_blank';
+      a.download = 'bill.pdf';
+      document.body.appendChild(a);
+      a.click();
+    },
+      (error) => {
+        console.log('getPDF error: ', error);
+      });
   }
 
   montar() {

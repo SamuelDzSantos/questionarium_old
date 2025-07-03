@@ -1,5 +1,6 @@
 package com.github.questionarium.model;
 
+import io.micrometer.common.lang.NonNull;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.validation.constraints.NotNull;
@@ -19,4 +20,7 @@ public class QuestionWeight {
     @Column(name = "weight")
     @NotNull
     private Double weight;
+
+    @NonNull
+    private Integer questionOrder;
 }

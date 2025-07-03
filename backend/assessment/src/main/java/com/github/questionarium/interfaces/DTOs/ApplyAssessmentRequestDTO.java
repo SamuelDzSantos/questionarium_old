@@ -20,4 +20,6 @@ public class ApplyAssessmentRequestDTO {
 
     @NotNull
     private Boolean shuffleQuestions;
+
+    private String description;
 }

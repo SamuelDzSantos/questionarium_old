@@ -38,6 +38,7 @@ public class AppliedAssessmentController {
 
                 AppliedAssessment applied = service.applyAssessment(
                                 dto.getModelId(),
+                                dto.getDescription(),
                                 dto.getApplicationDate(),
                                 dto.getQuantity(),
                                 dto.getShuffleQuestions(), userId, isAdmin);
@@ -89,19 +90,24 @@ public class AppliedAssessmentController {
                 return ResponseEntity.noContent().build();
         }
 
-        /** 6) Lista aplicações do usuário logado (sempre ativas) e filtradas por descrição e data*/
+        /**
+         * 6) Lista aplicações do usuário logado (sempre ativas) e filtradas por
+         * descrição e data
+         */
         @GetMapping("/user/filter")
         public ResponseEntity<List<AppliedAssessmentDTO>> getFilteredByUser(
-                @RequestHeader("X-User-id") Long userId,
-                @RequestHeader("X-User-isAdmin") Boolean isAdmin,
-                @RequestParam(required = false) String description,
-                @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate applicationDate) {
+                        @RequestHeader("X-User-id") Long userId,
+                        @RequestHeader("X-User-isAdmin") Boolean isAdmin,
+                        @RequestParam(required = false) String description,
+                        @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate applicationDate) {
 
-                log.info("GET /applied-assessments/user/filter – listando aplicações filtradas de userId={}, isAdmin={}", userId, isAdmin);
+                log.info("GET /applied-assessments/user/filter – listando aplicações filtradas de userId={}, isAdmin={}",
+                                userId, isAdmin);
 
-                List<AppliedAssessmentDTO> list = service.getFilteredAppliedAssessments(userId, isAdmin, description, applicationDate).stream()
-                        .map(mapper::toDto)
-                        .collect(Collectors.toList());
+                List<AppliedAssessmentDTO> list = service
+                                .getFilteredAppliedAssessments(userId, isAdmin, description, applicationDate).stream()
+                                .map(mapper::toDto)
+                                .collect(Collectors.toList());
 
                 return ResponseEntity.ok(list);
         }

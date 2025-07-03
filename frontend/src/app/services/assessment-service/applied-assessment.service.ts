@@ -10,6 +10,8 @@ import { AppliedAssessment, ApplyAssessmentRequest } from '../../types/dto';
 export class AppliedAssessmentService {
     private baseUrl = `${env.baseUrl}/applied-assessments`;
 
+    private baseUrl2 = `${env.baseUrl}/pdf`;
+
     constructor(private http: HttpClient) { }
 
     apply(request: ApplyAssessmentRequest): Observable<AppliedAssessment> {
@@ -30,6 +32,11 @@ export class AppliedAssessmentService {
 
     delete(id: number): Observable<void> {
         return this.http.delete<void>(`${this.baseUrl}/${id}`);
+    }
+
+    generatePdf(id: number): Observable<Blob> {
+        const params = new HttpParams().set('appliedId', id);
+        return this.http.get<Blob>(`${this.baseUrl2}`, { params })
     }
 
     findWithFilter(description?: string, date?: string): Observable<AppliedAssessment[]> {

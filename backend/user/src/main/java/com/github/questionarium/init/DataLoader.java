@@ -18,13 +18,15 @@ public class DataLoader implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) throws Exception {
 
-        User user1 = new User(1L, "User1", null, null);
-        User user2 = new User(2L, "User2", null, null);
-        User user3 = new User(3L, "User3", null, null);
+        userRepository.deleteAll();
 
-        userRepository.save(user1);
-        userRepository.save(user2);
-        userRepository.save(user3);
+        // Usuários Admin
+        userRepository.save(new User(1L, "Admin 1", null, null));
+        userRepository.save(new User(2L, "Admin 2", null, null));
+        // Usuários comuns
+        userRepository.save(new User(3L, "User 1", null, null));
+        userRepository.save(new User(4L, "User 2", null, null));
+        userRepository.save(new User(5L, "João", null, null));
 
     }
 
