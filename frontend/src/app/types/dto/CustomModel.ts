@@ -9,5 +9,5 @@ export interface CustomModel {
     professor: string,
     instructions: string,
     image: string,
-    questions: CustomQuestion[]
+    questions: CustomQuestion[],
 }

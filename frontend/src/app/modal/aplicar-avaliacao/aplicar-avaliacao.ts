@@ -25,8 +25,7 @@ export class AplicarAvaliacaoComponent {
   }
 
   applyAssessment() {
-    console.log("OPa")
-    if (!this.form.applicationDate || !this.form.quantity || !this.modelId || !this.form.description) {
+    if (!this.form.applicationDate || !this.form.quantity || !this.modelId) {
       console.log(this.modelId)
       console.log(this.form.description)
       console.log(this.form.applicationDate)
@@ -34,6 +33,7 @@ export class AplicarAvaliacaoComponent {
       console.log("erro")
       return;
     }
+
 
     const payload = {
       modelId: this.modelId,

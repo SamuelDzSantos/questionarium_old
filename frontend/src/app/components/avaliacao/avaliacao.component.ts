@@ -96,6 +96,7 @@ export class AvaliacaoComponent implements OnInit {
     this.appliedAssessmentService.apply(payload).subscribe({
       next: () => {
         this.fecharModal();
+        this.router.navigateByUrl("/avaliacao/aplicadas")
       },
       error: () => {
         alert('Erro ao aplicar avaliação');

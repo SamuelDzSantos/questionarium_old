@@ -101,10 +101,22 @@ export class AvaliacaoCriarComponent implements OnInit {
 
   private loadAssessment(modelId: number) {
     this.assessmentService.getCreatedAssessment(modelId).subscribe((model) => {
+
+
       this.model = model[0];
-      console.log("Após carga")
-      console.log(this.model)
-      this.cdr.detectChanges();
+      this.model.questions = this.model.questions.sort((a, b) => a.questionOrder - b.questionOrder)
+      console.log(this.model.questions)
+      let header: AssessmentHeader = {
+        "classroom": this.model.classroom,
+        "course": this.model.course,
+        "department": this.model.department,
+        "institution": this.model.institution,
+        "instructions": this.model.instructions,
+        "professor": this.model.professor,
+        "id": 0,
+        "userId": 0
+      }
+      this.setHeader(header);
     })
   }
 
@@ -190,16 +202,17 @@ export class AvaliacaoCriarComponent implements OnInit {
     this.router.navigateByUrl("/avaliacao");
   }
 
-
-
   saveAssessment() {
 
+    let x = 0;
     let questions: QuestionWeight[] = this.model.questions.map((q) => {
 
       let qw: QuestionWeight = {
         "weight": q.weight,
-        "questionId": q.id || 0
+        "questionId": q.id || 0,
+        "questionOrder": x
       };
+      x++
       return qw
     });
 
@@ -226,14 +239,18 @@ export class AvaliacaoCriarComponent implements OnInit {
 
   updateAssessment() {
 
-    console.log("OPA")
+    let x = 0;
 
     let questions: QuestionWeight[] = this.model.questions.map((question) => {
-      let questionWeight: QuestionWeight = { "questionId": question.id || 0, "weight": question.weight }
+      let questionWeight: QuestionWeight = { "questionId": question.id || 0, "weight": question.weight, "questionOrder": x }
+      x++;
       return questionWeight;
     })
 
+    console.log(questions);
+
     let model: CreateAssessmentModelRequest = {
+
       "classroom": this.model.classroom,
       "course": this.model.course,
       "department": this.model.department,
@@ -244,7 +261,10 @@ export class AvaliacaoCriarComponent implements OnInit {
       "professor": this.model.institution,
       "questions": questions
     };
-    this.assessmentService.update(this.modelId, model);
+    console.log(model)
+    this.assessmentService.update(this.modelId, model).subscribe(
+      () => { this.router.navigateByUrl("/avaliacao") }
+    );
   }
 
   trackByIndex(index: number, item: CustomQuestion): number {

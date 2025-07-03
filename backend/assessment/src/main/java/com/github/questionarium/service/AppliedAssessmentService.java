@@ -66,7 +66,7 @@ public class AppliedAssessmentService {
                                         }
                                         List<RpcAlternativeDTO> alts = questionClient.getAlternatives(qid);
                                         System.out.println(alts);
-                                        if (alts == null || alts.isEmpty()) {
+                                        if ((alts == null || alts.isEmpty()) && qDto.getMultipleChoice()) {
                                                 throw new BusinessException(
                                                                 "Questão " + qid + " não possui alternativas");
                                         }

@@ -36,9 +36,7 @@ export class RecordService {
             return;
         }
 
-        const lettersOnly = data.studentAnswerKey.map(item => item[1]);
-
-        body = { studentAnswerKey: lettersOnly, studentName: data.studentName }
+        body = { studentAnswerKey: data.studentAnswerKey, studentName: data.studentName }
 
         try {
             const response = await axios.patch(`${API_URL}/record-assessments/${data.id}`, body, {
