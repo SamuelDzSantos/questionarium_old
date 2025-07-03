@@ -15,7 +15,8 @@
         <a id="aunder" style="text-decoration:underline;" (click)="mostrarModal()">Esqueceu a senha?</a>
         <button [disabled]="!senhaForm.valid" type="submit">Salvar</button>
     </form>
-<!-- 
+
+    <!-- 
     <div class="dois-fatores-container">
         <div class="titulo-topico">Autenticação em dois fatores</div>
         <hr class="divisor" />
@@ -33,6 +34,7 @@
             Habilitar autenticação em dois fatores
         </button>
     </div>
+    -->
 
 
     <app-redefinir-senha [style.display]="modalEnabled ? 'block' : 'none'" (closeModalEvent)="fecharModal()"
